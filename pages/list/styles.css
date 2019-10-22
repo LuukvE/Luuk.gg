@@ -1,0 +1,92 @@
+.filters h3 {
+  text-transform: uppercase;
+  text-align: center;
+  background: rgba(255,255,255,0.3);
+  line-height: 1.5;
+}
+
+.filters ul {
+  margin-bottom: 16px;
+  background: rgba(255,255,255,0.5);
+}
+
+.filters ul li {
+  padding: 0 8px;
+  line-height: 1.8;
+  user-select: none;
+}
+
+.filters label {
+  cursor: pointer;
+}
+
+.filters input {
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+  margin-bottom: 3px;
+}
+
+.content {
+  padding: 0 16px;
+}
+
+.rowLayout {
+  display: flex;
+  flex-direction: row;
+}
+
+@media only screen and (max-width: 400px) {
+
+  .rowLayout {
+    flex-direction: column;
+  }
+
+}
+
+@media only screen and (min-width: 401px) {
+
+  .tournaments {
+    padding: 0 8px;
+  }
+
+}
+
+.tournaments a {
+  background: rgba(255,255,255,0.5);
+  padding: 0 12px;
+  margin: 0 8px 16px;
+  display: inline-block;
+  line-height: 2;
+  vertical-align: top;
+  min-width: 180px;
+  min-height: 70px;
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  color: #111;
+}
+
+@media only screen and (max-width: 400px) {
+
+  .tournaments a {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+}
+
+
+.tournaments a:hover {
+  background: rgba(255,255,255,0.7);
+}
+
+.tournaments a small {
+  color: #006c10;
+  display: block;
+  text-align: right;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+}

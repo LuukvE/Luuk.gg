@@ -1,0 +1,26 @@
+.layout {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  font-family: 'Exo 2', sans-serif;
+  background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #111);
+	background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.content {
+  flex-grow: 1;
+  overflow: auto;
+}

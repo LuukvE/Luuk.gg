@@ -29,7 +29,7 @@ Tracks the changes between every deployment to production stage
 ## __Proposals__
 Tracks ideas awaiting concensus
 
-### Hardcore Single Page App
+### __Hardcore Single Page App__
 __How can we improve our development speed?__
 - Less complexity throughout every aspect of all projects
 - Less work lost to non-creative development operations
@@ -45,3 +45,9 @@ __What are the upsides?__
 - Avoids having to separate out _"core"_ modules and upgrading them within multiple repositories
 - Single piece of documentation making it hard to miss
 - Easier to automate development operations
+
+### __Instant Startup__
+__What can we do to load the application as fast as possible?__
+- Always deploy all static files to a CDN like AWS S3 to make sure end-users are physically closer to the data containing this software and the configuration and resources required to load it
+- Use an HTML5 application cache to aggressively cache all static files using a manifest file
+- Store all data received from APIs in a client-side database like IndexedDB. The app will show previously loaded data immediatly without having to wait for any API network traffic. Always require an `updated` property on each memory object. So it becomes trivial to update the interface in realtime after the first load.

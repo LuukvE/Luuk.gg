@@ -25,7 +25,7 @@ Tracks the changes between every deployment and each future version
 * Feature: D3 interface
 * Feature: Interface toolkit
 * Feature: Caching mechanisms
-* Feature: Single page router for multiple domains
+* Feature: Single application router for multiple domains
 
 ### 0.1.1 patch release (7 november 2019)
 * Change: Updated README

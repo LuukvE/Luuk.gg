@@ -5,7 +5,7 @@
 - Built using [React 16](https://reactjs.org/docs/react-api.html) _(latest)_
 - `/package.json` enables CLI commands through [Yarn](https://yarnpkg.com/lang/en/)
 - `/routes.json` defines the sitemap and resources required to load each view
-- `/tools` contains generalized components and logic
+- `/components` and `/hooks` contain generalized components and logic
 - `/dist` used to save a build
 
 ## __Setup__
@@ -17,8 +17,15 @@
 * Execute `yarn build` to create a build in `/dist` add `--debug` to keep sourcemaps and console logs
 * Execute `yarn deploy <stage>` to upload `/dist` the to an [AWS S3](https://aws.amazon.com/s3/) bucket
 
-## __Changelog__
-Tracks the changes between every deployment to production stage
+## __Roadmap__
+Tracks the changes between every deployment and each future version
+
+### 1.0.0 future release (december 2020)
+* Feature: AWS S3 deployment automation
+* Feature: D3 interface
+* Feature: Interface toolkit
+* Feature: Caching mechanisms
+* Feature: Single page router for multiple domains
 
 ### 0.1.1 patch release (7 november 2019)
 * Change: Updated README

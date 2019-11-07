@@ -20,10 +20,10 @@
 ## __Changelog__
 Tracks the changes between every deployment to production stage
 
-### 0.0.1 patch release (7 november 2019)
+### 0.1.1 patch release (7 november 2019)
 * Change: Updated README
 
-### 0.0.0 major release (22 october 2019)
+### 0.1.0 major release (22 october 2019)
 * Feature: Basic file structure and React boilerplate
 
 ## __Proposals__

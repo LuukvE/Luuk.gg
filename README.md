@@ -6,7 +6,6 @@
 - `/package.json` enables CLI commands through [Yarn](https://yarnpkg.com/lang/en/)
 - `/routes.json` defines the sitemap and resources required to load each view
 - `/components` and `/hooks` contain generalized components and logic
-- `/dist` used to save a build
 
 ## __Setup__
 - Execute `yarn` to install dependencies

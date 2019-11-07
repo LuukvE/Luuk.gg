@@ -1,32 +1,47 @@
-# __Tournament App__
-_Hi! Luuk here. I quickly built this app in < 6 hours, feel free to check the source_
+# A Good App
+
+## __Features__
+- Built on top of [HTML 5](https://developer.mozilla.org/en-US/docs/Web/HTML), [CSS 3](https://developer.mozilla.org/en-US/docs/Web/CSS) _(SCSS)_ and [Javascript ES6](https://developer.mozilla.org/en-US/docs/Web/Javascript) _(latest)_
+- Built using [React 16](https://reactjs.org/docs/react-api.html) _(latest)_
+- `/package.json` enables CLI commands through [Yarn](https://yarnpkg.com/lang/en/)
+- `/routes.json` defines the sitemap and resources required to load each view
+- `/tools` contains generalized components and logic
+- `/dist` used to save a build
 
 ## __Setup__
 * Execute `yarn` to install dependencies
-* Execute `yarn start` to view my work
+* Execute `yarn start` to do localhost development
 
-## __Decisions__
-- I wrote it with React because most organisations prefer this framework.
-- I used `react-static-boilerplate` to get started quickly.
-  - Hot reloading; good to have when creating and styling components
-  - `package.json` scripts; quickly allows me to `yarn start` and `yarn build`
-  - `routes.json` definition; provides clarity
-- I had to remove and clean up unneccesary features of the development environment; less code allows for the most enjoyable way to create sofware
-- I downloaded fake JSON data from Github and placed it in `/public/data.json`, realistically this would be a request to an API, so I am treating it as a dynamically updated dataset that I would need to fetch again on navigation to stay up-to-date. For true real-time apps I would use an API with websocket support.
-- I removed `react-mdl` and added `css-reset-and-normalize`; Material Design adds excessive amounts of classes and options that I do not think I require in a use case like this one. I just need to make sure all browsers are supported.
-- The app can be used on desktop and mobile devices. The filters are as simple as I could make them to increase the usability for handheld users.
+## __Deployment__
+* Create `config.json`, it should never be commited and therefore is added to `.gitignore`
+* Execute `yarn build` to create a build in `/dist` add `--debug` to keep sourcemaps and console logs
+* Execute `yarn deploy <stage>` to upload `/dist` the to an [AWS S3](https://aws.amazon.com/s3/) bucket
 
+## __Changelog__
+Tracks the changes between every deployment to production stage
 
-## __Task__
-Build a simple Javascript application that consumes `data.json`.
+### 0.0.1 patch release (7 november 2019)
+* Change: Updated README
 
-### __List Tournament View__
+### 0.0.0 major release (22 october 2019)
+* Feature: Basic file structure and React boilerplate
 
-Filter the list by:
-- series
-- start dates
-- end dates
+## __Proposals__
+Tracks ideas awaiting concensus
 
-### __Detail Tournament View__
+### Hardcore Single Page App
+__How can we improve our development speed?__
+- Less complexity throughout every aspect of all projects
+- Less work lost to non-creative development operations
+- Less lines of code
 
-Display Tournament and Series details
+__How do we achieve these results?__
+- Point all DNS records to the production AWS S3 bucket hosting this web application
+- Create a single router that responds differently based on the entire URL including domain name
+
+__What are the upsides?__
+- Less complexity within both project management and software development
+- Creates a clear flow within client-side development _(pull requests, branches, issue tracking)_
+- Avoids having to separate out _"core"_ modules and upgrading them within multiple repositories
+- Single piece of documentation making it hard to miss
+- Easier to automate development operations

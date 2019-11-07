@@ -1,4 +1,4 @@
-# A Good App
+# A Professional Web Application
 
 ## __Features__
 - Built on top of [HTML 5](https://developer.mozilla.org/en-US/docs/Web/HTML), [CSS 3](https://developer.mozilla.org/en-US/docs/Web/CSS) _(SCSS)_ and [Javascript ES6](https://developer.mozilla.org/en-US/docs/Web/Javascript) _(latest)_
@@ -9,29 +9,30 @@
 - `/dist` used to save a build
 
 ## __Setup__
-* Execute `yarn` to install dependencies
-* Execute `yarn start` to do localhost development
+- Execute `yarn` to install dependencies
+- Execute `yarn start` to do localhost development
 
 ## __Deployment__
-* Create `config.json`, it should never be commited and therefore is added to `.gitignore`
-* Execute `yarn build` to create a build in `/dist` add `--debug` to keep sourcemaps and console logs
-* Execute `yarn deploy <stage>` to upload `/dist` the to an [AWS S3](https://aws.amazon.com/s3/) bucket
+- Create `config.json`, it should never be commited and therefore is added to `.gitignore`
+- Execute `yarn build` to create a build in `/dist` add `--debug` to keep sourcemaps and console logs
+- Execute `yarn deploy <stage>` to upload `/dist` the to an [AWS S3](https://aws.amazon.com/s3/) bucket
 
 ## __Roadmap__
 Tracks the changes between every deployment and each future version
 
 ### 1.0.0 future release (january 2020)
-* Feature: AWS S3 deployment automation
-* Feature: D3 interface
-* Feature: Interface toolkit
-* Feature: Caching mechanisms
-* Feature: Single application router for multiple domains
+- Feature: AWS S3 deployment automation
+- Feature: D3 interface
+- Feature: Interface toolkit
+- Feature: Caching mechanisms
+- Feature: Single application router for multiple domains
 
 ### 0.1.1 patch release (7 november 2019)
-* Change: Updated README
+- Change: Updated README
 
 ### 0.1.0 major release (22 october 2019)
-* Feature: Basic file structure and React boilerplate
+- Feature: Basic file structure and React boilerplate
+- Feature: Webpack
 
 ## __Proposals__
 Tracks ideas awaiting concensus

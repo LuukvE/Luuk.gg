@@ -36,7 +36,7 @@ Tracks the changes between every deployment and each future version
 ## __Proposals__
 Tracks ideas awaiting concensus
 
-### __Hardcore Single Page App__
+### __Singular Application Router__
 __How can we improve our development speed?__
 - Less complexity throughout every aspect of all projects
 - Less work lost to non-creative development operations
@@ -53,7 +53,7 @@ __What are the upsides?__
 - Single piece of documentation making it hard to miss
 - Easier to automate development operations
 
-### __Instant Startup__
+### __Instant Application Startup__
 __What can we do to load the application as fast as possible?__
 - Deploy all static files to a CDN like AWS S3 to make sure end-users are physically closer to the data containing this software and the configuration and resources required to load it
 - Use an HTML5 application cache to cache all static files using a manifest file

@@ -20,7 +20,7 @@
 ## __Roadmap__
 Tracks the changes between every deployment and each future version
 
-### 1.0.0 future release (december 2020)
+### 1.0.0 future release (january 2020)
 * Feature: AWS S3 deployment automation
 * Feature: D3 interface
 * Feature: Interface toolkit

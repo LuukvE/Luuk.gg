@@ -48,6 +48,6 @@ __What are the upsides?__
 
 ### __Instant Startup__
 __What can we do to load the application as fast as possible?__
-- Always deploy all static files to a CDN like AWS S3 to make sure end-users are physically closer to the data containing this software and the configuration and resources required to load it
-- Use an HTML5 application cache to aggressively cache all static files using a manifest file
-- Store all data received from APIs in a client-side database like IndexedDB. The app will show previously loaded data immediatly without having to wait for any API network traffic. Always require an `updated` property on each memory object. So it becomes trivial to update the interface in realtime after the first load.
+- Deploy all static files to a CDN like AWS S3 to make sure end-users are physically closer to the data containing this software and the configuration and resources required to load it
+- Use an HTML5 application cache to cache all static files using a manifest file
+- Store all data received from APIs in a client-side database like IndexedDB. The app shows previously loaded data immediatly without having to wait for any API network traffic. Use an `updated` property on each memory object. So it becomes trivial to update the interface in realtime after the first load.

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Text, ResponsiveContext } from 'grommet';
-import { Grommet as GrommetIcon } from 'grommet-icons';
 import RoutedAnchor from './RoutedAnchor';
 import RoutedButton from './RoutedButton';
 import Search from './Search';
@@ -17,11 +16,12 @@ export default () => {
       width="xlarge"
       alignSelf="center"
       gap="medium"
+      border="top"
     >
       <RoutedAnchor
         path="/"
-        icon={<GrommetIcon size="large" />}
-        label={size !== 'small' && <Text size="xlarge">grommet</Text>}
+        icon={null}
+        label={size !== 'small' && <Text size="xlarge">luuk.gg</Text>}
       />
       <Box direction="row" gap="small">
         {!searchOpen && (

@@ -7,9 +7,10 @@ import { aruba } from 'grommet-theme-aruba';
 import { hp } from 'grommet-theme-hp';
 import { dxc } from 'grommet-theme-dxc';
 import { v1 } from 'grommet-theme-v1';
-import { Router } from './Router';
+import { Router, Route, Routes } from './Router';
 import Analytics from './components/Analytics';
-import Content from './components/Content';
+
+import Home from './screens/Home';
 
 const THEMES = {
   grommet,
@@ -40,7 +41,9 @@ export default () => {
     <Router search={search}>
       <Analytics>
         <Grommet theme={THEMES[themeName || 'grommet']}>
-          <Content />
+          <Routes notFoundRedirect="/">
+            <Route exact path="/" component={Home} />
+          </Routes>
         </Grommet>
       </Analytics>
     </Router>

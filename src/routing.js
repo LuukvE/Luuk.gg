@@ -1,20 +1,18 @@
 export const routes = [
   {
     name: 'landing',
-    domain: 'bayes.gg',
-    components: ['Box', 'Grid', 'Layer', 'Stack'],
+    domain: 'luuk.gg',
   },
   {
     name: 'sign-up',
-    domain: 'bayes.gg',
-    components: ['Heading', 'Markdown', 'Paragraph', 'Text'],
+    domain: 'luuk.gg',
   },
 ];
 
 export const nameToPath = name => {
   const section = routes.filter(s => s.name === name)[0];
   return section ? `/${name}` : '/';
-}
+};
 
 export const nextComponent = name => {
   let result;
@@ -38,7 +36,7 @@ export const nextComponent = name => {
       });
     }
     if (section.name === name) {
-      const nextSection = sections[sectionIndex + 1];
+      const nextSection = routes[sectionIndex + 1];
       if (nextSection) {
         if (nextSection.components) {
           [result] = nextSection.components;
@@ -75,7 +73,7 @@ export const previousComponent = name => {
       });
     }
     if (section.name === name) {
-      const priorSection = sections[sectionIndex - 1];
+      const priorSection = routes[sectionIndex - 1];
       if (priorSection) {
         if (priorSection.components) {
           result = priorSection.components[priorSection.components.length - 1];

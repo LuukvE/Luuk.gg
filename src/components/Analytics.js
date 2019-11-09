@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { RouterContext } from '../Router';
 
 const config = {
-  trackerId: 'UA-99690204-1',
+  trackerId: '',
   debug: false,
 };
 

@@ -2,14 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, Keyboard, TextInput } from 'grommet';
 import { Search as SearchIcon } from 'grommet-icons';
-import { structure, nameToPath } from '../structure';
+import { nameToPath } from '../routing';
 import { RouterContext } from '../Router';
 
-const allSuggestions = structure.sections
-  .map(section => (section.components || []).concat(section.name))
-  .concat(structure.externals.map(e => e.name))
-  .reduce((acc, val) => acc.concat(val), [])
-  .sort();
+const allSuggestions = []; // todo
 
 const Search = ({ open, setOpen }) => {
   const { go } = React.useContext(RouterContext);

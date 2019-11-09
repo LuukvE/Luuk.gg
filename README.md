@@ -55,6 +55,7 @@ Tracks the changes between every deployment and each future versions
   - Dynamic CSS loading
   - Dynamic JS loading
   - A single app; no duplicate code
+- Feature: Google Analytics
 
 ### **0.1.3 patch release (9 november 2019)**
 

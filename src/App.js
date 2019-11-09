@@ -10,7 +10,7 @@ import { v1 } from 'grommet-theme-v1';
 import { Router, Route, Routes } from './Router';
 import Analytics from './components/Analytics';
 
-import Home from './screens/Home';
+import Landing from './screens/Landing';
 
 const THEMES = {
   grommet,
@@ -40,9 +40,9 @@ export default () => {
   return (
     <Router search={search}>
       <Analytics>
-        <Grommet theme={THEMES[themeName || 'grommet']}>
+        <Grommet full theme={THEMES[themeName || 'grommet']}>
           <Routes notFoundRedirect="/">
-            <Route exact path="/" component={Home} />
+            <Route exact path="/" component={Landing} />
           </Routes>
         </Grommet>
       </Analytics>

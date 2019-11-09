@@ -1,4 +1,4 @@
-# A Professional Web Application
+# Professional Web Application
 
 ## __Features__
 - Built on top of [HTML 5](https://developer.mozilla.org/en-US/docs/Web/HTML), [CSS 3](https://developer.mozilla.org/en-US/docs/Web/CSS) _(SCSS)_ and [Javascript ES6](https://developer.mozilla.org/en-US/docs/Web/Javascript) _(latest)_
@@ -19,12 +19,49 @@
 ## __Roadmap__
 Tracks the changes between every deployment and each future version
 
-### 1.0.0 future release (january 2020)
-- Feature: AWS S3 deployment automation
-- Feature: D3 interface
-- Feature: Interface toolkit
-- Feature: Caching mechanisms
+### 1.0.0 future release (december 2019)
+- Feature: Components
+  - Buttons
+  - Graphs
+  - Forms
+    - Text	
+    - Number	
+    - Select	
+    - Datalist	
+    - Currency	
+    - Color	
+    - Range	
+    - Date _(+ range)_	
+    - HTML _(+ editable preview)_	
+    - File _(+ progress bar)_	
+    - Image _(+ cropping)_	
+  - Tooltips
+  - Popovers
+- Feature: Pages
+  - Interface components to create, update and delete data records
+  - Lists able to filter and sort
+- Feature: Forms
+  - Bi-directional inputs for any text or file
+  - Validation and error messaging
+  - Multi-step indicators and subflows
+  - Remembers input if the browsers closes during form fill-out
+- Feature: Deployment automation
+  - S3 AWS deploy to bucket
+  - Bugsnag upload sourcemap
+- Feature: Multilingual support
+  - Datetime, relative time or durations through `moment.js`
+  - Language-specific builds are made with `webpack` compiler
 - Feature: Single application router for multiple domains
+  - Dynamic CSS loading
+  - Dynamic JS loading
+  - A single app; no duplicate code
+- Feature: Search interface
+  - Loading, empty and paginated states
+  - Support for filters
+- Feature: Offline application support
+
+### 0.1.2 patch release (8 november 2019)
+- Change: Updated README
 
 ### 0.1.1 patch release (7 november 2019)
 - Change: Updated README

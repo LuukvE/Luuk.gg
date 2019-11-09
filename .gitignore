@@ -1,1 +1,10 @@
-node_modules
+/.idea/
+/node_modules/
+/dist/
+.eslintcache
+coverage
+.vscode
+npm-debug.log
+yarn-error.log
+.DS_Store
+package-lock.json

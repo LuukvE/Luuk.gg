@@ -1,25 +1,19 @@
 # Professional Web Application
-
-## __Features__
-- Built on top of [HTML 5](https://developer.mozilla.org/en-US/docs/Web/HTML), [CSS 3](https://developer.mozilla.org/en-US/docs/Web/CSS) _(SCSS)_ and [Javascript ES6](https://developer.mozilla.org/en-US/docs/Web/Javascript) _(latest)_
-- Built using [React 16](https://reactjs.org/docs/react-api.html) _(latest)_
-- `/package.json` enables CLI commands through [Yarn](https://yarnpkg.com/lang/en/)
-- `/routes.json` defines the sitemap and resources required to load each view
-- `/components` and `/hooks` contain generalized components and logic
+Built on top of [HTML 5](https://developer.mozilla.org/en-US/docs/Web/HTML), [CSS 3](https://developer.mozilla.org/en-US/docs/Web/CSS) _(SCSS)_ and [Javascript ES6](https://developer.mozilla.org/en-US/docs/Web/Javascript) using [React 16](https://reactjs.org/docs/react-api.html)
 
 ## __Setup__
-- Execute `yarn` to install dependencies
-- Execute `yarn start` to do localhost development
+- Install dependencies: `npm install` or `yarn`
+- Localhost development: `npm run-script start` or `yarn start`
 
 ## __Deployment__
 - Create `config.json`, it should never be commited and therefore is added to `.gitignore`
-- Execute `yarn build` to create a build in `/dist` add `--debug` to keep sourcemaps and console logs
+- Execute `yarn build` to create a build
 - Execute `yarn deploy <stage>` to upload `/dist` the to an [AWS S3](https://aws.amazon.com/s3/) bucket
 
 ## __Roadmap__
 Tracks the changes between every deployment and each future version
 
-### 1.1.0 future release (january 2020)
+### __1.1.0 future release (january 2020)__
 - Feature: Offline application support
   - Memory syncing with `indexedDB` on the client-side
   - HTML5 manifest file
@@ -27,7 +21,7 @@ Tracks the changes between every deployment and each future version
   - S3 AWS deploy to bucket
   - Bugsnag upload sourcemap
 
-### 1.0.0 future release (december 2019)
+### __1.0.0 future release (december 2019)__
 - Feature: Components
   - Buttons
   - Graphs
@@ -62,13 +56,19 @@ Tracks the changes between every deployment and each future version
   - Dynamic JS loading
   - A single app; no duplicate code
 
-### 0.1.2 patch release (8 november 2019)
+### __0.1.3 patch release (9 november 2019)__
+- Change: Updated README
+- Change: Removed all previous boilerplate code
+- Feature: Added new default components
+- Feature: Reconfigured Webpack
+
+### __0.1.2 patch release (8 november 2019)__
 - Change: Updated README
 
-### 0.1.1 patch release (7 november 2019)
+### __0.1.1 patch release (7 november 2019)__
 - Change: Updated README
 
-### 0.1.0 major release (22 october 2019)
+### __0.1.0 major release (22 october 2019)__
 - Feature: Basic file structure and React boilerplate
 - Feature: Webpack
 

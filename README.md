@@ -23,6 +23,9 @@ Tracks the changes between every deployment and each future version
 - Feature: Offline application support
   - Memory syncing with `indexedDB` on the client-side
   - HTML5 manifest file
+- Feature: Deployment automation
+  - S3 AWS deploy to bucket
+  - Bugsnag upload sourcemap
 
 ### 1.0.0 future release (december 2019)
 - Feature: Components
@@ -51,9 +54,6 @@ Tracks the changes between every deployment and each future version
   - Validation and error messaging
   - Multi-step indicators and subflows
   - Remembers input if the browsers closes during form fill-out
-- Feature: Deployment automation
-  - S3 AWS deploy to bucket
-  - Bugsnag upload sourcemap
 - Feature: Multilingual support
   - Datetime, relative time or durations through `moment.js`
   - Language-specific builds are made with `webpack` compiler

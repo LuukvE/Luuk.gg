@@ -19,18 +19,24 @@
 ## __Roadmap__
 Tracks the changes between every deployment and each future version
 
+### 1.1.0 future release (january 2020)
+- Feature: Offline application support
+  - Memory syncing with `indexedDB` on the client-side
+  - HTML5 manifest file
+
 ### 1.0.0 future release (december 2019)
 - Feature: Components
   - Buttons
   - Graphs
-  - Forms
+  - Inputs
     - Text	
     - Number	
     - Select	
     - Datalist	
     - Currency	
     - Color	
-    - Range	
+    - Range
+    - Drag and drop
     - Date _(+ range)_	
     - HTML _(+ editable preview)_	
     - File _(+ progress bar)_	
@@ -39,7 +45,7 @@ Tracks the changes between every deployment and each future version
   - Popovers
 - Feature: Pages
   - Interface components to create, update and delete data records
-  - Lists able to filter and sort
+  - Lists able to filter, loading / empty states, pagination, sorting
 - Feature: Forms
   - Bi-directional inputs for any text or file
   - Validation and error messaging
@@ -55,10 +61,6 @@ Tracks the changes between every deployment and each future version
   - Dynamic CSS loading
   - Dynamic JS loading
   - A single app; no duplicate code
-- Feature: Search interface
-  - Loading, empty and paginated states
-  - Support for filters
-- Feature: Offline application support
 
 ### 0.1.2 patch release (8 november 2019)
 - Change: Updated README

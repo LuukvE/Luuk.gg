@@ -23,7 +23,7 @@ const THEMES = {
 };
 
 export default () => {
-  const [themeName, setThemeName] = React.useState('grommet');
+  const [themeName, setThemeName] = React.useState('hp');
   const [search, setSearch] = React.useState();
 
   React.useEffect(() => {

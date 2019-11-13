@@ -1,6 +1,8 @@
 import React, { useEffect, useContext } from 'react';
 import { Box, Heading, Paragraph, Anchor } from 'grommet';
+
 import { RouterContext } from '../Router';
+import List from './List';
 
 const Landing = () => {
   useEffect(() => {
@@ -10,73 +12,34 @@ const Landing = () => {
   const { go } = useContext(RouterContext);
 
   return (
-    <Box pad="large" flex>
-      <Heading textAlign="center" margin="none">
+    <Box pad="medium" flex>
+      <Heading margin="none">
         Luuk.gg
       </Heading>
 
-      <Paragraph size="xxlarge" textAlign="center">
-        containing standard forms and pages
+      <Paragraph fill size="large" margin={{ vertical: 'small' }}>
+        Boilerplate for professional web development.<br />
+        Built on top of <Anchor
+          target="_blank"
+          href="https://developer.mozilla.org/en-US/docs/Web/HTML"
+          label="HTML5"
+        />, <Anchor
+          href="https://developer.mozilla.org/en-US/docs/Web/CSS"
+          target="_blank"
+          label="CSS3"
+        /> and <Anchor
+          href="https://developer.mozilla.org/en-US/docs/Web/Javascript"
+          target="_blank"
+          label="Javascript ES6"
+        /> using <Anchor
+          href="https://reactjs.org/docs/react-api.html"
+          target="_blank"
+          label="React 16"
+        />
       </Paragraph>
 
-      <pre>
-        {`
-1.1.0 future release (january 2020)
+      <List />
 
-- Feature: Offline application support
-  - Memory syncing with indexedDB on the client-side
-  - HTML5 manifest file
-- Feature: Deployment automation
-  - S3 AWS deploy to bucket
-  - Bugsnag upload sourcemap
-
-1.0.0 future release (december 2019)
-
-- Feature: Components
-  - Buttons
-  - Graphs
-  - Inputs
-    - Text
-    - Number
-    - Select
-    - Datalist
-    - Currency
-    - Color
-    - Range
-    - Drag and drop
-    - Date _(+ range)_
-    - HTML _(+ editable preview)_
-    - File _(+ progress bar)_
-    - Image _(+ cropping)_
-  - Tooltips
-  - Popovers
-- Feature: Pages
-  - Interface components to create, update and delete data records
-  - Lists able to filter, loading / empty states, pagination, sorting
-- Feature: Forms
-  - Bi-directional inputs for any text or file
-  - Validation and error messaging
-  - Multi-step indicators and subflows
-  - Remembers input if the browsers closes during form fill-out
-- Feature: Multilingual support
-  - Datetime, relative time or durations through moment.js
-  - Language-specific builds are made with webpack compiler
-- Feature: Single application router for multiple domains
-  - Dynamic CSS loading
-  - Dynamic JS loading
-  - A single app; no duplicate code
-- Feature: Google Analytics`}
-      </pre>
-
-      <Anchor
-        href="/sign-up"
-        icon={null}
-        label="Sign up"
-        onClick={event => {
-          event.preventDefault();
-          go('/sign-up');
-        }}
-      />
     </Box>
   );
 };

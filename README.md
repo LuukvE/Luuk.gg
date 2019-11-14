@@ -57,6 +57,11 @@ Tracks the changes between every deployment and each future versions
   - A single app; no duplicate code
 - Feature: Google Analytics
 
+### **0.1.4 patch release (15 november 2019)**
+
+- Feature: Added side and top bars
+- Feature: Added Home and About page
+
 ### **0.1.3 patch release (9 november 2019)**
 
 - Change: Updated README

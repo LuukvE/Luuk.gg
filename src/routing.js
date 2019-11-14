@@ -4,7 +4,7 @@ export const routes = [
     domain: 'luuk.gg',
   },
   {
-    name: 'sign-up',
+    name: 'about',
     domain: 'luuk.gg',
   },
 ];

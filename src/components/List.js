@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {
   Button,
+  Text,
   TextInput,
   RangeInput,
   Select,
@@ -21,16 +22,41 @@ import matchSorter from 'match-sorter';
 import { generate } from '../utils/data';
 
 const Styles = styled.div`
-  margin: 2em 0;
   table {
     border-spacing: 0;
-    border: 1px dashed #666;
+    border-bottom: 1px solid #F2F2F2;
     min-width: 100%;
 
-    .material-icons {
-      font-size: 20px;
-      margin: 0 4px 5px 0;
-      vertical-align: middle;
+    thead th {
+      background: #F2F2F2;
+      vertical-align: top;
+      text-align: left;
+      &:first-child {
+        padding-left: 16px;
+        vertical-align: middle;
+      }
+      div:first-child {
+        &:hover .material-icons {
+          opacity: 1;
+        }
+        .material-icons {
+          font-size: 20px;
+          margin: 0 4px 5px 0;
+          vertical-align: middle;
+          opacity: 0.3;
+        }
+      }
+      input {
+        outline: 0;
+        padding: 2px 0;
+      }
+      .select-input input {
+        text-align: center;
+      }
+    }
+
+    tbody td:first-child {
+      padding-left: 16px;
     }
 
     tr {
@@ -45,8 +71,8 @@ const Styles = styled.div`
     td {
       margin: 0;
       padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
+      border-bottom: 1px solid #F2F2F2;
+      border-right: 1px solid #F2F2F2;
 
       :last-child {
         border-right: 0;
@@ -101,7 +127,7 @@ const EditableCell = ({
     return `${initialValue}`
   }
 
-  return <TextInput value={value} onChange={onChange} onBlur={onBlur} />
+  return <TextInput plain value={value} onChange={onChange} onBlur={onBlur} />
 }
 
 // Define a default UI for filtering
@@ -110,13 +136,17 @@ function DefaultColumnFilter({
 }) {
   const count = preFilteredRows.length
 
+  let timeout;
+
   return (
     <TextInput
-      value={filterValue || ''}
+      plain
+      size="small"
       onChange={e => {
-        setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+        if(timeout) clearTimeout(timeout);
+        timeout = setTimeout(setFilter, 200, e.target.value || undefined) // Set undefined to remove the filter entirely
       }}
-      placeholder={`Search ${count} records...`}
+      placeholder={`Search (${count})`}
     />
   )
 }
@@ -138,13 +168,16 @@ function SelectColumnFilter({
 
   // Render a multi-select box
   return (
-    <Select
-      value={filterValue || ''}
-      onChange={option => {
-        setFilter(option.value || undefined)
-      }}
-      options={['', ...options]}
-    />
+    <div className="select-input">
+      <Select
+        size="small"
+        value={filterValue || ''}
+        onChange={option => {
+          setFilter(option.value || undefined)
+        }}
+        options={['', ...options]}
+      />
+    </div>
   )
 }
 
@@ -167,17 +200,22 @@ function SliderColumnFilter({
     return [min, max]
   }, [id, preFilteredRows])
 
+  let timeout;
+
   return (
     <>
-      <RangeInput
+      <TextInput
+        plain
+        size="small"
+        type="number"
         min={min}
         max={max}
-        value={filterValue || min}
+        placeholder={`Search (${preFilteredRows.length})`}
         onChange={e => {
-          setFilter(parseInt(e.target.value, 10))
+          if(timeout) clearTimeout(timeout);
+          timeout = setTimeout(setFilter, 200, e.target.value === '' ? undefined : parseInt(e.target.value, 10)) // Set undefined to remove the filter entirely
         }}
       />
-      <Button label="Off" onClick={() => setFilter(undefined)} />
     </>
   )
 }
@@ -205,6 +243,8 @@ function NumberRangeColumnFilter({
       }}
     >
       <TextInput
+        plain
+        size="small"
         value={filterValue[0] || ''}
         type="number"
         onChange={e => {
@@ -219,6 +259,8 @@ function NumberRangeColumnFilter({
       />
       to
       <TextInput
+        plain
+        size="small"
         value={filterValue[1] || ''}
         type="number"
         onChange={e => {
@@ -495,17 +537,17 @@ function List() {
         Filter: SliderColumnFilter,
         filter: 'equals',
         // Aggregate the average age of visitors
-        aggregate: 'average',
+        aggregate: 'sum',
         Aggregated: ({ cell: { value } }) => `${value} (avg)`,
       },
       {
         Header: 'Visits',
         accessor: 'visits',
-        Filter: NumberRangeColumnFilter,
-        filter: 'between',
+        Filter: SliderColumnFilter,
+        filter: 'equals',
         // Aggregate the sum of all visits
         aggregate: 'sum',
-        Aggregated: ({ cell: { value } }) => `${value} (total)`,
+        Aggregated: ({ cell: { value } }) => `${value} (avg)`,
       },
       {
         Header: 'Status',
@@ -526,7 +568,7 @@ function List() {
     [],
   )
 
-  const [data, setData] = React.useState(() => generate(10000));
+  const [data, setData] = React.useState(() => generate(1000));
 
   const [originalData] = React.useState(data);
 

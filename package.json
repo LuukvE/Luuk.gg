@@ -3,7 +3,7 @@
   "version": "0.1.4",
   "main": "src/index.js",
   "author": "Luuk van Egeraat <l.vanegeraat@gmail.com> (https://www.linkedin.com/in/luukvanegeraat/)",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "start": "cross-env NODE_ENV=development webpack-dev-server --mode development --open",

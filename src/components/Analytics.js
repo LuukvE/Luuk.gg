@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactGA from 'react-ga';
-import PropTypes from 'prop-types';
+import { node } from 'prop-types';
 import { RouterContext } from '../Router';
 
 const config = {
@@ -28,7 +28,7 @@ const Analytics = ({ children }) => {
 };
 
 Analytics.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: node.isRequired,
 };
 
 export default Analytics;

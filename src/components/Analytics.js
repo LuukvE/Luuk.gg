@@ -1,5 +1,6 @@
-
-
+import React from 'react';
+import ReactGA from 'react-ga';
+import { node } from 'prop-types';
 import { RouterContext } from '../Router';
 
 const config = {

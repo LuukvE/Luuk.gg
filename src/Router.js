@@ -1,7 +1,3 @@
-// NOTE: our routing needs are so simple, we roll our own
-// to avoid dependencies on react-router, which doesn't appear to
-// be keeping up with React changes.
-
 import React, { Children } from 'react';
 import PropTypes from 'prop-types';
 

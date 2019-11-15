@@ -1,3 +1,4 @@
+import 'idempotent-babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as OfflinePluginRuntime from 'offline-plugin/runtime';

@@ -57,6 +57,12 @@ Tracks the changes between every deployment and each future versions
   - A single app; no duplicate code
 - Feature: Google Analytics
 
+### **0.1.5 patch release (16 november 2019)**
+
+- Feature: Added games, tournaments, stages, matches data
+- Feature: Generalized the list component
+- Feature: Updated UI styling
+
 ### **0.1.4 patch release (15 november 2019)**
 
 - Feature: Added side and top bars

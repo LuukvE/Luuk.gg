@@ -3,11 +3,10 @@ import URLSearchParams from 'url-search-params';
 import { Grommet, Box } from 'grommet';
 import { hp } from 'grommet-theme-hp';
 import { Router, Route, Routes } from './Router';
+import routes from './routes.js';
 import Analytics from './components/Analytics';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
-import Landing from './screens/Landing';
-import About from './screens/About';
 
 export default () => {
   const [search, setSearch] = React.useState();
@@ -36,8 +35,7 @@ export default () => {
             >
               <Sidebar />
               <Routes notFoundRedirect="/">
-                <Route exact path="/" component={Landing} />
-                <Route exact path="/about" component={About} />
+                {routes.map(route => <Route key={route.path} exact path={route.path} component={route.screen} />)}
               </Routes>
             </Box>
           </Box>

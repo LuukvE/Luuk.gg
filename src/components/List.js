@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useRef
+} from 'react';
 import styled from 'styled-components';
 import {
   Button,
-  Text,
   TextInput,
-  RangeInput,
-  Select,
   CheckBox,
 } from 'grommet';
 import {
@@ -18,8 +20,6 @@ import {
   useRowSelect,
 } from 'react-table';
 import matchSorter from 'match-sorter';
-
-import { generate } from '../utils/data';
 
 const Styles = styled.div`
   table {
@@ -89,6 +89,10 @@ const Styles = styled.div`
     }
   }
 
+  .material-icons.align-middle {
+    vertical-align: middle;
+  }
+
   .pagination {
     padding: 0.5rem;
     text-align: center;
@@ -107,7 +111,7 @@ const EditableCell = ({
   editable,
 }) => {
   // We need to keep and update the state of the cell normally
-  const [value, setValue] = React.useState(initialValue)
+  const [value, setValue] = useState(initialValue)
 
   const onChange = e => {
     setValue(e.target.value)
@@ -119,7 +123,7 @@ const EditableCell = ({
   }
 
   // If the initialValue is changed externall, sync it up with our state
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
 
@@ -151,132 +155,6 @@ function DefaultColumnFilter({
   )
 }
 
-// This is a custom filter UI for selecting
-// a unique option from a list
-function SelectColumnFilter({
-  column: { filterValue, setFilter, preFilteredRows, id },
-}) {
-  // Calculate the options for filtering
-  // using the preFilteredRows
-  const options = React.useMemo(() => {
-    const options = new Set()
-    preFilteredRows.forEach(row => {
-      options.add(row.values[id])
-    })
-    return [...options.values()]
-  }, [id, preFilteredRows])
-
-  // Render a multi-select box
-  return (
-    <div className="select-input">
-      <Select
-        size="small"
-        value={filterValue || ''}
-        onChange={option => {
-          setFilter(option.value || undefined)
-        }}
-        options={['', ...options]}
-      />
-    </div>
-  )
-}
-
-// This is a custom filter UI that uses a
-// slider to set the filter value between a column's
-// min and max values
-function SliderColumnFilter({
-  column: { filterValue, setFilter, preFilteredRows, id },
-}) {
-  // Calculate the min and max
-  // using the preFilteredRows
-
-  const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    preFilteredRows.forEach(row => {
-      min = Math.min(row.values[id], min)
-      max = Math.max(row.values[id], max)
-    })
-    return [min, max]
-  }, [id, preFilteredRows])
-
-  let timeout;
-
-  return (
-    <>
-      <TextInput
-        plain
-        size="small"
-        type="number"
-        min={min}
-        max={max}
-        placeholder={`Search (${preFilteredRows.length})`}
-        onChange={e => {
-          if(timeout) clearTimeout(timeout);
-          timeout = setTimeout(setFilter, 200, e.target.value === '' ? undefined : parseInt(e.target.value, 10)) // Set undefined to remove the filter entirely
-        }}
-      />
-    </>
-  )
-}
-
-// This is a custom UI for our 'between' or number range
-// filter. It uses two number boxes and filters rows to
-// ones that have values between the two
-function NumberRangeColumnFilter({
-  column: { filterValue = [], preFilteredRows, setFilter, id },
-}) {
-  const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
-    preFilteredRows.forEach(row => {
-      min = Math.min(row.values[id], min)
-      max = Math.max(row.values[id], max)
-    })
-    return [min, max]
-  }, [id, preFilteredRows])
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-      }}
-    >
-      <TextInput
-        plain
-        size="small"
-        value={filterValue[0] || ''}
-        type="number"
-        onChange={e => {
-          const val = e.target.value
-          setFilter((old = []) => [val ? parseInt(val, 10) : undefined, old[1]])
-        }}
-        placeholder="Min"
-        style={{
-          width: '70px',
-          marginRight: '0.5rem',
-        }}
-      />
-      to
-      <TextInput
-        plain
-        size="small"
-        value={filterValue[1] || ''}
-        type="number"
-        onChange={e => {
-          const val = e.target.value
-          setFilter((old = []) => [old[0], val ? parseInt(val, 10) : undefined])
-        }}
-        placeholder={`Max (${max})`}
-        style={{
-          width: '70px',
-          marginLeft: '0.5rem',
-        }}
-      />
-    </div>
-  )
-}
-
 function fuzzyTextFilterFn(rows, id, filterValue) {
   return matchSorter(rows, filterValue, { keys: [row => row.values[id]] })
 }
@@ -286,7 +164,7 @@ fuzzyTextFilterFn.autoRemove = val => !val
 
 // Be sure to pass our updateMyData and the disablePageResetOnDataChange option
 function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
-  const filterTypes = React.useMemo(
+  const filterTypes = useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
       fuzzyText: fuzzyTextFilterFn,
@@ -306,7 +184,7 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
     [],
   )
 
-  const defaultColumn = React.useMemo(
+  const defaultColumn = useMemo(
     () => ({
       // Let's set up our default Filter UI
       Filter: DefaultColumnFilter,
@@ -333,14 +211,8 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
     state: {
-      pageIndex,
-      pageSize,
-      groupBy,
-      expanded,
-      filters,
-      selectedRowPaths,
+      pageIndex
     },
   } = useTable(
     {
@@ -349,7 +221,7 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
       defaultColumn,
       filterTypes,
       // nestExpandedRows: true,
-      initialState: { pageIndex: 2, pageSize: 20 },
+      initialState: { pageIndex: 0, pageSize: Math.floor((innerHeight - 200) / 48) },
       // updateMyData isn't part of the API, but
       // anything we put into these options will
       // automatically be available on the instance.
@@ -407,6 +279,8 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
           {page.map(
             row => {
               prepareRow(row);
+              const props = row.getExpandedToggleProps();
+              props.className = 'material-icons align-middle';
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map(cell => {
@@ -415,11 +289,12 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
                         {cell.isGrouped ? (
                           // If it's a grouped cell, add an expander and row count
                           <>
-                            <span {...row.getExpandedToggleProps()}>
-                              {row.isExpanded ? '👇' : '👉'}
-                            </span>{' '}
-                            {cell.render('Cell', { editable: false })} (
-                            {row.subRows.length})
+                            {row.isExpanded ?
+                              <i {...props}>arrow_drop_down</i> :
+                              <i {...props}>arrow_right</i>
+                            }
+                            {' '}
+                            {cell.render('Cell', { editable: false })}
                           </>
                         ) : cell.isAggregated ? (
                           // If the cell is aggregated, use the Aggregated
@@ -471,110 +346,46 @@ function filterGreaterThan(rows, id, filterValue) {
 // check, but here, we want to remove the filter if it's not a number
 filterGreaterThan.autoRemove = val => typeof val !== 'number'
 
-// This is a custom aggregator that
-// takes in an array of values and
-// returns the rounded median
-function roundedMedian(values) {
-  let min = values[0] || ''
-  let max = values[0] || ''
+function List({ type, items }) {
+  const columns = Object.keys(items[0]).reduce((memo, property) => {
+    if(['id', 'perid', 'links', 'tier_label'].includes(property)) return memo;
 
-  values.forEach(value => {
-    min = Math.min(min, value)
-    max = Math.max(max, value)
-  })
+    memo.push({
+      Header: property,
+      accessor: property,
+      aggregate: ['sum', 'count'],
+      Aggregated: ({ cell: { value } }) => `${value} results`
+    });
 
-  return Math.round((min + max) / 2)
-}
+    return memo;
+  }, [{
+    id: 'selection',
+    groupByBoundary: true,
+    Header: ({ getToggleAllRowsSelectedProps }) => (
+      <div>
+        <CheckBox {...getToggleAllRowsSelectedProps()} />
+      </div>
+    ),
+    Cell: ({ row }) => (
+      <div>
+        <CheckBox {...row.getToggleRowSelectedProps()} />
+      </div>
+    )
+  }]);
 
-function List() {
-  const columns = React.useMemo(
-    () => [
-      {
-        id: 'selection',
-        // Make this column a groupByBoundary. This ensures that groupBy columns
-        // are placed after it
-        groupByBoundary: true,
-        // The header can use the table's getToggleAllRowsSelectedProps method
-        // to render a checkbox
-        Header: ({ getToggleAllRowsSelectedProps }) => (
-          <div>
-            <CheckBox {...getToggleAllRowsSelectedProps()} />
-          </div>
-        ),
-        // The cell can use the individual row's getToggleRowSelectedProps method
-        // to the render a checkbox
-        Cell: ({ row }) => (
-          <div>
-            <CheckBox {...row.getToggleRowSelectedProps()} />
-          </div>
-        ),
-      },
-      {
-        Header: 'First Name',
-        accessor: 'firstName',
-        // Use a two-stage aggregator here to first
-        // count the total rows being aggregated,
-        // then sum any of those counts if they are
-        // aggregated further
-        aggregate: ['sum', 'count'],
-        Aggregated: ({ cell: { value } }) => `${value} Names`,
-      },
-      {
-        Header: 'Last Name',
-        accessor: 'lastName',
-        // Use our custom `fuzzyText` filter on this column
-        filter: 'fuzzyText',
-        // Use another two-stage aggregator here to
-        // first count the UNIQUE values from the rows
-        // being aggregated, then sum those counts if
-        // they are aggregated further
-        aggregate: ['sum', 'uniqueCount'],
-        Aggregated: ({ cell: { value } }) => `${value} Unique Names`,
-      },
-      {
-        Header: 'Age',
-        accessor: 'age',
-        Filter: SliderColumnFilter,
-        filter: 'equals',
-        // Aggregate the average age of visitors
-        aggregate: 'sum',
-        Aggregated: ({ cell: { value } }) => `${value} (avg)`,
-      },
-      {
-        Header: 'Visits',
-        accessor: 'visits',
-        Filter: SliderColumnFilter,
-        filter: 'equals',
-        // Aggregate the sum of all visits
-        aggregate: 'sum',
-        Aggregated: ({ cell: { value } }) => `${value} (avg)`,
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-        Filter: SelectColumnFilter,
-        filter: 'includes',
-      },
-      {
-        Header: 'Profile Progress',
-        accessor: 'progress',
-        Filter: SliderColumnFilter,
-        filter: filterGreaterThan,
-        // Use our custom roundedMedian aggregator
-        aggregate: roundedMedian,
-        Aggregated: ({ cell: { value } }) => `${value} (med)`,
-      },
-    ],
-    [],
-  )
+  const [data, setData] = useState(() => items);
 
-  const [data, setData] = React.useState(() => generate(1000));
+  const [originalData] = useState(data);
 
-  const [originalData] = React.useState(data);
+  const resetData = () => {
+    // Don't reset the page when we do this
+    skipPageResetRef.current = true
+    setData(originalData)
+  };
 
   // We need to keep the table from resetting the pageIndex when we
   // Update data. So we can keep track of that flag with a ref.
-  const skipPageResetRef = React.useRef(false);
+  const skipPageResetRef = useRef(false);
 
   // When our cell renderer calls updateMyData, we'll use
   // the rowIndex, columnID and new value to update the
@@ -598,17 +409,9 @@ function List() {
   // After data changes, we turn the flag back off
   // so that if data actually changes when we're not
   // editing it, the page is reset
-  React.useEffect(() => {
+  useEffect(() => {
     skipPageResetRef.current = false
   }, [data])
-
-  // Let's add a data resetter/randomizer to help
-  // illustrate that flow...
-  const resetData = () => {
-    // Don't reset the page when we do this
-    skipPageResetRef.current = true
-    setData(originalData)
-  }
 
   return (
     <Styles>

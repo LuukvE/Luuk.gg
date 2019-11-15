@@ -61,6 +61,7 @@ Tracks the changes between every deployment and each future versions
 
 - Feature: Added side and top bars
 - Feature: Added Home and About page
+- Feature: Added Google Analytics tracking code
 
 ### **0.1.3 patch release (9 november 2019)**
 

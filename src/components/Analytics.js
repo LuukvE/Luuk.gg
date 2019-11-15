@@ -1,10 +1,9 @@
-import React from 'react';
-import ReactGA from 'react-ga';
-import { node } from 'prop-types';
+
+
 import { RouterContext } from '../Router';
 
 const config = {
-  trackerId: '',
+  trackerId: 'UA-56436733-1',
   debug: false,
 };
 

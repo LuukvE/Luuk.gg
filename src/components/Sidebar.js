@@ -9,8 +9,9 @@ export default () => {
       <Box
         width="240px"
         direction="column"
-        background="white"
-        border={{ side: 'right', color: '#eee', size: 'small' }}
+        background="rgba(0,0,0,0.1)"
+        pad={{ top: 'small' }}
+        border={{ side: 'right', color: 'rgba(0,0,0,0.3)', size: 'xsmall' }}
       >
         <Button
           plain

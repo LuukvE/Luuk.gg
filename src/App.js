@@ -1,9 +1,9 @@
 import React from 'react';
 import URLSearchParams from 'url-search-params';
 import { Grommet, Box } from 'grommet';
-import { hp } from 'grommet-theme-hp';
 import { Router, Route, Routes } from './Router';
-import routes from './routes.js';
+import theme from './theme';
+import routes from './routes';
 import Analytics from './components/Analytics';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
@@ -13,11 +13,11 @@ export default () => {
 
   React.useEffect(() => {
     if (window.location.search) {
-      const {
-        location: { search: nextSearch },
-      } = window;
+      const { location: { search: nextSearch } } = window;
       const params = new URLSearchParams(nextSearch);
+
       setSearch(nextSearch);
+
       setThemeName(params.get('theme'));
     }
   }, []);
@@ -25,17 +25,30 @@ export default () => {
   return (
     <Router search={search}>
       <Analytics>
-        <Grommet full theme={hp}>
-          <Box flex height="100%" direction="column">
+        <Grommet
+          full
+          theme={theme}
+        >
+          <Box
+            flex
+            height="100%"
+            direction="column"
+          >
             <Topbar />
             <Box
               flex
               direction="row"
-              background="#fcfcfc"
             >
               <Sidebar />
               <Routes notFoundRedirect="/">
-                {routes.map(route => <Route key={route.path} exact path={route.path} component={route.screen} />)}
+                {routes.map(route => 
+                  <Route
+                    exact
+                    key={route.path}
+                    path={route.path}
+                    component={route.screen}
+                  />
+                )}
               </Routes>
             </Box>
           </Box>

@@ -22,14 +22,9 @@ Tracks the changes between every deployment and each future versions
 
 ### **1.0.0 future release (december 2019)**
 
-- Feature: Components
-  - Buttons
+- Feature: Extra components
   - Graphs
   - Inputs
-    - Text
-    - Number
-    - Select
-    - Datalist
     - Currency
     - Color
     - Range
@@ -40,21 +35,15 @@ Tracks the changes between every deployment and each future versions
     - Image _(+ cropping)_
   - Tooltips
   - Popovers
-- Feature: Pages
-  - Interface components to create, update and delete data records
-  - Lists able to filter, loading / empty states, pagination, sorting
 - Feature: Forms
   - Bi-directional inputs for any text or file
   - Validation and error messaging
   - Multi-step indicators and subflows
   - Remembers input if the browsers closes during form fill-out
+- Feature: Create and delete data records
 - Feature: Multilingual support
   - Datetime, relative time or durations through `moment.js`
   - Language-specific builds are made with `webpack` compiler
-- Feature: Single application router for multiple domains
-  - Dynamic CSS loading
-  - Dynamic JS loading
-  - A single app; no duplicate code
 - Feature: Google Analytics
 
 ### **0.1.5 patch release (16 november 2019)**
@@ -88,36 +77,3 @@ Tracks the changes between every deployment and each future versions
 
 - Feature: Basic file structure and React boilerplate
 - Feature: Webpack
-
-## **Proposals**
-
-Tracks ideas awaiting concensus
-
-### **Singular Application Router**
-
-**How can we improve our development speed?**
-
-- Less complexity throughout every aspect of all projects
-- Less work lost to non-creative development operations
-- Less lines of code
-
-**How do we achieve these results?**
-
-- Point all DNS records to the production AWS S3 bucket hosting this web application
-- Create a single router that responds differently based on the entire URL including domain name
-
-**What are the upsides?**
-
-- Less complexity within both project management and software development
-- Creates a clear flow within client-side development _(pull requests, branches, issue tracking)_
-- Avoids having to separate out _"core"_ modules and upgrading them within multiple repositories
-- Single piece of documentation making it hard to miss
-- Easier to automate development operations
-
-### **Instant Application Startup**
-
-**What can we do to load the application as fast as possible?**
-
-- Deploy all static files to a CDN like AWS S3 to make sure end-users are physically closer to the data containing this software and the configuration and resources required to load it
-- Use an HTML5 application cache to cache all static files using a manifest file
-- Store all data received from APIs in a client-side database like IndexedDB. The app shows previously loaded data immediatly without having to wait for any API network traffic. Use an `updated` property on each memory object. So it becomes trivial to update the interface in realtime after the first load.

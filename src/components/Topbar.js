@@ -7,6 +7,7 @@ export default () => {
         pad="small"
         flex="shrink"
         direction="row"
+        background="rgba(0,0,0,0.1)"
       >
         <Button
           focusIndicator={false}
@@ -20,7 +21,6 @@ export default () => {
           flex
           align="center"
           direction="row"
-          background="#fcfcfc"
           margin={{ horizontal: 'auto' }}
           width={{ min: '320px', max: '640px' }}
           border={{ color: 'light-1', size: 'xsmall', style: 'dashed' }}

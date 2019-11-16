@@ -221,7 +221,7 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
       defaultColumn,
       filterTypes,
       // nestExpandedRows: true,
-      initialState: { pageIndex: 0, pageSize: Math.floor((innerHeight - 200) / 48) },
+      initialState: { pageIndex: 0, pageSize: Math.floor((innerHeight - 100) / 48) },
       // updateMyData isn't part of the API, but
       // anything we put into these options will
       // automatically be available on the instance.

@@ -11,6 +11,7 @@ export default () => {
   return (
     <Box
       flex
+      background="#fcfcfc"
       overflow={{ vertical: 'auto' }}
       border={{ side: 'top', size: 'small', color: 'light-1' }}
     >

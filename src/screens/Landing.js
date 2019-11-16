@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Paragraph, Anchor, Header } from 'grommet';
+import { Box, Paragraph, Anchor, Heading } from 'grommet';
 import { authenticate, get } from '../utils/requests';
 
 export default () => {
@@ -19,12 +19,37 @@ export default () => {
   return (
     <Box
       flex
-      pad={{ horizontal: 'small' }}
+      pad={{ top: 'small', horizontal: 'small' }}
       overflow={{ vertical: 'auto' }}
-      border={{ side: 'top', size: 'small', color: 'light-1' }}
+      border={{ side: 'top', size: 'xsmall', color: 'rgba(0,0,0,0.3)' }}
     >
-      <Paragraph fill size="large" margin={{ vertical: 'medium', horizontal: 'small' }}>
-        This modern web application is built on top of <Anchor
+      <Heading
+        size="small"
+        color="#fff"
+        alignSelf="center"
+        margin={{ bottom: 'none' }}
+      >
+        E-Sports Directory Explorer
+      </Heading>
+      <Paragraph
+        fill
+        size="medium"
+        color="#fff"
+        alignSelf="center"
+        margin={{ top: 'none', bottom: 'medium', horizontal: 'small' }}
+      >
+        Easily manage and gain insight into e-sports data
+        </Paragraph>
+        <img src="/earth.svg" />
+        <Paragraph
+        fill
+        size="small"
+        color="#fff"
+        alignSelf="center"
+        margin={{ bottom: 'auto' }}
+        margin={{ vertical: 'medium', horizontal: 'small' }}
+      >
+        Developed by Luuk van Egeraat using <Anchor
           target="_blank"
           href="https://developer.mozilla.org/en-US/docs/Web/HTML"
           label="HTML5"

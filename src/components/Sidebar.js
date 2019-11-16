@@ -1,5 +1,11 @@
 import React, { useContext } from 'react';
-import { Box, Button, Text } from 'grommet';
+import {
+  Box,
+  Text,
+  Anchor,
+  Button,
+  Paragraph
+} from 'grommet';
 import { RouterContext } from '../Router';
 
 export default () => {
@@ -9,9 +15,9 @@ export default () => {
       <Box
         width="240px"
         direction="column"
-        background="rgba(0,0,0,0.1)"
+        background="rgba(50,50,50,0)" // this makes the font color go white
         pad={{ top: 'small' }}
-        border={{ side: 'right', color: 'rgba(0,0,0,0.3)', size: 'xsmall' }}
+        border={{ side: 'right', color: 'rgba(0,0,0,0.1)', size: 'xsmall' }}
       >
         <Button
           plain
@@ -21,6 +27,15 @@ export default () => {
           active={currentPath == '/'}
           icon={<Box pad={{ left: 'medium' }}><i className="material-icons">dashboard</i></Box>}
           label={<Text margin={{ vertical: 'small', right: 'auto' }}>Dashboard</Text>}
+        />
+        <Button
+          plain
+          hoverIndicator
+          focusIndicator={false}
+          onClick={() => go('/teams')}
+          active={currentPath == '/teams'}
+          icon={<Box pad={{ left: 'medium' }}><i className="material-icons">group</i></Box>}
+          label={<Text margin={{ vertical: 'small', right: 'auto' }}>Teams</Text>}
         />
         <Button
           plain
@@ -58,24 +73,25 @@ export default () => {
           icon={<Box pad={{ left: 'medium' }}><i className="material-icons">tv</i></Box>}
           label={<Text margin={{ vertical: 'small', right: 'auto' }}>Matches</Text>}
         />
-        <Button
-          plain
-          hoverIndicator
-          focusIndicator={false}
-          onClick={() => go('/teams')}
-          active={currentPath == '/teams'}
-          icon={<Box pad={{ left: 'medium' }}><i className="material-icons">business</i></Box>}
-          label={<Text margin={{ vertical: 'small', right: 'auto' }}>Teams</Text>}
+
+        <Anchor
+          target="_blank"
+          label={<img src="/github.png" />}
+          href="https://github.com/LuukvE/Luuk.gg"
+          margin={{ horizontal: 'auto', top: 'auto', bottom: 'small' }}
         />
-        <Button
-          plain
-          hoverIndicator
-          focusIndicator={false}
-          onClick={() => go('/players')}
-          active={currentPath == '/players'}
-          icon={<Box pad={{ left: 'medium' }}><i className="material-icons">group</i></Box>}
-          label={<Text margin={{ vertical: 'small', right: 'auto' }}>Players</Text>}
-        />
+        <Paragraph
+          fill
+          size="small"
+          alignSelf="center"
+          margin="small"
+        >
+          Developed by <Anchor
+            target="_blank"
+            href="https://www.linkedin.com/in/luukvanegeraat"
+            label="Luuk van Egeraat"
+          />
+        </Paragraph>
       </Box>
     );
 };

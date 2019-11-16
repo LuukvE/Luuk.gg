@@ -1,7 +1,6 @@
 import Tournaments from './screens/Tournaments';
+import Dashboard from './screens/Dashboard';
 import Matches from './screens/Matches';
-import Players from './screens/Players';
-import Landing from './screens/Landing';
 import Stages from './screens/Stages';
 import Teams from './screens/Teams';
 import Games from './screens/Games';
@@ -9,7 +8,7 @@ import Games from './screens/Games';
 export default [
   {
     path: '/',
-    screen: Landing
+    screen: Dashboard
   },
   {
     path: '/games',
@@ -30,9 +29,5 @@ export default [
   {
     path: '/teams',
     screen: Teams
-  },
-  {
-    path: '/players',
-    screen: Players
   }
 ];

@@ -6,8 +6,10 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import {
+  Box,
   Button,
   TextInput,
+  Text,
   CheckBox,
 } from 'grommet';
 import {
@@ -19,18 +21,21 @@ import {
   useExpanded,
   useRowSelect,
 } from 'react-table';
+import moment from 'moment';
 import matchSorter from 'match-sorter';
 
 const Styles = styled.div`
   table {
     border-spacing: 0;
-    border-bottom: 1px solid #F2F2F2;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
     min-width: 100%;
+    margin-bottom: 12px;
 
     thead th {
-      background: #F2F2F2;
+      background: white;
       vertical-align: top;
       text-align: left;
+      white-space: nowrap;
       &:first-child {
         padding-left: 16px;
         vertical-align: middle;
@@ -65,14 +70,18 @@ const Styles = styled.div`
           border-bottom: 0;
         }
       }
+      :nth-child(even) {
+        background: #f8fafb;
+      }
     }
 
     th,
     td {
       margin: 0;
       padding: 0.5rem;
-      border-bottom: 1px solid #F2F2F2;
-      border-right: 1px solid #F2F2F2;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      border-right: 1px solid rgba(0,0,0,0.1);
+      white-space: nowrap;
 
       :last-child {
         border-right: 0;
@@ -97,15 +106,17 @@ const Styles = styled.div`
     padding: 0.5rem;
     text-align: center;
     strong {
-      float: right;
+      margin: 0 12px;
+      vertical-align: top;
+      line-height: 36px;
     }
   }
 `
 
 // Create an editable cell renderer
 const EditableCell = ({
-  cell: { value: initialValue },
-  row: { index },
+  cell: { column: { Header }, value: initialValue },
+  row: { index, original },
   column: { id },
   updateMyData, // This is a custom function that we supplied to our table instance
   editable,
@@ -127,11 +138,41 @@ const EditableCell = ({
     setValue(initialValue)
   }, [initialValue])
 
+  if(Header == 'logo_icon')  return <img style={{ height: '30px', margin: '-5px 0' }} src={`/teams/${
+    original.id
+  }.png`} />
+  
+  if(Header == 'date_start') return <Text>{moment(value).format('YYYY-MM-DD HH:mm')}</Text>;
+
+
+  if(Header == 'results') return <>
+    <Text>{original.teams.find(t => t.id == value[0].team_id).name}</Text> <Text
+      color={value[0].winner ? 'green' : 'red'}
+    >{value[0].score}</Text> vs <Text
+    color={value[1].winner ? 'green' : 'red'}
+  >{value[1].score}</Text> <Text>{original.teams.find(t => t.id == value[1].team_id).name}</Text>
+  </>;
+
+  const states = ['', 'Concluded'];
+
+  if(typeof value == 'number') {
+    if(states[value]) return <Text>{ states[value] }</Text>;
+  }
+
+  if(value && typeof value != 'string') return <Text>{
+    value.fullname || value.full_name || value.name || ''
+  }</Text>;
+
   if (!editable) {
     return `${initialValue}`
   }
 
-  return <TextInput plain value={value} onChange={onChange} onBlur={onBlur} />
+  return <TextInput
+    plain
+    value={value}
+    onChange={onChange}
+    onBlur={onBlur}
+  />
 }
 
 // Define a default UI for filtering
@@ -211,6 +252,7 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
     gotoPage,
     nextPage,
     previousPage,
+    setPageSize,
     state: {
       pageIndex
     },
@@ -221,7 +263,7 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
       defaultColumn,
       filterTypes,
       // nestExpandedRows: true,
-      initialState: { pageIndex: 0, pageSize: Math.floor((innerHeight - 100) / 48) },
+      initialState: { pageIndex: 0, pageSize: 5  },
       // updateMyData isn't part of the API, but
       // anything we put into these options will
       // automatically be available on the instance.
@@ -240,10 +282,26 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
     useRowSelect,
   )
 
+  const $table = useRef();
+
+  useEffect(() => {
+    const { parentNode : $c } = $table.current.parentNode;
+    (function fit(n, tableHeight) {
+      if(n > 50) return;
+      requestAnimationFrame(next);
+      setPageSize(n);
+      function next() {
+        if(!$table.current || tableHeight == $table.current.clientHeight) return;
+        if($c.scrollHeight > $c.clientHeight) return setPageSize(n - 1);
+        fit(n + 1, $table.current.clientHeight);
+      }
+    }(7));
+  }, []);
+
   // Render the UI for your table
   return (
     <>
-      <table {...getTableProps()}>
+      <table ref={$table} {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -312,43 +370,38 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
           )}
         </tbody>
       </table>
-      {/* 
-        Pagination can be built however you'd like. 
-        This is just a very basic UI implementation:
-      */}
       <div className="pagination">
+        <Button
+          label={<i className="material-icons">keyboard_arrow_left</i>}
+          onClick={() => previousPage()}
+          disabled={!canPreviousPage}
+        />
         <strong>
           {pageIndex + 1} / {pageOptions.length}
         </strong>
-        <Button label="<<" onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
-        {' '}
-        <Button label="<" onClick={() => previousPage()} disabled={!canPreviousPage} />
-        {' '}
-        <Button label=">" onClick={() => nextPage()} disabled={!canNextPage} />
-        {' '}
-        <Button label=">>" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
+        <Button
+          label={<i className="material-icons">keyboard_arrow_right</i>}
+          onClick={() => nextPage()}
+          disabled={!canNextPage}
+        />
       </div>
     </>
   )
 }
 
-// Define a custom filter filter function!
-function filterGreaterThan(rows, id, filterValue) {
-  return rows.filter(row => {
-    const rowValue = row.values[id]
-    return rowValue >= filterValue
-  })
-}
-
-// This is an autoRemove method on the filter function that
-// when given the new filter value and returns true, the filter
-// will be automatically removed. Normally this is just an undefined
-// check, but here, we want to remove the filter if it's not a number
-filterGreaterThan.autoRemove = val => typeof val !== 'number'
-
 function List({ type, items }) {
-  const columns = Object.keys(items[0]).reduce((memo, property) => {
-    if(['id', 'perid', 'links', 'tier_label'].includes(property)) return memo;
+  const columns = Object.keys(items[0] || {}).reduce((memo, property) => {
+    if([
+      'id',
+      'logo',
+      'perid',
+      'links',
+      'tier_label',
+      'version',
+      'teams',
+      'state_label',
+      'last_modified'
+    ].includes(property)) return memo;
 
     memo.push({
       Header: property,
@@ -362,14 +415,14 @@ function List({ type, items }) {
     id: 'selection',
     groupByBoundary: true,
     Header: ({ getToggleAllRowsSelectedProps }) => (
-      <div>
+      <Box align="center">
         <CheckBox {...getToggleAllRowsSelectedProps()} />
-      </div>
+      </Box>
     ),
     Cell: ({ row }) => (
-      <div>
+      <Box align="center">
         <CheckBox {...row.getToggleRowSelectedProps()} />
-      </div>
+      </Box>
     )
   }]);
 
@@ -414,14 +467,14 @@ function List({ type, items }) {
   }, [data])
 
   return (
-    <Styles>
-      <Table
-        columns={columns}
-        data={data}
-        updateMyData={updateMyData}
-        disablePageResetOnDataChange={skipPageResetRef.current}
-      />
-    </Styles>
+      <Styles>
+        <Table
+          columns={columns}
+          data={data}
+          updateMyData={updateMyData}
+          disablePageResetOnDataChange={skipPageResetRef.current}
+        />
+      </Styles>
   )
 }
 

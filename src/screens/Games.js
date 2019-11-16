@@ -5,14 +5,14 @@ import { games } from '../utils/data';
 
 export default () => {
   useEffect(() => {
-    document.title = 'Luuk.gg - Games';
+    document.title = 'Luuk.GG - Games';
   }, []);
 
   return (
     <Box
       flex
-      background="#fcfcfc"
-      overflow={{ vertical: 'auto' }}
+      background="#f2f5f8"
+      overflow={{ vertical: 'hidden' }}
       border={{ side: 'top', size: 'small', color: 'light-1' }}
     >
       <List type="games" items={games}/>

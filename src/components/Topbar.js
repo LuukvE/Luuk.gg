@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, TextInput } from 'grommet';
+import { Box, Button, TextInput, Heading } from 'grommet';
 
 export default () => {
     return (
@@ -7,7 +7,7 @@ export default () => {
         pad="small"
         flex="shrink"
         direction="row"
-        background="rgba(0,0,0,0.1)"
+        background="rgba(50,50,50,0)" // this makes the font color go white
       >
         <Button
           focusIndicator={false}
@@ -15,7 +15,15 @@ export default () => {
         />
         <Button
           focusIndicator={false}
-          icon={<span>Luuk.gg</span>}
+          plain
+          label={
+            <Heading
+              level="3"
+              margin={{ vertical: 'none' }}
+            >
+              Luuk.GG
+            </Heading>
+          }
         />
         <Box
           flex
@@ -23,7 +31,7 @@ export default () => {
           direction="row"
           margin={{ horizontal: 'auto' }}
           width={{ min: '320px', max: '640px' }}
-          border={{ color: 'light-1', size: 'xsmall', style: 'dashed' }}
+          background="rgba(0,0,0,0.2)"
         >
           <TextInput
             plain

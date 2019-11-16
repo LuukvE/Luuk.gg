@@ -1,4 +1,4 @@
-# Luuk.gg
+# Luuk.GG
 
 Boilerplate for professional web development. Built on top of [HTML5](https://developer.mozilla.org/en-US/docs/Web/HTML), [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS) and [Javascript ES6](https://developer.mozilla.org/en-US/docs/Web/Javascript) using [React 16](https://reactjs.org/docs/react-api.html)
 

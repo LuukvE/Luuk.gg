@@ -1,13 +1,12 @@
 export default {
     global: {
       colors: {
-        background: 'transparent',
-        brand: '#0096D6',
+        brand: '#2f4050',
         control: {
           dark: '#00A8F0',
-          light: '#0096D6'
+          light: '#2f4050'
         },
-        focus: '#99d5ef',
+        focus: 'transparent',
         'neutral-1': '#006996',
         'neutral-2': '#A65336',
         'neutral-3': '#A69136',
@@ -28,22 +27,26 @@ export default {
       },
       font: {
         family: "'ptsans', Arial, sans-serif",
-        face: "\n        @font-face {\n          font-family: 'ptsans';\n          src:\n            url(/ptsans.woff\") format('woff');\n        }\n      "
+        face: `
+          @font-face {
+            font-family: 'ptsans';
+            src: url(/ptsans.woff\") format('woff');
+          }
+        `
       }
     },
     anchor: {
       color: {
         dark: '#00A8F0',
-        light: '#2883d7'
-      }
-    },
-    button: {
-    
-    },
-    grommet: {
+        light: '#2f4050'
+      },
       extend: `
-        background-color: #235390;
-        background-image: url(//d35aaqx5ub95lt.cloudfront.net/images/star-pattern.svg);
+        &.github {
+          outline-color: 'transparent';
+          border-color: 'transparent';
+        }
       `
-    }
+    },
+    button: {},
+    grommet: {}
 }

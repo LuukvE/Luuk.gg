@@ -145,13 +145,22 @@ const EditableCell = ({
   if(Header == 'date_start') return <Text>{moment(value).format('YYYY-MM-DD HH:mm')}</Text>;
 
 
-  if(Header == 'results') return <>
-    <Text>{original.teams.find(t => t.id == value[0].team_id).name}</Text> <Text
-      color={value[0].winner ? 'green' : 'red'}
-    >{value[0].score}</Text> vs <Text
-    color={value[1].winner ? 'green' : 'red'}
-  >{value[1].score}</Text> <Text>{original.teams.find(t => t.id == value[1].team_id).name}</Text>
-  </>;
+  if(Header == 'results') return <Box
+    flex
+    direction="row"
+  >
+    <Text alignSelf="start">{original.teams.find(t => t.id == value[0].team_id).name}</Text><Text
+      color={ value[0].winner ? 'status-ok' : 'status-critical' }
+      margin={{ left: 'small', right: 'xsmall' }}
+      alignSelf="center"
+    >{ value[0].score }</Text> <Text  alignSelf="center">vs</Text> <Text
+      margin={{ right: 'small', left: 'xsmall' }}
+      color={ value[1].winner ? 'status-ok' : 'status-critical' }
+      alignSelf="center"
+    >{value[1].score}</Text> <Text
+      alignSelf="end"
+    >{original.teams.find(t => t.id == value[1].team_id).name}</Text>
+  </Box>;
 
   const states = ['', 'Concluded'];
 

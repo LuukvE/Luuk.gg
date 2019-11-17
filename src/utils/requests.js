@@ -2,6 +2,44 @@ export const tokens = {"success":true,"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOi
 
 export const ENDPOINT = 'https://api.esportsdirectory.info/v1';
 
+// authenticate('', '', (response) => {
+//   console.log(JSON.stringify(response, null, 2));
+// });
+
+// get('title', response => {
+//   console.log(JSON.stringify(response, null, 2));
+// });
+
+// const teams = matches.reduce((memo, match, index) => {
+//   console.log(index);
+//   match.teams.map(team => {
+//     memo[team.id] = team;
+//   });
+//   return memo;
+// }, {});
+
+// console.log(JSON.stringify(Object.keys(teams).map(key => teams[key])));
+
+// teams.map((team) => {
+//   getImage(team.id, team.logo_icon);
+// });
+
+// async function getImage(id, url) {
+//   const response = await fetch(url, { method: 'GET', headers: { Authorization: `Bearer ${tokens.access_token}` } });
+
+//   const blob = await response.blob();
+
+//   const reader = new FileReader();
+
+//   reader.onloadend = () => {       
+//       console.log(id, reader.result.length);  
+//       window.logos = window.logos || {};
+//       window.logos[id] = reader.result;
+//   };
+
+//   reader.readAsDataURL(blob); 
+// }
+
 export const authenticate = async (username, password, callback) => {
     const response = await fetch(`${ENDPOINT}/auth/`, {
         method: 'POST',

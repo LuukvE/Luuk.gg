@@ -1,6 +1,6 @@
 {
   "name": "luuk-gg",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "src/index.js",
   "author": "Luuk van Egeraat <l.vanegeraat@gmail.com> (https://www.linkedin.com/in/luukvanegeraat/)",
   "license": "Apache-2.0",

@@ -33,6 +33,7 @@ export default () => {
             flex
             height="100%"
             direction="column"
+            background="rgba(0,0,0,0)"
           >
             <Topbar />
             <Box

@@ -17,6 +17,7 @@ export default () => {
         direction="column"
         background="rgba(50,50,50,0)" // this makes the font color go white
         pad={{ top: 'small' }}
+        overflow={{ vertical: 'auto' }}
         border={{ side: 'right', color: 'rgba(0,0,0,0.1)', size: 'xsmall' }}
       >
         <Button

@@ -46,6 +46,11 @@ Tracks the changes between every deployment and each future versions
   - Language-specific builds are made with `webpack` compiler
 - Feature: Google Analytics
 
+### **0.1.6 patch release (17 november 2019)**
+
+- Feature: Added dashboard
+- Change: Styling
+
 ### **0.1.5 patch release (16 november 2019)**
 
 - Feature: Added games, tournaments, stages, matches data

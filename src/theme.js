@@ -48,5 +48,29 @@ export default {
       `
     },
     button: {},
-    grommet: {}
+    grommet: {
+      extend: `
+        *::-webkit-scrollbar-track
+        {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            background-color: rgba(100,100,100,0.2);
+        }
+
+        *::-webkit-scrollbar
+        {
+            width: 10px;
+            background-color: rgba(100,100,100,0.2);
+        }
+
+        *::-webkit-scrollbar-thumb
+        {
+            background-color: #000000;
+        }
+
+        *::-webkit-scrollbar-corner {
+          background-color: rgba(100,100,100,0.2);
+        }
+      `
+    },
+    stack: {}
 }

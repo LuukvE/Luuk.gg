@@ -19,8 +19,8 @@ export default () => {
       title: { slug : game },
       tournament: {
         id : tournament,
-        full_name : tournament_name
-      }
+        full_name : tournament_name,
+      },
     } = match;
 
     tournaments[tournament] = tournaments[tournament] || [];
@@ -36,7 +36,7 @@ export default () => {
       results,
       tournament,
       tournament_name,
-      start: moment(date_start)
+      start: moment(date_start),
     });
 
     return tournaments;
@@ -99,7 +99,7 @@ export default () => {
                   style={{
                     height: '150px',
                     background: `url("/teams/${results[0].team_id || 'unknown'}.png") center center / contain no-repeat`,
-                    width: '50%'
+                    width: '50%',
                   }}
                 >
                   <Text margin={{ top: '-30px', horizontal: 'auto' }}>{results[0].score}</Text>
@@ -108,13 +108,14 @@ export default () => {
                     alignSelf="stretch"
                     textAlign="center"
                     margin={{ top: 'auto', bottom: '-40px' }}
-                  >{match.teams[results[0].team_id]}</Text>
+                  >{match.teams[results[0].team_id]}
+                  </Text>
                 </Box>
                 <Box
                   style={{
                     height: '150px',
                     background: `url("/teams/${results[1].team_id || 'unknown'}.png") center center / contain no-repeat`,
-                    width: '50%'
+                    width: '50%',
                   }}
                 >
                   <Text margin={{ top: '-30px', horizontal: 'auto' }}>{results[1].score}</Text>
@@ -123,11 +124,12 @@ export default () => {
                     alignSelf="stretch"
                     textAlign="center"
                     margin={{ top: 'auto', bottom: '-40px' }}
-                  >{match.teams[results[1].team_id]}</Text>
+                  >{match.teams[results[1].team_id]}
+                  </Text>
                 </Box>
               </Box>
             })}
-          </Box>
+          </Box>,
         )}
         <Heading level="2" alignSelf="center">{rows[0][0].tournament_name}</Heading>
       </Box>

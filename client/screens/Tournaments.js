@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Box } from 'grommet';
 import List from '../components/List';
-import { stages } from '../utils/data';
+import { tournaments } from '../utils/data';
 
 export default () => {
   useEffect(() => {
-    document.title = 'Luuk.GG - Stages';
+    document.title = 'Luuk.GG - Tournaments';
   }, []);
 
   return (
@@ -15,7 +15,7 @@ export default () => {
       overflow={{ vertical: 'hidden' }}
       border={{ side: 'top', size: 'small', color: 'light-1' }}
     >
-      <List type="stages" items={stages}/>
+      <List type="tournaments" items={tournaments} />
     </Box>
   );
 };

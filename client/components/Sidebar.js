@@ -4,7 +4,7 @@ import {
   Text,
   Anchor,
   Button,
-  Paragraph
+  Paragraph,
 } from 'grommet';
 import { RouterContext } from '../Router';
 

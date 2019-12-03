@@ -4,7 +4,7 @@ export default {
         brand: '#2f4050',
         control: {
           dark: '#00A8F0',
-          light: '#2f4050'
+          light: '#2f4050',
         },
         focus: 'transparent',
         'neutral-1': '#006996',
@@ -23,7 +23,7 @@ export default {
         'dark-2': '#676767',
         'light-1': '#F2F2F2',
         'light-2': '#E8E8E8',
-        'light-3': '#CCCCCC'
+        'light-3': '#CCCCCC',
       },
       font: {
         family: "'ptsans', Arial, sans-serif",
@@ -32,20 +32,20 @@ export default {
             font-family: 'ptsans';
             src: url(/ptsans.woff\") format('woff');
           }
-        `
-      }
+        `,
+      },
     },
     anchor: {
       color: {
         dark: '#00A8F0',
-        light: '#2f4050'
+        light: '#2f4050',
       },
       extend: `
         &.github {
           outline-color: 'transparent';
           border-color: 'transparent';
         }
-      `
+      `,
     },
     button: {},
     grommet: {
@@ -70,7 +70,7 @@ export default {
         *::-webkit-scrollbar-corner {
           background-color: rgba(100,100,100,0.2);
         }
-      `
+      `,
     },
-    stack: {}
+    stack: {},
 }

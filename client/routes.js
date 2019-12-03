@@ -8,26 +8,26 @@ import Games from './screens/Games';
 export default [
   {
     path: '/',
-    screen: Dashboard
+    screen: Dashboard,
   },
   {
     path: '/games',
-    screen: Games
+    screen: Games,
   },
   {
     path: '/tournaments',
-    screen: Tournaments
+    screen: Tournaments,
   },
   {
     path: '/stages',
-    screen: Stages
+    screen: Stages,
   },
   {
     path: '/matches',
-    screen: Matches
+    screen: Matches,
   },
   {
     path: '/teams',
-    screen: Teams
-  }
+    screen: Teams,
+  },
 ];

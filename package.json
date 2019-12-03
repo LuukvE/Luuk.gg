@@ -1,15 +1,15 @@
 {
   "name": "luuk-gg",
   "version": "0.1.6",
-  "main": "src/index.js",
+  "main": "server/index.js",
   "author": "Luuk van Egeraat <l.vanegeraat@gmail.com> (https://www.linkedin.com/in/luukvanegeraat/)",
   "license": "Apache-2.0",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "start": "cross-env NODE_ENV=development webpack-dev-server --mode development --open",
-    "lint": "eslint src",
-    "lint-fix": "eslint src --fix",
-    "test": "eslint src",
+    "lint": "eslint client",
+    "lint-fix": "eslint client --fix",
+    "test": "eslint client",
     "prettier": "pretty-quick --staged"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "react-ga": "^2.5.3",
     "react-live": "2.2.1",
     "react-table": "^7.0.0-beta.12",
+    "script-ext-html-webpack-plugin": "^2.1.4",
     "styled-components": "^4.4.1",
     "url-search-params": "^1.0.2",
     "webfontloader": "^1.6.28"

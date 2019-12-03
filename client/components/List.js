@@ -2,7 +2,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
-  useRef
+  useRef,
 } from 'react';
 import styled from 'styled-components';
 import {
@@ -138,9 +138,12 @@ const EditableCell = ({
     setValue(initialValue)
   }, [initialValue])
 
-  if(Header == 'logo_icon')  return <img style={{ height: '30px', margin: '-5px 0' }} src={`/teams/${
+  if(Header == 'logo_icon')  return <img
+    style={{ height: '30px', margin: '-5px 0' }}
+    src={`/teams/${
     original.id
-  }.png`} />
+  }.png`}
+  />
   
   if(Header == 'date_start') return <Text>{moment(value).format('YYYY-MM-DD HH:mm')}</Text>;
 
@@ -150,27 +153,31 @@ const EditableCell = ({
     direction="row"
   >
     <Text alignSelf="start">{original.teams.find(t => t.id == value[0].team_id).name}</Text><Text
-      color={ value[0].winner ? 'status-ok' : 'status-critical' }
+      color={value[0].winner ? 'status-ok' : 'status-critical'}
       margin={{ left: 'small', right: 'xsmall' }}
       alignSelf="center"
-    >{ value[0].score }</Text> <Text  alignSelf="center">vs</Text> <Text
-      margin={{ right: 'small', left: 'xsmall' }}
-      color={ value[1].winner ? 'status-ok' : 'status-critical' }
-      alignSelf="center"
-    >{value[1].score}</Text> <Text
+    >{ value[0].score }
+    </Text> <Text alignSelf="center">vs</Text> <Text
+                                                                                              margin={{ right: 'small', left: 'xsmall' }}
+                                                                                              color={value[1].winner ? 'status-ok' : 'status-critical'}
+                                                                                              alignSelf="center"
+                                                                                            >{value[1].score}
+                                                                                            </Text> <Text
       alignSelf="end"
-    >{original.teams.find(t => t.id == value[1].team_id).name}</Text>
+    >{original.teams.find(t => t.id == value[1].team_id).name}
+    </Text>
   </Box>;
 
   const states = ['', 'Concluded'];
 
-  if(typeof value == 'number') {
+  if(typeof value === 'number') {
     if(states[value]) return <Text>{ states[value] }</Text>;
   }
 
-  if(value && typeof value != 'string') return <Text>{
+  if(value && typeof value !== 'string') return <Text>{
     value.fullname || value.full_name || value.name || ''
-  }</Text>;
+  }
+  </Text>;
 
   if (!editable) {
     return `${initialValue}`
@@ -263,7 +270,7 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
     previousPage,
     setPageSize,
     state: {
-      pageIndex
+      pageIndex,
     },
   } = useTable(
     {
@@ -358,8 +365,7 @@ function Table({ columns, data, updateMyData, disablePageResetOnDataChange }) {
                           <>
                             {row.isExpanded ?
                               <i {...props}>arrow_drop_down</i> :
-                              <i {...props}>arrow_right</i>
-                            }
+                              <i {...props}>arrow_right</i>}
                             {' '}
                             {cell.render('Cell', { editable: false })}
                           </>
@@ -409,14 +415,14 @@ function List({ type, items }) {
       'version',
       'teams',
       'state_label',
-      'last_modified'
+      'last_modified',
     ].includes(property)) return memo;
 
     memo.push({
       Header: property,
       accessor: property,
       aggregate: ['sum', 'count'],
-      Aggregated: ({ cell: { value } }) => `${value} results`
+      Aggregated: ({ cell: { value } }) => `${value} results`,
     });
 
     return memo;
@@ -432,7 +438,7 @@ function List({ type, items }) {
       <Box align="center">
         <CheckBox {...row.getToggleRowSelectedProps()} />
       </Box>
-    )
+    ),
   }]);
 
   const [data, setData] = useState(() => items);
@@ -476,14 +482,14 @@ function List({ type, items }) {
   }, [data])
 
   return (
-      <Styles>
-        <Table
-          columns={columns}
-          data={data}
-          updateMyData={updateMyData}
-          disablePageResetOnDataChange={skipPageResetRef.current}
-        />
-      </Styles>
+    <Styles>
+      <Table
+        columns={columns}
+        data={data}
+        updateMyData={updateMyData}
+        disablePageResetOnDataChange={skipPageResetRef.current}
+      />
+    </Styles>
   )
 }
 

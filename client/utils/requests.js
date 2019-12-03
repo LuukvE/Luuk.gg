@@ -44,7 +44,7 @@ export const authenticate = async (username, password, callback) => {
     const response = await fetch(`${ENDPOINT}/auth/`, {
         method: 'POST',
         body: JSON.stringify({ username, password }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
     });
 
     const newTokens = await response.json();
@@ -61,8 +61,8 @@ export const get = async (type, callback, url, buffer) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${tokens.access_token}`
-        }
+            Authorization: `Bearer ${tokens.access_token}`,
+        },
     });
 
     const { next, results } = await response.json();

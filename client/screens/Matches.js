@@ -15,7 +15,7 @@ export default () => {
       overflow={{ vertical: 'hidden' }}
       border={{ side: 'top', size: 'small', color: 'light-1' }}
     >
-      <List type="matches" items={matches}/>
+      <List type="matches" items={matches} />
     </Box>
   );
 };

@@ -30,11 +30,58 @@
         overflow: hidden;
       }
       body {
-        background: url(/bg.jfif) center center / cover #222;
+        background: url(/bg.jpg) center center / cover #222;
+      }
+      body:after {
+        position: fixed;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        line-height: 0;
+        font-size: 20px;
+        content: attr(data-loaded);
+        color: white;
+        text-align: center;
+        font-family: sans-serif;
+        font-weight: bold;
+        transition: opacity 300ms;
+        opacity: 0;
+        user-select: none;
+        pointer-events: none;
+      }
+      #content {
+        transition: opacity 300ms;
+        opacity: 1;
+      }
+      body.loading #content {
+        opacity: 0;
+      }
+      body.loading:after {
+        opacity: 1;
       }
     </style>
   </head>
   <body class="loading">
     <div id="content"></div>
+    <script>
+      (function(){
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', <%= JSON.stringify(htmlWebpackPlugin.files.js[0], null, 2) %>, true);
+        xhr.responseType = 'blob';
+        xhr.onprogress = function(e) {
+          document.body.dataset.loaded = Math.ceil(e.loaded / e.total * 100) + '%';
+        };
+        xhr.onreadystatechange = function(e) {
+          if(xhr.readyState !== XMLHttpRequest.DONE || xhr.status !== 200) return;
+          var script = document.createElement('script');
+          script.setAttribute('defer', 'defer');
+          script.setAttribute('async', 'async');
+          script.setAttribute('src', URL.createObjectURL(new Blob([xhr.response], { type: 'application/javascript' })));
+          document.body.dataset.loaded = 'Initializing...';
+          document.body.appendChild(script);
+        };
+        xhr.send();
+      }());
+    </script>
   </body>
 </html>

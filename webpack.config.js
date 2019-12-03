@@ -13,7 +13,7 @@ const baseConfig = {
     historyApiFallback: true,
     port: 8567,
   },
-  entry: './src/index.js',
+  entry: './client/index.js',
   output: {
     path: path.resolve('./dist'),
     filename: '[name]-[hash].js',
@@ -26,14 +26,14 @@ const baseConfig = {
   plugins: [
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([{ from: './public' }]),
-    new HtmlWebpackPlugin({ template: 'public/index.html' })
+    new HtmlWebpackPlugin({ inject: false, template: 'public/index.html' })
   ],
   module: {
     rules: [
       {
         test: /\.js$/,
         include: [
-          path.resolve(__dirname, 'src'),
+          path.resolve(__dirname, 'client'),
           // the following modules contain un-transpiled es6 code
           path.resolve(__dirname, 'node_modules/regexpu-core'),
           path.resolve(__dirname, 'node_modules/unicode-match-property'),

@@ -48,7 +48,7 @@ export default () => {
                     key={route.path}
                     path={route.path}
                     component={route.screen}
-                  />
+                  />,
                 )}
               </Routes>
             </Box>

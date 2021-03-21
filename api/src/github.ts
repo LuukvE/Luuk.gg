@@ -20,7 +20,7 @@ async function loadYear(year: number) {
     },
     body: JSON.stringify({
       query: `query {
-        user(login: "LuukvE") {
+        user(login: "${process.env.GITHUB_USERNAME}") {
           contributionsCollection(from: "${from}", to: "${to}") {
             contributionCalendar {
               weeks {
@@ -39,7 +39,7 @@ async function loadYear(year: number) {
   if (github.status >= 300) {
     console.log(github.url, github.status, await github.text());
 
-    return [];
+    return {};
   }
 
   const body: GithubContributionsBody = await github.json();

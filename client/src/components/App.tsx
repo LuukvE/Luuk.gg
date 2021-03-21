@@ -5,6 +5,7 @@ import { Redirect, Switch, Route, NavLink } from 'react-router-dom';
 import React, { FC } from 'react';
 
 import Dashboard from './Dashboard';
+import Career from './Career';
 
 const App: FC = () => {
   return (
@@ -32,6 +33,9 @@ const App: FC = () => {
       </header>
       <main>
         <Switch>
+          <Route path="/career">
+            <Career />
+          </Route>
           <Route path="/">
             <Dashboard />
           </Route>

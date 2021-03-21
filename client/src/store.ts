@@ -4,7 +4,8 @@ import { configureStore, getDefaultMiddleware, createSlice } from '@reduxjs/tool
 import { State } from './types';
 
 const initialState = {
-  error: ''
+  error: '',
+  github: { total: 0, contributions: {} }
 };
 
 export const { actions, reducer } = createSlice({

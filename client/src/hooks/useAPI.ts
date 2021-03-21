@@ -7,7 +7,7 @@ const useAPI = () => {
   const abort = useRef<AbortController | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const get = useCallback(async () => {
+  const getContributions = useCallback(async () => {
     if (abort.current) abort.current?.abort();
 
     setLoading(true);
@@ -15,7 +15,7 @@ const useAPI = () => {
     const { signal } = (abort.current = new AbortController());
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/github`, {
         signal,
         method: 'GET',
         headers: {
@@ -37,7 +37,7 @@ const useAPI = () => {
 
       dispatch(
         actions.set({
-          data: response
+          github: response
         })
       );
 
@@ -51,7 +51,7 @@ const useAPI = () => {
 
   return {
     loading,
-    get
+    getContributions
   };
 };
 

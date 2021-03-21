@@ -1,0 +1,125 @@
+@import '../variables';
+
+.Career {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .legend {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    padding: 11px 0;
+    background: rgba(black, 0.2);
+    border-radius: 4px;
+    h1 {
+      position: absolute;
+      left: 30px;
+      font-weight: 600;
+      font-size: 20px;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      svg {
+        margin-right: 8px;
+      }
+    }
+    .month-selector {
+      display: flex;
+      align-items: center;
+      user-select: none;
+      .icon {
+        width: 20px;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .month-display {
+        cursor: default;
+        border-radius: 3px;
+        height: 45px;
+        width: 145px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    > span {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      padding-right: 30px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+  .weekdays {
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid black;
+    > div {
+      flex-grow: 1;
+      flex-basis: 0;
+      display: flex;
+      justify-content: center;
+      font-size: 11px;
+    }
+  }
+  .week {
+    display: flex;
+    .day {
+      flex-grow: 1;
+      flex-basis: 0;
+      position: relative;
+      padding-top: calc(40% / 7);
+      box-shadow: inset -1px -1px 0 0 black;
+      &:first-of-type {
+        border-left: 1px solid black;
+      }
+      &.level-1 {
+        background: rgba($green, 0.4);
+      }
+      &.level-2 {
+        background: rgba(lighten($green, 2), 0.5);
+      }
+      &.level-3 {
+        background: rgba(lighten($green, 4), 0.6);
+      }
+      &.level-4 {
+        background: rgba(lighten($green, 6), 0.7);
+      }
+      &.level-5 {
+        background: rgba(lighten($green, 8), 0.8);
+      }
+      &.not-current-month {
+        opacity: 0.8;
+      }
+      > span {
+        position: absolute;
+        left: 8px;
+        top: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      > div {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        font-size: 30px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        small {
+          font-size: 10px;
+        }
+      }
+    }
+  }
+}

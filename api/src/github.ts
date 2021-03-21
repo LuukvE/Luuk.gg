@@ -6,7 +6,8 @@ import { RequestBody, Contributions, GithubContributionsBody } from './types';
 
 const localCache: {
   contributions: Contributions;
-} = { contributions: {} };
+  total: number;
+} = { contributions: {}, total: 0 };
 
 async function loadYear(year: number) {
   const currentYear = getYear(new Date());
@@ -23,6 +24,7 @@ async function loadYear(year: number) {
         user(login: "${process.env.GITHUB_USERNAME}") {
           contributionsCollection(from: "${from}", to: "${to}") {
             contributionCalendar {
+              totalContributions
               weeks {
                 contributionDays {
                   contributionCount
@@ -44,15 +46,20 @@ async function loadYear(year: number) {
 
   const body: GithubContributionsBody = await github.json();
 
-  return body.data.user.contributionsCollection.contributionCalendar.weeks.reduce(
-    (contributions, week) =>
-      week.contributionDays.reduce((contributions, day) => {
-        contributions[day.date] = day.contributionCount;
+  const calendar = body.data.user.contributionsCollection.contributionCalendar;
 
-        return contributions;
-      }, contributions),
-    {}
-  );
+  return {
+    contributions: calendar.weeks.reduce(
+      (contributions, week) =>
+        week.contributionDays.reduce((contributions, day) => {
+          contributions[day.date] = day.contributionCount;
+
+          return contributions;
+        }, contributions),
+      {}
+    ),
+    total: calendar.totalContributions
+  };
 }
 
 export default async (request: IncomingMessage, response: ServerResponse, body: RequestBody) => {
@@ -61,15 +68,17 @@ export default async (request: IncomingMessage, response: ServerResponse, body: 
     const yearContributions = await Promise.all(years.map((year) => loadYear(year)));
 
     localCache.contributions = yearContributions.reduce(
-      (total, year) => ({
-        ...total,
-        ...year
+      (contributions: Contributions, current) => ({
+        ...contributions,
+        ...current.contributions
       }),
       {}
     );
+
+    localCache.total = yearContributions.reduce((total, current) => total + current.total, 0);
   }
 
   response.writeHead(200);
 
-  response.end(JSON.stringify(localCache.contributions));
+  response.end(JSON.stringify(localCache));
 };

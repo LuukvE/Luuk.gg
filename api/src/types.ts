@@ -11,6 +11,7 @@ export type GithubContributionsBody = {
     user: {
       contributionsCollection: {
         contributionCalendar: {
+          totalContributions: number;
           weeks: {
             contributionDays: {
               contributionCount: number;

@@ -8,15 +8,13 @@ dotenv.config();
 console.log(process.env.GITHUB_ACCESS_TOKEN, 22);
 
 const handler: RequestListener = async (request, response) => {
-  const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': request.headers.Origin || '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-  };
+  response.setHeader('Content-Type', 'application/json');
+  response.setHeader('Access-Control-Allow-Origin', request.headers.Origin || '*');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
 
   if (request.method === 'OPTIONS') {
-    response.writeHead(200, headers);
+    response.writeHead(200);
 
     return response.end();
   }
@@ -32,9 +30,9 @@ const handler: RequestListener = async (request, response) => {
   request.on('end', () => {
     const body = chunks.length ? JSON.parse(chunks.join('')) : null;
 
-    if(request.url === '/github') return github(request, response, body);
+    if (request.url === '/github') return github(request, response, body);
 
-    response.writeHead(404, headers);
+    response.writeHead(404);
 
     response.end();
   });

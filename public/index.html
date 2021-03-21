@@ -1,87 +1,16 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Luuk.GG</title>
-    <meta
-      name="description"
-      content="Boilerplate for professional web development. Built on top of HTML5, CSS3 and Javascript ES6 using React 16"
-    />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Exo+2"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <style>
-      html,
-      body,
-      #content {
-        display: flex;
-        flex-grow: 1;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-      }
-      body {
-        background: url(/bg.jpg) center center / cover #222;
-      }
-      body:after {
-        position: fixed;
-        top: 50%;
-        left: 0;
-        width: 100%;
-        line-height: 0;
-        font-size: 20px;
-        content: attr(data-loaded);
-        color: white;
-        text-align: center;
-        font-family: sans-serif;
-        font-weight: bold;
-        transition: opacity 300ms;
-        opacity: 0;
-        user-select: none;
-        pointer-events: none;
-      }
-      #content {
-        transition: opacity 300ms;
-        opacity: 1;
-      }
-      body.loading #content {
-        opacity: 0;
-      }
-      body.loading:after {
-        opacity: 1;
-      }
-    </style>
+    <meta name="description" content="Luuk van Egeraat" />
+    <title>Luuk.gg</title>
   </head>
-  <body class="loading">
-    <div id="content"></div>
-    <script>
-      (function(){
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', <%= JSON.stringify(htmlWebpackPlugin.files.js[0], null, 2) %>, true);
-        xhr.responseType = 'blob';
-        xhr.onprogress = function(e) {
-          document.body.dataset.loaded = Math.ceil(e.loaded / e.total * 100) + '%';
-        };
-        xhr.onreadystatechange = function(e) {
-          if(xhr.readyState !== XMLHttpRequest.DONE || xhr.status !== 200) return;
-          var script = document.createElement('script');
-          script.setAttribute('defer', 'defer');
-          script.setAttribute('async', 'async');
-          script.setAttribute('src', URL.createObjectURL(new Blob([xhr.response], { type: 'application/javascript' })));
-          document.body.dataset.loaded = 'Initializing...';
-          document.body.appendChild(script);
-        };
-        xhr.send();
-      }());
-    </script>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
   </body>
 </html>

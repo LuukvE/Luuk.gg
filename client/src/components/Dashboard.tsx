@@ -7,9 +7,9 @@ const Dashboard: FC = () => {
     <div className="Dashboard">
       <div className="intro">
         <p>
-          This is an example of how to build complex web applications. Feel free to explore each
+          This is an example of how to build a complex web application. Feel free to explore each
           page and download the source code available on{' '}
-          <a target="_blank" rel="noreferrer" href="https://github.com/LuukvE">
+          <a target="_blank" rel="noreferrer" href="https://github.com/LuukvE/Luuk.gg">
             Github
           </a>
           . The client is written in{' '}

@@ -13,10 +13,10 @@ dotenv.config();
 const getFile: RequestListener = (request, response) => {
   const uri = url.parse(request.url).pathname;
 
-  let filename = path.join(__dirname, '..', '..', 'client', 'build', path.resolve('/', uri));
+  let filename = path.join(__dirname, '..', 'client', 'build', path.resolve('/', uri));
 
   fs.access(filename, fs.constants.R_OK, (err) => {
-    if (err) filename = path.join(__dirname, '..', '..', 'client', 'build', 'index.html');
+    if (err) filename = path.join(__dirname, '..', 'client', 'build', 'index.html');
 
     if (fs.statSync(filename).isDirectory()) filename += '/index.html';
 

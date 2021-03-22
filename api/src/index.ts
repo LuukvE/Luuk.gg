@@ -80,7 +80,7 @@ const handler: RequestListener = async (request, response) => {
 };
 
 if (process.env.HTTPS_PORT) {
-  const certPath = '../../ssl';
+  const certPath = '../ssl';
 
   http
     .createServer((request, response) => {

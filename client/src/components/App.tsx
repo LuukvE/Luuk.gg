@@ -19,7 +19,7 @@ const App: FC = () => {
           <i className="fas fa-th-large" /> Dashboard
         </NavLink>
         <NavLink to="/career">
-          <i className="fas fa-laptop-code" /> Career
+          <i className="fas fa-code" /> Career
         </NavLink>
         <NavLink to="/cooking">
           <i className="fas fa-utensils" /> Cooking

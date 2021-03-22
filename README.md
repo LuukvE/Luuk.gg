@@ -1,6 +1,6 @@
 # Luuk.gg
 
-This is an example of how to build a complex web application. The client is written in [Typescript](https://www.typescriptlang.org) and uses [React](https://reactjs.org). The API is written for [NodeJS](https://nodejs.org) and runs on [AWS EC2](https://aws.amazon.com/ec2) within a [Docker](https://www.docker.com) container. If you need tips on how to develop apps or just want to chat, use the [Messenger](https://luuk.gg/messenger) page, [LinkedIn](https://www.linkedin.com/in/luukvanegeraat) or l.vanegeraat@gmail.com.
+This is an example of how to build a complex web application. The client is written in [Typescript](https://www.typescriptlang.org) and uses [React](https://reactjs.org). The API is written for [NodeJS](https://nodejs.org) and runs on [AWS EC2](https://aws.amazon.com/ec2). If you need tips on how to develop apps or just want to chat, use the [Messenger](https://luuk.gg/messenger) page, [LinkedIn](https://www.linkedin.com/in/luukvanegeraat) or l.vanegeraat@gmail.com.
 
 ### **Dashboard**
 

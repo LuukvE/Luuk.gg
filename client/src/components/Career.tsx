@@ -17,6 +17,8 @@ import useAPI from '../hooks/useAPI';
 import useQuery from '../hooks/useQuery';
 import { useSelector } from '../store';
 
+import GoogleMap from './GoogleMap';
+
 const Career: FC = () => {
   const { query, setQuery } = useQuery();
   const { getContributions, loading } = useAPI();
@@ -42,7 +44,7 @@ const Career: FC = () => {
     <div className="Career">
       <div className="calendar-heading">
         <h1>
-          <i className="fab fa-github" /> My Github Activity
+          <i className="fab fa-github" /> Github Activity
         </h1>
         <div className="switch-month">
           <span
@@ -102,6 +104,7 @@ const Career: FC = () => {
           })}
         </div>
       ))}
+      <GoogleMap />
     </div>
   );
 };

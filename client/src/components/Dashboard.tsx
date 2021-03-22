@@ -27,12 +27,8 @@ const Dashboard: FC = () => {
           and runs on{' '}
           <a target="_blank" rel="noreferrer" href="https://aws.amazon.com/ec2">
             AWS EC2
-          </a>{' '}
-          within a{' '}
-          <a target="_blank" rel="noreferrer" href="https://www.docker.com">
-            Docker
-          </a>{' '}
-          container.
+          </a>
+          .
           <br />
           If you need tips on how to develop apps or just want to chat, use the{' '}
           <NavLink to="/messenger">Messenger</NavLink> page,{' '}
@@ -50,7 +46,7 @@ const Dashboard: FC = () => {
 
       <div>
         <NavLink className="icon" to="/career">
-          <i className="fas fa-laptop-code" /> Career
+          <i className="fas fa-code" /> Career
         </NavLink>
         <ul>
           <li>

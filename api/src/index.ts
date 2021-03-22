@@ -45,7 +45,7 @@ const getFile: RequestListener = (request, response) => {
 const handler: RequestListener = async (request, response) => {
   console.log(request.headers.host);
 
-  if (!request.headers.host || request.headers.host.indexOf('api.luuk.gg') === 0) {
+  if (!request.headers.host || request.headers.host.indexOf('api.luuk.gg') !== 0) {
     return getFile(request, response);
   }
 

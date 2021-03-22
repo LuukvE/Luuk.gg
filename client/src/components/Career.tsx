@@ -21,7 +21,7 @@ const Career: FC = () => {
   const { query, setQuery } = useQuery();
   const { getContributions, loading } = useAPI();
   const { total, contributions } = useSelector((state) => state.github);
-  const view = query.view ? parseISO(`${query.view}-01`) : new Date();
+  const view = query.date ? parseISO(`${query.date}-01`) : new Date();
   const start = startOfWeek(startOfMonth(view), { weekStartsOn: 1 });
   const end = endOfWeek(endOfMonth(view), { weekStartsOn: 1 });
   const days = differenceInDays(end, start);
@@ -40,23 +40,23 @@ const Career: FC = () => {
 
   return (
     <div className="Career">
-      <div className="legend">
+      <div className="calendar-heading">
         <h1>
           <i className="fab fa-github" /> My Github Activity
         </h1>
-        <div className="month-selector">
+        <div className="switch-month">
           <span
             onClick={() => {
-              setQuery({ view: format(sub(view, { months: 1 }), 'yyyy-MM') });
+              setQuery({ date: format(sub(view, { months: 1 }), 'yyyy-MM') });
             }}
             className="icon"
           >
             <i className="fas fa-chevron-left" />
           </span>
-          <div className="month-display">{format(view, 'MMMM yyyy')}</div>
+          <div className="center">{format(view, 'MMMM yyyy')}</div>
           <span
             onClick={() => {
-              setQuery({ view: format(add(view, { months: 1 }), 'yyyy-MM') });
+              setQuery({ date: format(add(view, { months: 1 }), 'yyyy-MM') });
             }}
             className="icon"
           >

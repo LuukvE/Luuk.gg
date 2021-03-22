@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  .legend {
+  .calendar-heading {
     display: flex;
     position: relative;
     justify-content: center;
@@ -24,7 +24,7 @@
         margin-right: 8px;
       }
     }
-    .month-selector {
+    .switch-month {
       display: flex;
       align-items: center;
       user-select: none;
@@ -34,9 +34,9 @@
         justify-content: center;
         cursor: pointer;
       }
-      .month-display {
+      .center {
+        user-select: none;
         cursor: default;
-        border-radius: 3px;
         height: 45px;
         width: 145px;
         display: flex;
@@ -99,8 +99,8 @@
       }
       > span {
         position: absolute;
-        left: 8px;
-        top: 6px;
+        right: 8px;
+        top: 4px;
         font-size: 12px;
         font-weight: 600;
       }

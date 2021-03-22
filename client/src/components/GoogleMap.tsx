@@ -12,7 +12,7 @@ const GoogleMap: FC = () => {
     const maps = _window.google.maps;
 
     const googleMap = new maps.Map(mapRef.current, {
-      zoom: 6,
+      zoom: 5,
       center: { lat: 54.5, lng: 7 }
     });
 
@@ -21,12 +21,18 @@ const GoogleMap: FC = () => {
       maxWidth: 400
     });
 
-    markers.forEach((marker) => {
+    markers.forEach((marker, index) => {
       const googleMarker = new maps.Marker({
         position: marker.position,
         title: marker.title,
         map: googleMap
       });
+
+      if (index === 0) {
+        googlePopup.setContent(marker.content);
+
+        googlePopup.open(googleMap, googleMarker);
+      }
 
       googleMarker.addListener('click', () => {
         googlePopup.close();

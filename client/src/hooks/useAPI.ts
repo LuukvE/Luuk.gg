@@ -6,6 +6,8 @@ const useAPI = () => {
   const dispatch = useDispatch();
   const abort = useRef<AbortController | null>(null);
   const [loading, setLoading] = useState(false);
+  const dev = process.env.NODE_ENV === 'development';
+  const apiURL = dev ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
 
   const getContributions = useCallback(async () => {
     if (abort.current) abort.current?.abort();
@@ -15,7 +17,7 @@ const useAPI = () => {
     const { signal } = (abort.current = new AbortController());
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/github`, {
+      const res = await fetch(`${apiURL}/github`, {
         signal,
         method: 'GET',
         headers: {

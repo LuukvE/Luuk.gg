@@ -3,9 +3,9 @@ import https from 'https';
 import dotenv from 'dotenv';
 import http from 'http';
 
-import root from './root';
-
 dotenv.config();
+
+import root from './root';
 
 if (process.env.HTTPS_PORT) {
   const certPath = '../ssl';

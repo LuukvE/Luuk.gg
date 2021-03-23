@@ -3,29 +3,38 @@
 .Meeting {
   display: flex;
   width: 100%;
-  .local,
-  .remote {
+  flex-direction: column;
+  align-items: center;
+  .video-wrapper {
     display: flex;
-    width: calc(50% - 25px);
-    overflow: hidden;
-    position: relative;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.2);
-    video {
-      width: 100%;
+    width: 100%;
+    .local,
+    .remote {
+      display: flex;
+      width: calc(50% - 25px);
+      overflow: hidden;
       position: relative;
-      z-index: 1;
-      &.hide {
-        opacity: 0;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      video {
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        &.hide {
+          opacity: 0;
+        }
+      }
+      .spinner-border {
+        position: absolute;
+        left: calc(50% - 21px);
+        top: calc(50% - 21px);
       }
     }
-    .spinner-border {
-      position: absolute;
-      left: calc(50% - 21px);
-      top: calc(50% - 21px);
+    .remote {
+      margin-left: auto;
     }
   }
-  .remote {
-    margin-left: auto;
+  .btn {
+    margin-top: 30px;
   }
 }

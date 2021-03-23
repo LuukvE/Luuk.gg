@@ -7,7 +7,7 @@ function useQuery() {
 
   return {
     setQuery: useCallback(
-      (update: { [key: string]: number | string | undefined }) => {
+      (update: { [key: string]: number | string | undefined }, options?: { replace?: boolean }) => {
         const query = new URLSearchParams(location.search);
         const newQuery: { [key: string]: string } = {};
 
@@ -20,10 +20,17 @@ function useQuery() {
           else delete newQuery[key];
         });
 
-        history.push({
-          pathname: history.location.pathname,
-          search: new URLSearchParams(newQuery).toString()
-        });
+        if (options && options.replace) {
+          history.replace({
+            pathname: history.location.pathname,
+            search: new URLSearchParams(newQuery).toString()
+          });
+        } else {
+          history.push({
+            pathname: history.location.pathname,
+            search: new URLSearchParams(newQuery).toString()
+          });
+        }
       },
       [history, location.search]
     ),

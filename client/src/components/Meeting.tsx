@@ -1,7 +1,9 @@
 import './Meeting.scss';
 import React, { FC, useEffect, useCallback, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import Video from 'twilio-video';
 import { nanoid } from 'nanoid';
+import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 import useAPI from '../hooks/useAPI';
@@ -9,6 +11,7 @@ import useQuery from '../hooks/useQuery';
 import { useDispatch, useSelector, actions } from '../store';
 
 const Meeting: FC = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const localVideo = useRef<HTMLVideoElement | null>(null);
   const localAudio = useRef<HTMLAudioElement | null>(null);
@@ -54,13 +57,21 @@ const Meeting: FC = () => {
     if (token) return;
 
     if (!query.room) {
-      setQuery({ room: nanoid() });
+      try {
+        query.room = localStorage.getItem('room') || '';
+      } catch (e) {}
+
+      setQuery({ room: query.room || nanoid() }, { replace: true });
 
       return;
     }
 
+    try {
+      localStorage.setItem('room', query.room);
+    } catch (e) {}
+
     getTwilioToken(query.room);
-  }, [getTwilioToken, setQuery, query.room, token]);
+  }, [getTwilioToken, setQuery, query, token]);
 
   useEffect(() => {
     if (!token) return;
@@ -75,12 +86,14 @@ const Meeting: FC = () => {
       room = r;
 
       const localAudioTrack = Array.from(room.localParticipant.audioTracks.values())[0];
+
       const localVideoTrack = Array.from(room.localParticipant.videoTracks.values())[0];
 
       if (localAudio.current) localAudioTrack.track?.attach(localAudio.current);
 
       if (localVideo.current) {
         localVideoTrack.track?.attach(localVideo.current);
+
         localVideo.current.classList.remove('hide');
       }
 
@@ -104,16 +117,30 @@ const Meeting: FC = () => {
 
   return (
     <div className="Meeting">
-      <div className="local">
-        <video className="hide" ref={localVideo} autoPlay={true} />
-        <audio ref={localAudio} autoPlay={true} />
-        <Spinner animation="border" />
+      <div className="video-wrapper">
+        <div className="local">
+          <video className="hide" ref={localVideo} autoPlay={true} />
+          <audio ref={localAudio} autoPlay={true} />
+          <Spinner animation="border" />
+        </div>
+        <div className="remote">
+          <video className="hide" ref={remoteVideo} autoPlay={true} />
+          <audio ref={remoteAudio} autoPlay={true} />
+          <Spinner animation="border" />
+        </div>
       </div>
-      <div className="remote">
-        <video className="hide" ref={remoteVideo} autoPlay={true} />
-        <audio ref={remoteAudio} autoPlay={true} />
-        <Spinner animation="border" />
-      </div>
+      <Button
+        variant="secondary"
+        onClick={() => {
+          history.push('/');
+
+          try {
+            localStorage.setItem('room', '');
+          } catch (e) {}
+        }}
+      >
+        Leave Room <i className="fas fa-sign-out-alt" />
+      </Button>
     </div>
   );
 };

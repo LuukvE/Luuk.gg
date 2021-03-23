@@ -2,6 +2,7 @@ import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-red
 import { configureStore, getDefaultMiddleware, createSlice } from '@reduxjs/toolkit';
 
 import { State } from './types';
+import { defaultRecipes } from './constants';
 
 const initialState: State = {
   error: '',
@@ -12,7 +13,11 @@ const initialState: State = {
   twilio: {
     token: ''
   },
-  github: { total: 0, contributions: {} }
+  github: {
+    total: 0,
+    contributions: {}
+  },
+  recipes: defaultRecipes
 };
 
 export const { actions, reducer } = createSlice({

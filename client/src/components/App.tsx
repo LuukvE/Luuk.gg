@@ -6,6 +6,7 @@ import React, { FC, useRef } from 'react';
 
 import Dashboard from './Dashboard';
 import Messenger from './Messenger';
+import Cooking from './Cooking';
 import Meeting from './Meeting';
 import Career from './Career';
 
@@ -39,6 +40,9 @@ const App: FC = () => {
         <Switch>
           <Route path="/messenger">
             <Messenger socket={socket} />
+          </Route>
+          <Route path="/cooking">
+            <Cooking />
           </Route>
           <Route path="/career">
             <Career />

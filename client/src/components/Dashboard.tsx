@@ -12,25 +12,19 @@ const Dashboard: FC = () => {
           <a target="_blank" rel="noreferrer" href="https://github.com/LuukvE/Luuk.gg">
             Github
           </a>
-          . The client is written in{' '}
+          . Both the client and server are written in{' '}
           <a target="_blank" rel="noreferrer" href="https://www.typescriptlang.org">
             TypeScript
-          </a>{' '}
-          and uses{' '}
+          </a>
+          , using{' '}
           <a target="_blank" rel="noreferrer" href="https://reactjs.org">
             React
-          </a>
-          . The API is written for{' '}
+          </a>{' '}
+          and{' '}
           <a target="_blank" rel="noreferrer" href="https://nodejs.org">
             NodeJS
           </a>{' '}
-          and runs on{' '}
-          <a target="_blank" rel="noreferrer" href="https://aws.amazon.com/ec2">
-            AWS EC2
-          </a>
-          .
-          <br />
-          If you need tips on how to develop apps or just want to chat, use the{' '}
+          respectively. If you need tips on how to develop apps or just want to chat, use the{' '}
           <NavLink to="/messenger">Messenger</NavLink> page,{' '}
           <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/luukvanegeraat">
             LinkedIn

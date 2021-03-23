@@ -10,6 +10,15 @@ export type Message = {
   text: string;
 };
 
+export type Recipe = {
+  name: string;
+  duration: string;
+  creator: string;
+  difficulty: number;
+  image: string;
+  text: string;
+}
+
 export type State = {
   error: string;
   slack: {
@@ -25,4 +34,5 @@ export type State = {
     };
     total: number;
   };
+  recipes: Recipe[]
 };

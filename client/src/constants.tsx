@@ -1,4 +1,4 @@
-import { Marker } from './types';
+import { Marker, Recipe } from './types';
 
 export const userArrived = '<@U01RYFCUJ9H>: User arrived on the page';
 
@@ -103,5 +103,54 @@ export const markers: Marker[] = [
       <p>I founded Lukosite in order to practise my skills on real projects.</p>
       <div><b>JavaScript</b> <b>CSS</b> <b>HTML</b></div>
     </div>`
+  }
+];
+
+export const defaultRecipes: Recipe[] = [
+  {
+    name: 'Pasta in Tomatosauce',
+    creator: 'l.vanegeraat@gmail.com',
+    difficulty: 1,
+    duration: '10 min',
+    image: '/pasta_tomatosauce.jpg',
+    text: `## Ingredients
+- Pasta
+- Tomato passata *(70%)*
+- Cream *(30%)*
+- Garlic powder
+- Paprika powder
+- White pepper
+- Salt
+- Sugar
+- Vegetable bouillon
+
+## Instructions
+1. Boil the pasta, add a large amount of salt
+2. Heat everything except the passata and pasta in a pan
+3. After the cream is boiling, add passata and stir
+4. When the pasta done, drain and add it to the pan`
+  },
+  {
+    name: 'Roasted Potatoes',
+    creator: 'l.vanegeraat@gmail.com',
+    difficulty: 1,
+    duration: '70 min',
+    image: '/potatoes.jpg',
+    text: `## Ingredients
+- Potatoes *(~6 large potatoes per person)*
+- Baking powder
+- Oil
+- Salt
+- Favourite sauce *(Béarnaise / Mayonaisse)*
+
+## Instructions
+1. Peel your potatoes and cut them in equal sizes
+2. Boil water with lots of salt and half a teaspoon of baking powder
+3. Boil your potatoes for 20 minutes just to soften
+4. Preheat your oven to 250 degrees
+5. Drain and rest the potatoes until no longer steaming
+6. Spread your potatoes on a tray and cover them in oil
+7. After roasting 20 minutes, keep roasting but turn the potatoes every 10 minutes for another 20 minutes
+8. Salt your potatoes and serve with sauce`
   }
 ];

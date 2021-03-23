@@ -1,0 +1,38 @@
+@import '../variables';
+
+.Cooking {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+
+  .recipe {
+    max-width: 520px;
+    background: rgba(black, 0.2);
+    border-radius: 8px;
+    margin: 0 30px 30px 0;
+
+    .content {
+      padding: 30px;
+    }
+
+    img {
+      width: 100%;
+    }
+
+    h1,
+    h2 {
+      font-weight: 600;
+    }
+
+    small {
+      margin-right: 12px;
+      b {
+        opacity: 0.5;
+      }
+    }
+
+    .text {
+      line-height: 1.7;
+    }
+  }
+}

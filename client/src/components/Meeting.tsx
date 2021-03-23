@@ -23,7 +23,11 @@ const Meeting: FC = () => {
       if (track.kind === 'video') {
         const t: Video.RemoteVideoTrack = track;
 
-        if (remoteVideo.current) t.attach(remoteVideo.current);
+        if (remoteVideo.current) {
+          t.attach(remoteVideo.current);
+
+          remoteVideo.current.classList.remove('hide');
+        }
       } else if (track.kind === 'audio') {
         const t: Video.RemoteAudioTrack = track;
 
@@ -36,6 +40,8 @@ const Meeting: FC = () => {
         const t: Video.RemoteVideoTrack = track;
 
         t.detach();
+
+        if (remoteVideo.current) remoteVideo.current.classList.add('hide');
       } else if (track.kind === 'audio') {
         const t: Video.RemoteAudioTrack = track;
 
@@ -72,7 +78,11 @@ const Meeting: FC = () => {
       const localVideoTrack = Array.from(room.localParticipant.videoTracks.values())[0];
 
       if (localAudio.current) localAudioTrack.track?.attach(localAudio.current);
-      if (localVideo.current) localVideoTrack.track?.attach(localVideo.current);
+
+      if (localVideo.current) {
+        localVideoTrack.track?.attach(localVideo.current);
+        localVideo.current.classList.remove('hide');
+      }
 
       const participants = Array.from(room.participants.values());
 
@@ -95,12 +105,12 @@ const Meeting: FC = () => {
   return (
     <div className="Meeting">
       <div className="local">
-        <video ref={localVideo} autoPlay={true} />
+        <video className="hide" ref={localVideo} autoPlay={true} />
         <audio ref={localAudio} autoPlay={true} />
         <Spinner animation="border" />
       </div>
       <div className="remote">
-        <video ref={remoteVideo} autoPlay={true} />
+        <video className="hide" ref={remoteVideo} autoPlay={true} />
         <audio ref={remoteAudio} autoPlay={true} />
         <Spinner animation="border" />
       </div>

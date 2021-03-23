@@ -2,7 +2,17 @@ import { IncomingMessage, ServerResponse } from 'http';
 import fetch from 'node-fetch';
 import WebSocket from 'ws';
 
-import { RequestBody, SlackMessage, SlackEvent, WebsocketMessage } from './types';
+import { SlackMessage, SlackEvent, WebsocketMessage } from './types';
+
+const sockets: WebSocket[] = [];
+
+const setThreadQueue: ((slackThread: string) => void)[] = [];
+
+const threads: { [thread: string]: (message: WebsocketMessage) => void } = {};
+
+const status = {
+  online: false
+};
 
 export const slackEvent = async (
   request: IncomingMessage,
@@ -22,6 +32,31 @@ export const slackEvent = async (
     if (setThread) setThread(body.event.ts);
   }
 
+  if (
+    body.event.subtype !== 'bot_message' &&
+    !body.event.thread_ts &&
+    ['good morning', 'good night'].includes(body.event.text.toLowerCase())
+  ) {
+    status.online = body.event.text.toLowerCase() === 'good morning';
+
+    sockets.forEach((ws) => {
+      if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(status));
+    });
+
+    return await fetch(process.env.SLACK_HOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        channel: process.env.channel,
+        mrkdwn: false,
+        text: `Good ${status.online ? 'morning' : 'night'}, Luuk!`,
+        thread_ts: body.event.ts
+      })
+    });
+  }
+
   const respond = threads[body.event.thread_ts || body.event.ts];
 
   if (!respond) return;
@@ -33,22 +68,24 @@ export const slackEvent = async (
   });
 };
 
-const writeToSlack = async (message: SlackMessage) => {
-  return await fetch(process.env.SLACK_HOOK, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(message)
-  });
-};
-
-const setThreadQueue: ((slackThread: string) => void)[] = [];
-
-const threads: { [thread: string]: (message: WebsocketMessage) => void } = {};
-
 export default (ws: WebSocket) => {
   let thread = '';
+
+  sockets.push(ws);
+
+  ws.send(JSON.stringify(status));
+
+  const interval = setInterval(() => {
+    if ([ws.OPEN, ws.CONNECTING].includes(ws.readyState)) return;
+
+    clearInterval(interval);
+
+    if (thread) delete threads[thread];
+
+    const index = sockets.findIndex((socket) => socket === ws);
+
+    if (index > -1) sockets.splice(index, 1);
+  }, 1000);
 
   ws.on('message', async (body) => {
     const { text } = JSON.parse(body.toString());
@@ -66,12 +103,20 @@ export default (ws: WebSocket) => {
         thread = slackThread;
 
         threads[thread] = (message: WebsocketMessage) => {
+          if (ws.readyState !== ws.OPEN) return delete threads[thread];
+
           ws.send(JSON.stringify(message));
         };
       });
     }
 
-    const res = await writeToSlack(message);
+    const res = await fetch(process.env.SLACK_HOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(message)
+    });
 
     if (res.status >= 300) return console.log('Slack hook error');
   });

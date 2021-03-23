@@ -24,8 +24,18 @@ const useSocket = () => {
     });
 
     socket.current?.addEventListener('message', function (event) {
-      dispatch(actions.addMessage(JSON.parse(event.data)));
+      const message = JSON.parse(event.data);
+
+      if (typeof message.online === 'boolean') {
+        return dispatch(actions.setOnline(message.online));
+      }
+
+      dispatch(actions.addMessage(message));
     });
+
+    return () => {
+      socket.current?.close();
+    };
   }, [dispatch]);
 
   return {

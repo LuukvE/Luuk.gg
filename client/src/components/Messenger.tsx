@@ -12,20 +12,23 @@ const Messenger: FC = () => {
   const { loading, send } = useSocket();
   const [newMessage, setNewMessage] = useState('');
   const [messageCount, setMessageCount] = useState(0);
-  const messages = useSelector((state) => state.messages);
+  const { messages, online } = useSelector((state) => state.slack);
 
   return (
     <div className="Messenger">
-      <div className="message luuk">
+      <div className={`message luuk  ${online ? 'online' : 'offline'}`}>
         <img src="/luuk.jpg" alt="" />
         <p>
-          You can write a message directly to my Slack app from this page. If I am online I can
-          respond right away. If it takes too long, you can send me your email address and I can
-          respond later.
+          You can write a message directly to my Slack app from this page. I am currently{' '}
+          {online ? 'online' : 'offline'}. If I respond too slowly you can send me your email
+          address and I can respond later.
         </p>
       </div>
       {messages.map((message, index) => (
-        <div className={`message ${message.sender.toLowerCase()}`} key={index}>
+        <div
+          className={`message ${message.sender.toLowerCase()} ${online ? 'online' : 'offline'}`}
+          key={index}
+        >
           {message.sender === 'Luuk' && <img src="/luuk.jpg" alt="" />}
           {message.sender === 'You' && <small>{format(parseJSON(message.date), 'HH:mm')}</small>}
           <p>{message.text}</p>

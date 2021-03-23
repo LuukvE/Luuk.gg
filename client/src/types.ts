@@ -12,7 +12,10 @@ export type Message = {
 
 export type State = {
   error: string;
-  messages: Message[];
+  slack: {
+    online: boolean;
+    messages: Message[];
+  };
   github: {
     contributions: {
       [date: string]: number;

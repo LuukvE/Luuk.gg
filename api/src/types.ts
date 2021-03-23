@@ -6,11 +6,13 @@ export type Contributions = {
   [date: string]: number;
 };
 
-export type WebsocketMessage = {
-  sender: string;
-  date: string;
-  text: string;
-};
+export type WebsocketMessage =
+  | {
+      sender: string;
+      date: string;
+      text: string;
+    }
+  | { online: boolean };
 
 export type SlackMessage = {
   channel: string;

@@ -5,7 +5,10 @@ import { State } from './types';
 
 const initialState: State = {
   error: '',
-  messages: [],
+  slack: {
+    online: false,
+    messages: []
+  },
   github: { total: 0, contributions: {} }
 };
 
@@ -15,7 +18,10 @@ export const { actions, reducer } = createSlice({
   reducers: {
     set: (state, action) => ({ ...state, ...action.payload }),
     addMessage: (state, action) => {
-      state.messages.push(action.payload);
+      state.slack.messages.push(action.payload);
+    },
+    setOnline: (state, action) => {
+      state.slack.online = action.payload;
     }
   }
 });

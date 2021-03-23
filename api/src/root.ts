@@ -1,7 +1,9 @@
 import { RequestListener } from 'http';
-import github from './github';
-import slack, { slackEvent } from './slack';
+
 import file from './file';
+import github from './github';
+import twilio from './twilio';
+import slack, { slackEvent } from './slack';
 
 const protocol = process.env.HTTPS_PORT ? 'https://' : 'http://';
 
@@ -39,6 +41,8 @@ export const httpHandler: RequestListener = async (request, response) => {
     }
 
     if (request.url === '/github') return github(request, response, body);
+
+    if (request.url === '/twilio') return twilio(request, response, body);
 
     if (request.url === '/slack') return slackEvent(request, response, body);
 

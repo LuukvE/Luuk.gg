@@ -6,6 +6,7 @@ import React, { FC, useRef } from 'react';
 
 import Dashboard from './Dashboard';
 import Messenger from './Messenger';
+import Meeting from './Meeting';
 import Career from './Career';
 
 const App: FC = () => {
@@ -41,6 +42,9 @@ const App: FC = () => {
           </Route>
           <Route path="/career">
             <Career />
+          </Route>
+          <Route path="/meeting">
+            <Meeting />
           </Route>
           <Route path="/">
             <Dashboard />

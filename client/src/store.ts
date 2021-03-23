@@ -9,6 +9,9 @@ const initialState: State = {
     online: false,
     messages: []
   },
+  twilio: {
+    token: ''
+  },
   github: { total: 0, contributions: {} }
 };
 

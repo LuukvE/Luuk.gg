@@ -1,0 +1,32 @@
+@import '../variables';
+
+.Meeting {
+  display: flex;
+  width: 100%;
+  .local,
+  .remote {
+    display: flex;
+    width: 50%;
+    overflow: hidden;
+    position: relative;
+    video {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+    .spinner-border {
+      position: absolute;
+      left: calc(50% - 21px);
+      top: calc(50% - 21px);
+    }
+  }
+  .local {
+    padding-right: 25px;
+  }
+  .remote {
+    padding-left: 25px;
+  }
+}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 
 function useQuery() {
@@ -6,24 +6,27 @@ function useQuery() {
   const location = useLocation();
 
   return {
-    setQuery: (update: { [key: string]: number | string | undefined }) => {
-      const query = new URLSearchParams(location.search);
-      const newQuery: { [key: string]: string } = {};
+    setQuery: useCallback(
+      (update: { [key: string]: number | string | undefined }) => {
+        const query = new URLSearchParams(location.search);
+        const newQuery: { [key: string]: string } = {};
 
-      query.forEach((value, key) => {
-        newQuery[key] = value;
-      });
+        query.forEach((value, key) => {
+          newQuery[key] = value;
+        });
 
-      Object.keys(update).forEach((key) => {
-        if (update[key]) newQuery[key] = `${update[key]}`;
-        else delete newQuery[key];
-      });
+        Object.keys(update).forEach((key) => {
+          if (update[key]) newQuery[key] = `${update[key]}`;
+          else delete newQuery[key];
+        });
 
-      history.push({
-        pathname: history.location.pathname,
-        search: new URLSearchParams(newQuery).toString()
-      });
-    },
+        history.push({
+          pathname: history.location.pathname,
+          search: new URLSearchParams(newQuery).toString()
+        });
+      },
+      [history, location.search]
+    ),
     query: useMemo(() => {
       const query = new URLSearchParams(location.search);
       const props: { [key: string]: string } = {};

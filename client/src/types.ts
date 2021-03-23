@@ -16,6 +16,9 @@ export type State = {
     online: boolean;
     messages: Message[];
   };
+  twilio: {
+    token: string;
+  };
   github: {
     contributions: {
       [date: string]: number;

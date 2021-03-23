@@ -38,8 +38,6 @@ export const httpHandler: RequestListener = async (request, response) => {
       console.log('JSON parse error of request body', chunks);
     }
 
-    console.log(request.url, body);
-
     if (request.url === '/github') return github(request, response, body);
 
     if (request.url === '/slack') return slackEvent(request, response, body);

@@ -10,9 +10,10 @@ export const setupSlack = async (
   response: ServerResponse,
   body: RequestBody
 ) => {
-  console.log(body);
-
   response.writeHead(200);
+
+  if (!body) return response.end();
+
   response.end(JSON.stringify({ challenge: body.challenge }));
 };
 

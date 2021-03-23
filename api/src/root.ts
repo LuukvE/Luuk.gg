@@ -34,6 +34,8 @@ export const httpHandler: RequestListener = async (request, response) => {
   request.on('end', () => {
     const body = chunks.length ? JSON.parse(chunks.join('')) : null;
 
+    console.log(request.url, body);
+
     if (request.url === '/github') return github(request, response, body);
 
     if (request.url === '/slack') return setupSlack(request, response, body);

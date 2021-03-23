@@ -30,7 +30,13 @@ export const httpHandler: RequestListener = async (request, response) => {
   });
 
   request.on('end', () => {
-    const body = chunks.length ? JSON.parse(chunks) : null;
+    let body: any = null;
+
+    try {
+      body = chunks.length ? JSON.parse(chunks) : null;
+    } catch (e) {
+      console.log('JSON parse error of request body', chunks);
+    }
 
     console.log(request.url, body);
 

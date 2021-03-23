@@ -23,16 +23,14 @@ export const httpHandler: RequestListener = async (request, response) => {
     return response.end();
   }
 
-  const chunks: string[] = [];
+  let chunks = '';
 
   request.on('data', (chunk: Buffer | string) => {
-    if (chunk instanceof Buffer) return; // this API only allows JSON
-
-    chunks.push(chunk);
+    chunks += chunk;
   });
 
   request.on('end', () => {
-    const body = chunks.length ? JSON.parse(chunks.join('')) : null;
+    const body = chunks.length ? JSON.parse(chunks) : null;
 
     console.log(request.url, body);
 

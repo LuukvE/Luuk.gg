@@ -7,7 +7,6 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@slack/bolt": "^3.3.0",
     "@types/node-fetch": "^2.5.8",
     "date-fns": "^2.19.0",
     "dotenv": "^8.2.0",

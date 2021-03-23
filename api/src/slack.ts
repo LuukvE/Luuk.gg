@@ -1,20 +1,36 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { App } from '@slack/bolt';
 import fetch from 'node-fetch';
 import WebSocket from 'ws';
 
 import { RequestBody, SlackMessage, SlackEvent, WebsocketMessage } from './types';
 
-export const setupSlack = async (
+export const slackEvent = async (
   request: IncomingMessage,
   response: ServerResponse,
-  body: RequestBody
+  body: { event: SlackEvent }
 ) => {
   response.writeHead(200);
 
-  if (!body) return response.end();
+  // used for setup:
+  // response.end(JSON.stringify({ challenge: body.challenge }));
 
-  response.end(JSON.stringify({ challenge: body.challenge }));
+  response.end();
+
+  if (body.event.subtype === 'bot_message' && !body.event.thread_ts) {
+    const setThread = setThreadQueue.pop();
+
+    if (setThread) setThread(body.event.ts);
+  }
+
+  const respond = threads[body.event.thread_ts || body.event.ts];
+
+  if (!respond) return;
+
+  respond({
+    text: body.event.text,
+    date: new Date().toJSON(),
+    sender: body.event.subtype === 'bot_message' ? 'You' : 'Luuk'
+  });
 };
 
 const writeToSlack = async (message: SlackMessage) => {
@@ -30,34 +46,6 @@ const writeToSlack = async (message: SlackMessage) => {
 const setThreadQueue: ((slackThread: string) => void)[] = [];
 
 const threads: { [thread: string]: (message: WebsocketMessage) => void } = {};
-
-const app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
-  appToken: process.env.SLACK_APP_TOKEN,
-  socketMode: true
-});
-
-app.start();
-
-app.event('message', async ({ event }) => {
-  const e = event as SlackEvent;
-
-  if (e.subtype === 'bot_message' && !e.thread_ts) {
-    const setThread = setThreadQueue.pop();
-
-    if (setThread) setThread(event.ts);
-  }
-
-  const respond = threads[e.thread_ts || e.ts];
-
-  if (!respond) return;
-
-  respond({
-    text: e.text,
-    date: new Date().toJSON(),
-    sender: e.subtype === 'bot_message' ? 'You' : 'Luuk'
-  });
-});
 
 export default (ws: WebSocket) => {
   let thread = '';

@@ -19,7 +19,7 @@ export const markers: Marker[] = [
       <h4>Fearless Apps</h4>
       <h5>Typescript Developer and Co-Owner</h5>
       <div class="sub"><span>Rotterdam</span> July 2017 - Current</div>
-      <p>I lead the development of applications that manage and visualise esports-related data.</p>
+      <p>My brother and I build high performance, data-rich applications by using cutting edge web technologies.</p>
       <div><b>Javascript</b> <b>React</b> <b>React Native</b> <b>NodeJS</b> <b>MongoDB</b> <b>SCSS</b> <b>HTML</b></div>
     </div>`
   },
@@ -52,7 +52,7 @@ export const markers: Marker[] = [
       <h4>Software Skills</h4>
       <h5>Web Application Developer</h5>
       <div class="sub"><span>Gothenburg</span> September 2015 - July 2017</div>
-      <p>Recruiting & Testing company, maintaining and improving multiple modern web applications that provide services to customers and test candidates. I did full stack development on all applications the company owns and runs.</p>
+      <p>I maintained and improved multiple modern web applications that provide services to customers and test candidates. I did full stack development on all applications the company owns and runs.</p>
       <div><b>Javascript</b> <b>AngularJS</b> <b>NodeJS</b> <b>MongoDB</b> <b>MySQL</b> <b>SCSS</b> <b>HTML</b></div>
     </div>`
   },

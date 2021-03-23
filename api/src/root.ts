@@ -1,13 +1,13 @@
 import { RequestListener } from 'http';
-
 import github from './github';
+import slack from './slack';
 import file from './file';
 
 const protocol = process.env.HTTPS_PORT ? 'https://' : 'http://';
 
 const clientOrigin = `${protocol}${process.env.CLIENT_DOMAIN}`;
 
-const root: RequestListener = async (request, response) => {
+export const httpHandler: RequestListener = async (request, response) => {
   if (!request.headers.host || request.headers.host.indexOf(process.env.API_DOMAIN) !== 0) {
     return file(request, response);
   }
@@ -42,4 +42,4 @@ const root: RequestListener = async (request, response) => {
   });
 };
 
-export default root;
+export const wsHandler = slack;

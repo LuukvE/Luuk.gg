@@ -1,11 +1,14 @@
 import fs from 'fs';
 import https from 'https';
+import WebSocket from 'ws';
 import dotenv from 'dotenv';
-import http from 'http';
+import http, { Server } from 'http';
 
 dotenv.config();
 
-import root from './root';
+import { httpHandler, wsHandler } from './root';
+
+let server: Server | null = null;
 
 if (process.env.HTTPS_PORT) {
   const certPath = '../ssl';
@@ -17,20 +20,24 @@ if (process.env.HTTPS_PORT) {
     })
     .listen(process.env.HTTP_PORT);
 
-  https
+  server = https
     .createServer(
       {
         key: fs.readFileSync(`${certPath}/privkey.pem`, 'utf8'),
         cert: fs.readFileSync(`${certPath}/cert.pem`, 'utf8'),
         ca: fs.readFileSync(`${certPath}/chain.pem`, 'utf8')
       },
-      root
+      httpHandler
     )
     .listen(process.env.HTTPS_PORT);
 
   console.log(`Hosting API at https://${process.env.API_DOMAIN}:${process.env.HTTPS_PORT}`);
 } else {
-  http.createServer(root).listen(process.env.HTTP_PORT);
+  server = http.createServer(httpHandler).listen(process.env.HTTP_PORT);
 
   console.log(`Hosting API at http://${process.env.API_DOMAIN}:${process.env.HTTP_PORT}`);
 }
+
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', wsHandler);

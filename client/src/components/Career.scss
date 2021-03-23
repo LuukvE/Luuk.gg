@@ -5,6 +5,11 @@
   flex-direction: column;
   width: 100%;
 
+  > .spinner-border {
+    margin: 100px auto 0;
+    display: flex;
+  }
+
   .calendar-heading {
     display: flex;
     position: relative;

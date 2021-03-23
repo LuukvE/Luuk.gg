@@ -4,8 +4,15 @@ export type Marker = {
   content: string;
 };
 
+export type Message = {
+  date: string;
+  sender: string;
+  text: string;
+};
+
 export type State = {
   error: string;
+  messages: Message[];
   github: {
     contributions: {
       [date: string]: number;

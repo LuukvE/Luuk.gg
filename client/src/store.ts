@@ -3,8 +3,9 @@ import { configureStore, getDefaultMiddleware, createSlice } from '@reduxjs/tool
 
 import { State } from './types';
 
-const initialState = {
+const initialState: State = {
   error: '',
+  messages: [],
   github: { total: 0, contributions: {} }
 };
 
@@ -12,7 +13,10 @@ export const { actions, reducer } = createSlice({
   name: 'store',
   initialState,
   reducers: {
-    set: (state, action) => ({ ...state, ...action.payload })
+    set: (state, action) => ({ ...state, ...action.payload }),
+    addMessage: (state, action) => {
+      state.messages.push(action.payload);
+    }
   }
 });
 

@@ -33,7 +33,7 @@ export const slackEvent = async (
   }
 
   if (!body.event.text) {
-    if (body.event.subtype === 'message_deleted') return;
+    if (['message_changed', 'message_deleted'].includes(body.event.subtype)) return;
 
     return console.log('weird event', body.event);
   }

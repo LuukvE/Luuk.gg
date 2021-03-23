@@ -14,7 +14,7 @@ const Dashboard: FC = () => {
           </a>
           . The client is written in{' '}
           <a target="_blank" rel="noreferrer" href="https://www.typescriptlang.org">
-            Typescript
+            TypeScript
           </a>{' '}
           and uses{' '}
           <a target="_blank" rel="noreferrer" href="https://reactjs.org">

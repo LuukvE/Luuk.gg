@@ -27,7 +27,7 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   useEffect(() => {
     mounted.current = true;
 
-    send('- User arrived on the page - ');
+    send('- User arrived on the page -');
 
     socket.current?.addEventListener('close', () => setRefresh(refresh + 1));
 
@@ -37,6 +37,8 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
       if (!mounted.current) return;
 
       setLoading(false);
+
+      send('- User arrived on the page -');
     });
 
     socket.current?.addEventListener('message', function (event) {
@@ -48,13 +50,15 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
         return dispatch(actions.setOnline(message.online));
       }
 
+      if (['- User arrived on the page -', '- User left the page -'].includes(message.text)) return;
+
       dispatch(actions.addMessage(message));
     });
 
     return () => {
       mounted.current = false;
 
-      send('- User left the page - ');
+      send('- User left the page -');
     };
   }, [socket, refresh, setRefresh, send, dispatch]);
 

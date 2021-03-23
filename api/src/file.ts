@@ -26,7 +26,7 @@ const file: RequestListener = (request, response) => {
       }
 
       response.writeHead(200, {
-        'Content-Type': mime.lookup(filename)
+        'Content-Type': mime['getType'](filename)
       });
 
       response.write(file, 'binary');

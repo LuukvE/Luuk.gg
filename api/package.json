@@ -11,7 +11,7 @@
     "@types/node-fetch": "^2.5.8",
     "date-fns": "^2.19.0",
     "dotenv": "^8.2.0",
-    "mime": "^2.5.2",
+    "mime": "*",
     "node-fetch": "^2.6.1"
   },
   "scripts": {

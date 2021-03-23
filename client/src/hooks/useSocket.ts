@@ -4,7 +4,9 @@ import { useDispatch, actions } from '../store';
 
 const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(
+    !socket.current || socket.current.readyState !== socket.current.OPEN
+  );
   const dev = process.env.NODE_ENV === 'development';
   const apiURL = dev ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
   const socketURL = `${apiURL}`.replace('http://', 'ws://').replace('https://', 'wss://');

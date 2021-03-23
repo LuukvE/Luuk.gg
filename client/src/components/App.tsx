@@ -2,13 +2,15 @@ import './App.scss';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-app-polyfill/ie11';
 import { Redirect, Switch, Route, NavLink } from 'react-router-dom';
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
 
 import Dashboard from './Dashboard';
 import Messenger from './Messenger';
 import Career from './Career';
 
 const App: FC = () => {
+  const socket = useRef<WebSocket | null>(null);
+
   return (
     <div className="App">
       <header>
@@ -35,7 +37,7 @@ const App: FC = () => {
       <main>
         <Switch>
           <Route path="/messenger">
-            <Messenger />
+            <Messenger socket={socket} />
           </Route>
           <Route path="/career">
             <Career />

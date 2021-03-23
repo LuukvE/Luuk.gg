@@ -1,5 +1,5 @@
 import './Messenger.scss';
-import React, { FC, useState } from 'react';
+import React, { FC, MutableRefObject, useState } from 'react';
 import { parseJSON, format } from 'date-fns';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -8,8 +8,8 @@ import Spinner from 'react-bootstrap/Spinner';
 import { useSelector } from '../store';
 import useSocket from '../hooks/useSocket';
 
-const Messenger: FC = () => {
-  const { loading, send } = useSocket();
+const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket }) => {
+  const { loading, send } = useSocket(socket);
   const [newMessage, setNewMessage] = useState('');
   const [messageCount, setMessageCount] = useState(0);
   const { messages, online } = useSelector((state) => state.slack);

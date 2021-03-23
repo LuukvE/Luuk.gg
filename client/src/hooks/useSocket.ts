@@ -1,9 +1,8 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, MutableRefObject } from 'react';
 
 import { useDispatch, actions } from '../store';
 
-const useSocket = () => {
-  const socket = useRef<WebSocket | null>(null);
+const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const dev = process.env.NODE_ENV === 'development';
@@ -12,11 +11,14 @@ const useSocket = () => {
 
   socket.current = socket.current || new WebSocket(socketURL);
 
-  const send = useCallback((text: string) => {
-    if (socket.current?.readyState !== socket.current?.OPEN) return;
+  const send = useCallback(
+    (text: string) => {
+      if (socket.current?.readyState !== socket.current?.OPEN) return;
 
-    socket.current?.send(JSON.stringify({ text }));
-  }, []);
+      socket.current?.send(JSON.stringify({ text }));
+    },
+    [socket]
+  );
 
   useEffect(() => {
     socket.current?.addEventListener('open', function (event) {
@@ -32,11 +34,7 @@ const useSocket = () => {
 
       dispatch(actions.addMessage(message));
     });
-
-    return () => {
-      socket.current?.close();
-    };
-  }, [dispatch]);
+  }, [socket, dispatch]);
 
   return {
     loading,

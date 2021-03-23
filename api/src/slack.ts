@@ -32,6 +32,8 @@ export const slackEvent = async (
     if (setThread) setThread(body.event.ts);
   }
 
+  if (!body.event.text) return console.log('weird event', body.event);
+
   if (
     body.event.subtype !== 'bot_message' &&
     !body.event.thread_ts &&

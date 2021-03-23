@@ -1,8 +1,20 @@
+import { IncomingMessage, ServerResponse } from 'http';
 import { App } from '@slack/bolt';
 import fetch from 'node-fetch';
 import WebSocket from 'ws';
 
-import { SlackMessage, SlackEvent, WebsocketMessage } from './types';
+import { RequestBody, SlackMessage, SlackEvent, WebsocketMessage } from './types';
+
+export const setupSlack = async (
+  request: IncomingMessage,
+  response: ServerResponse,
+  body: RequestBody
+) => {
+  console.log(body);
+
+  response.writeHead(200);
+  response.end(JSON.stringify({ challenge: body.challenge }));
+};
 
 const writeToSlack = async (message: SlackMessage) => {
   return await fetch(process.env.SLACK_HOOK, {

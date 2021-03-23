@@ -32,7 +32,11 @@ export const slackEvent = async (
     if (setThread) setThread(body.event.ts);
   }
 
-  if (!body.event.text) return console.log('weird event', body.event);
+  if (!body.event.text) {
+    if (body.event.subtype === 'message_deleted') return;
+
+    return console.log('weird event', body.event);
+  }
 
   if (
     body.event.subtype !== 'bot_message' &&

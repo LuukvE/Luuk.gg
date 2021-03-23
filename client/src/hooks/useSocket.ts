@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, MutableRefObject, useRef } from 'react';
 
 import { useDispatch, actions } from '../store';
+import { userArrived, userLeft } from '../constants';
 
 const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   useEffect(() => {
     mounted.current = true;
 
-    send('- User arrived on the page -');
+    send(userArrived);
 
     socket.current?.addEventListener('close', () => setRefresh(refresh + 1));
 
@@ -38,7 +39,7 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
 
       setLoading(false);
 
-      send('- User arrived on the page -');
+      send(userArrived);
     });
 
     socket.current?.addEventListener('message', function (event) {
@@ -50,7 +51,7 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
         return dispatch(actions.setOnline(message.online));
       }
 
-      if (['- User arrived on the page -', '- User left the page -'].includes(message.text)) return;
+      if ([userArrived, userLeft].includes(message.text)) return;
 
       dispatch(actions.addMessage(message));
     });
@@ -58,7 +59,7 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
     return () => {
       mounted.current = false;
 
-      send('- User left the page -');
+      send(userLeft);
     };
   }, [socket, refresh, setRefresh, send, dispatch]);
 

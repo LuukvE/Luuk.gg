@@ -1,5 +1,9 @@
 import { Marker } from './types';
 
+export const userArrived = '@Luuk: User arrived on the page';
+
+export const userLeft = '@Luuk: User left the page';
+
 export const markers: Marker[] = [
   {
     title: 'Bayes E-Sport Solutions',

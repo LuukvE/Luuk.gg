@@ -144,7 +144,7 @@ export const defaultRecipes: Recipe[] = [
 - Favourite sauce *(Béarnaise / Mayonaisse)*
 
 ## Instructions
-1. Peel your potatoes and cut them in equal sizes
+1. Peel your potatoes *(optional)* and cut in equal sizes
 2. Boil water with lots of salt and half a teaspoon of baking powder
 3. Boil your potatoes for 20 minutes just to soften
 4. Preheat your oven to 250 degrees

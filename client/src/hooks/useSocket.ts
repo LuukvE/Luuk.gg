@@ -1,9 +1,11 @@
-import { useEffect, useState, useCallback, MutableRefObject } from 'react';
+import { useEffect, useState, useCallback, MutableRefObject, useRef } from 'react';
 
 import { useDispatch, actions } from '../store';
 
 const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   const dispatch = useDispatch();
+  const [refresh, setRefresh] = useState(0);
+  const mounted = useRef(true);
   const [loading, setLoading] = useState(
     !socket.current || socket.current.readyState !== socket.current.OPEN
   );
@@ -23,11 +25,23 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   );
 
   useEffect(() => {
+    mounted.current = true;
+
+    send('- User arrived on the page - ');
+
+    socket.current?.addEventListener('close', () => setRefresh(refresh + 1));
+
+    socket.current?.addEventListener('error', () => setRefresh(refresh + 1));
+
     socket.current?.addEventListener('open', function (event) {
+      if (!mounted.current) return;
+
       setLoading(false);
     });
 
     socket.current?.addEventListener('message', function (event) {
+      if (!mounted.current) return;
+
       const message = JSON.parse(event.data);
 
       if (typeof message.online === 'boolean') {
@@ -36,7 +50,13 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
 
       dispatch(actions.addMessage(message));
     });
-  }, [socket, dispatch]);
+
+    return () => {
+      mounted.current = false;
+
+      send('- User left the page - ');
+    };
+  }, [socket, refresh, setRefresh, send, dispatch]);
 
   return {
     loading,

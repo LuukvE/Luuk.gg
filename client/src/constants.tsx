@@ -1,8 +1,8 @@
 import { Marker } from './types';
 
-export const userArrived = '@Luuk: User arrived on the page';
+export const userArrived = '<@U01RYFCUJ9H>: User arrived on the page';
 
-export const userLeft = '@Luuk: User left the page';
+export const userLeft = '<@U01RYFCUJ9H>: User left the page';
 
 export const markers: Marker[] = [
   {

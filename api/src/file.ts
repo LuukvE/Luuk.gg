@@ -6,6 +6,8 @@ import { RequestListener } from 'http';
 
 // Load a static file from inside the "../../client/build" folder
 const file: RequestListener = (request, response) => {
+  console.log(request.url);
+
   const uri = new URL(request.url).pathname;
 
   // Construct the file path on our local drive

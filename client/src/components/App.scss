@@ -92,3 +92,19 @@ body {
     align-items: flex-start;
   }
 }
+
+.modal .modal-content {
+  background: $dark;
+  .close {
+    text-shadow: none;
+    color: $white;
+  }
+  .modal-footer {
+    .btn {
+      box-shadow: none;
+    }
+    .btn-dark {
+      margin-right: auto;
+    }
+  }
+}

@@ -2,8 +2,11 @@ import './Cooking.scss';
 import React, { FC, useCallback, useState, useEffect, useRef, ChangeEvent } from 'react';
 import Markdown from 'react-markdown';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 import { useSelector, useDispatch, actions } from '../store';
 import useAWS from '../hooks/useAWS';
@@ -19,6 +22,7 @@ const Cooking: FC = () => {
   const { loading, upload, saveRecipes, loadRecipes } = useAWS();
   const { recipes, user } = useSelector((state) => state);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   // When signed in, load recipes created by the user
   useEffect(() => {
@@ -74,22 +78,57 @@ const Cooking: FC = () => {
     [upload, dispatch]
   );
 
+  const deleteRecipe = useCallback(
+    (index) => {
+      // Make a shallow copy of the recipes
+      const newList = recipes.slice();
+
+      // Remove the recipe based on its index
+      newList.splice(index, 1);
+
+      // This enables the useEffect hook that saves the recipes
+      // The hook will only trigger after the set action has updated the store
+      saveOnChange.current = true;
+
+      // Update the store
+      dispatch(
+        actions.set({
+          recipes: newList
+        })
+      );
+
+      // Hide the delete recipe modal
+      setDeleteIndex(null);
+
+      // Turn off recipe Edit mode
+      setEditIndex(null);
+    },
+    [recipes, dispatch]
+  );
+
   return (
     <div className="Cooking">
       <div className="sub-menu">
         <h1>Cooking Recipes {loading && <Spinner animation="border" />}</h1>
         {user ? (
           <>
-            <Button
-              variant="success"
-              onClick={() => {
-                dispatch(actions.addRecipe({}));
-
-                setEditIndex(0);
-              }}
+            <OverlayTrigger
+              placement="left"
+              overlay={
+                <Tooltip id="create-tooltip">Recipes you create are only visible to you</Tooltip>
+              }
             >
-              <i className="fas fa-plus" /> Create
-            </Button>
+              <Button
+                variant="success"
+                onClick={() => {
+                  dispatch(actions.addRecipe({}));
+
+                  setEditIndex(0);
+                }}
+              >
+                <i className="fas fa-plus" /> Create
+              </Button>
+            </OverlayTrigger>
           </>
         ) : (
           <>
@@ -232,11 +271,47 @@ const Cooking: FC = () => {
                     </span>
                   )}
                 </Button>
+                <Button
+                  onClick={() => {
+                    setDeleteIndex(index);
+                  }}
+                  variant="outline-danger"
+                >
+                  <i className="fas fa-trash" /> Delete
+                </Button>
               </div>
             )}
           </div>
         ))}
       </div>
+      <Modal
+        animation={false}
+        className="modal"
+        show={deleteIndex !== null}
+        onHide={() => {
+          setDeleteIndex(null);
+        }}
+      >
+        <Modal.Header closeButton>Are you sure?</Modal.Header>
+        <Modal.Footer>
+          <Button
+            variant="dark"
+            onClick={() => {
+              setDeleteIndex(null);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              deleteRecipe(deleteIndex);
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

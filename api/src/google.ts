@@ -49,9 +49,9 @@ export const googleAuthenticate = async (
   }).catch((error) => console.log(error));
 
   if (!tokenRequest) {
-    response.writeHead(500);
+    response.writeHead(200);
 
-    return response.end();
+    return response.end(JSON.stringify(null));
   }
 
   const tokens = await tokenRequest.json();
@@ -68,16 +68,16 @@ export const googleAuthenticate = async (
   if (googleRequest.status >= 300) {
     console.log('Google user info error', googleRequest.status, await googleRequest.text());
 
-    response.writeHead(500);
+    response.writeHead(200);
 
-    return response.end();
+    return response.end(JSON.stringify(null));
   }
 
   const user = await googleRequest.json();
 
   users[user.email] = user;
 
-  cookies.set('signed-in-user', user.email, { signed: true });
+  cookies.set('signed-in-user', user.email, { signed: true, expires: new Date(2050, 1, 1) });
 
   response.writeHead(200);
 

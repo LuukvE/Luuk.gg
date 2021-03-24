@@ -8,7 +8,7 @@ import { RequestListener } from 'http';
 const file: RequestListener = (request, response) => {
   console.log(request.url);
 
-  const uri = new URL(request.url).pathname;
+  const uri = new URL(request.url, `https://${process.env.API_DOMAIN}`).pathname;
 
   // Construct the file path on our local drive
   let filename = path.join(__dirname, '..', '..', 'client', 'build', path.resolve('/', uri));

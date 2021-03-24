@@ -1,8 +1,12 @@
 import './App.scss';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-app-polyfill/ie11';
+import React, { FC, useRef, useEffect } from 'react';
 import { Redirect, Switch, Route, NavLink } from 'react-router-dom';
-import React, { FC, useRef } from 'react';
+
+import useAPI from '../hooks/useAPI';
+import useQuery from '../hooks/useQuery';
+import { useSelector } from '../store';
 
 import Dashboard from './Dashboard';
 import Messenger from './Messenger';
@@ -10,8 +14,19 @@ import Cooking from './Cooking';
 import Meeting from './Meeting';
 import Career from './Career';
 
+const dev = process.env.NODE_ENV === 'development';
+
+const apiURL = dev ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
+
 const App: FC = () => {
+  const { query } = useQuery();
+  const { authenticate, signout } = useAPI();
   const socket = useRef<WebSocket | null>(null);
+  const user = useSelector((state) => state.user);
+
+  useEffect(() => {
+    authenticate(query.code || '');
+  }, [authenticate]); // eslint-disable-line
 
   return (
     <div className="App">
@@ -35,6 +50,19 @@ const App: FC = () => {
         <NavLink to="/meeting">
           <i className="fas fa-video" /> Meeting
         </NavLink>
+        {user ? (
+          <div className="user-account">
+            {!!user.picture && <img className="user-picture" src={user.picture} alt="" />}
+            <span className="user-name">{user.name}</span>
+            <span className="sign-out" onClick={() => signout()}>
+              <i className="fas fa-sign-out-alt" />
+            </span>
+          </div>
+        ) : (
+          <a href={`${apiURL}/signin`} rel="noreferrer">
+            <i className="fas fa-sign-in-alt" /> Sign in
+          </a>
+        )}
       </header>
       <main>
         <Switch>
@@ -50,7 +78,7 @@ const App: FC = () => {
           <Route path="/meeting">
             <Meeting />
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <Dashboard />
           </Route>
           <Redirect to="/" />

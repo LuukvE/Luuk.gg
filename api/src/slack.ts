@@ -74,7 +74,7 @@ export const slackEvent = async (
   });
 };
 
-export default (ws: WebSocket) => {
+export const slackWebsocket = (ws: WebSocket) => {
   let thread = '';
 
   sockets.push(ws);

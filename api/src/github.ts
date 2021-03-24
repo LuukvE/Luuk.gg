@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { getYear, format } from 'date-fns';
 import fetch from 'node-fetch';
 
-import { RequestBody, Contributions, GithubContributionsBody } from './types';
+import { Contributions, GithubContributionsBody } from './types';
 
 const localCache: {
   contributions: Contributions;
@@ -62,7 +62,7 @@ async function loadYear(year: number) {
   };
 }
 
-export default async (request: IncomingMessage, response: ServerResponse, body: RequestBody) => {
+export default async (request: IncomingMessage, response: ServerResponse) => {
   if (!localCache.contributions[format(new Date(), 'yyyy-MM-dd')]) {
     const years = new Array(getYear(new Date()) - 2010).fill(null).map((_, index) => index + 2011);
     const yearContributions = await Promise.all(years.map((year) => loadYear(year)));

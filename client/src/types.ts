@@ -17,10 +17,15 @@ export type Recipe = {
   difficulty: number;
   image: string;
   text: string;
-}
+};
 
 export type State = {
   error: string;
+  user: null | {
+    name: string;
+    email: string;
+    picture?: string;
+  };
   slack: {
     online: boolean;
     messages: Message[];
@@ -34,5 +39,5 @@ export type State = {
     };
     total: number;
   };
-  recipes: Recipe[]
+  recipes: Recipe[];
 };

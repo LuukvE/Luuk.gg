@@ -12,6 +12,72 @@ const useAPI = () => {
   const abort = useRef<AbortController | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const authenticate = useCallback(
+    async (code: string) => {
+      try {
+        const res = await fetch(`${apiURL}/authenticate`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            code
+          })
+        });
+
+        const response = await res.json();
+
+        if (res.status >= 300) {
+          dispatch(actions.set({ error: `${res.url}\n\n${JSON.stringify(response, null, 2)}` }));
+
+          return { error: response };
+        }
+
+        dispatch(
+          actions.set({
+            user: response
+          })
+        );
+
+        return { response };
+      } catch (error) {
+        return { error };
+      }
+    },
+    [dispatch]
+  );
+
+  const signout = useCallback(async () => {
+    try {
+      const res = await fetch(`${apiURL}/signout`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const response = await res.json();
+
+      if (res.status >= 300) {
+        dispatch(actions.set({ error: `${res.url}\n\n${JSON.stringify(response, null, 2)}` }));
+
+        return { error: response };
+      }
+
+      dispatch(
+        actions.set({
+          user: response
+        })
+      );
+
+      return { response };
+    } catch (error) {
+      return { error };
+    }
+  }, [dispatch]);
+
   const getTwilioToken = useCallback(
     async (room: string) => {
       if (abort.current) abort.current?.abort();
@@ -113,6 +179,8 @@ const useAPI = () => {
 
   return {
     loading,
+    signout,
+    authenticate,
     getTwilioToken,
     getContributions
   };

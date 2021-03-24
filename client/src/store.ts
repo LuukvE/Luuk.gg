@@ -6,6 +6,7 @@ import { defaultRecipes } from './constants';
 
 const initialState: State = {
   error: '',
+  user: null,
   slack: {
     online: false,
     messages: []

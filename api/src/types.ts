@@ -1,6 +1,11 @@
-export type RequestBody = {
-  [key: string]: string;
-} | null;
+export type Users = {
+  [email: string]: {
+    name: string;
+    picture: string;
+    email: string;
+    id: string;
+  };
+};
 
 export type Contributions = {
   [date: string]: number;

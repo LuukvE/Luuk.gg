@@ -1,3 +1,14 @@
+// AWS module
+export type Recipe = {
+  name: string;
+  duration: string;
+  creator: string;
+  difficulty: number;
+  image: string;
+  text: string;
+};
+
+// Google module
 export type Users = {
   [email: string]: {
     name: string;
@@ -7,10 +18,7 @@ export type Users = {
   };
 };
 
-export type Contributions = {
-  [date: string]: number;
-};
-
+// Slack module
 export type WebsocketMessage =
   | {
       sender: string;
@@ -31,6 +39,11 @@ export type SlackEvent = {
   ts: string;
   thread_ts?: string;
   subtype?: string;
+};
+
+// Github module
+export type Contributions = {
+  [date: string]: number;
 };
 
 export type GithubContributionsBody = {

@@ -13,7 +13,7 @@ import {
   parseISO
 } from 'date-fns';
 
-import useAPI from '../hooks/useAPI';
+import useGithub from '../hooks/useGithub';
 import useQuery from '../hooks/useQuery';
 import { useSelector } from '../store';
 
@@ -21,13 +21,14 @@ import GoogleMap from './GoogleMap';
 
 const Career: FC = () => {
   const { query, setQuery } = useQuery();
-  const { getContributions, loading } = useAPI();
+  const { getContributions, loading } = useGithub();
   const { total, contributions } = useSelector((state) => state.github);
   const view = query.date ? parseISO(`${query.date}-01`) : new Date();
   const start = startOfWeek(startOfMonth(view), { weekStartsOn: 1 });
   const end = endOfWeek(endOfMonth(view), { weekStartsOn: 1 });
   const days = differenceInDays(end, start);
 
+  // When loading the page, load all Github contributions from the API
   useEffect(() => {
     getContributions();
   }, [getContributions]);

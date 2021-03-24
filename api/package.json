@@ -9,10 +9,12 @@
   "dependencies": {
     "@types/cookies": "^0.7.6",
     "@types/node-fetch": "^2.5.8",
+    "aws-sdk": "^2.870.0",
     "cookies": "^0.8.0",
     "date-fns": "^2.19.0",
     "dotenv": "^8.2.0",
     "mime": "*",
+    "nanoid": "^3.1.22",
     "node-fetch": "^2.6.1",
     "querystring": "^0.2.1",
     "twilio": "^3.58.0",

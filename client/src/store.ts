@@ -4,6 +4,7 @@ import { configureStore, getDefaultMiddleware, createSlice } from '@reduxjs/tool
 import { State } from './types';
 import { defaultRecipes } from './constants';
 
+// Redux store starting state
 const initialState: State = {
   error: '',
   user: null,
@@ -21,6 +22,7 @@ const initialState: State = {
   recipes: defaultRecipes
 };
 
+// Actions are generated from the methods inside the reducers property
 export const { actions, reducer } = createSlice({
   name: 'store',
   initialState,
@@ -31,6 +33,34 @@ export const { actions, reducer } = createSlice({
     },
     setOnline: (state, action) => {
       state.slack.online = action.payload;
+    },
+    addRecipe: (state, action) => {
+      state.recipes.unshift({
+        name: '',
+        creator: state.user?.email || '',
+        difficulty: 1,
+        duration: '',
+        image: '',
+        text: `## Ingredients
+- Love
+- Sweat
+- Tears
+
+## Instructions
+1. Put in hard work
+2. Serve while warm`,
+        ...action.payload
+      });
+    },
+    updateRecipe: (state, action) => {
+      const { index, ...recipe } = action.payload;
+
+      const prev = state.recipes[index];
+
+      state.recipes[index] = {
+        ...prev,
+        ...recipe
+      };
     }
   }
 });
@@ -45,4 +75,5 @@ export default store;
 
 export { useDispatch } from 'react-redux';
 
+// Export a typed version of the useSelector hook
 export const useSelector: TypedUseSelectorHook<State> = useReduxSelector;

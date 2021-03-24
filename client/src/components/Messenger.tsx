@@ -10,7 +10,11 @@ import useSocket from '../hooks/useSocket';
 
 const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket }) => {
   const { loading, send } = useSocket(socket);
+
+  // State used while typing the message
   const [newMessage, setNewMessage] = useState('');
+
+  // If messageCount is higher than the amount of messages in the store, show a loader
   const [messageCount, setMessageCount] = useState(0);
   const { messages, online } = useSelector((state) => state.slack);
 

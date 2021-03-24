@@ -2,11 +2,12 @@ import './App.scss';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-app-polyfill/ie11';
 import React, { FC, useRef, useEffect } from 'react';
-import { Redirect, Switch, Route, NavLink } from 'react-router-dom';
+import { Redirect, Switch, Route, NavLink, useHistory } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
 
-import useAPI from '../hooks/useAPI';
+import useGoogle from '../hooks/useGoogle';
 import useQuery from '../hooks/useQuery';
-import { useSelector } from '../store';
+import { useDispatch, useSelector, actions } from '../store';
 
 import Dashboard from './Dashboard';
 import Messenger from './Messenger';
@@ -14,19 +15,42 @@ import Cooking from './Cooking';
 import Meeting from './Meeting';
 import Career from './Career';
 
-const dev = process.env.NODE_ENV === 'development';
-
-const apiURL = dev ? process.env.REACT_APP_API_URL_DEV : process.env.REACT_APP_API_URL_PROD;
+const apiURL =
+  process.env.NODE_ENV === 'development'
+    ? process.env.REACT_APP_API_URL_DEV
+    : process.env.REACT_APP_API_URL_PROD;
 
 const App: FC = () => {
   const { query } = useQuery();
-  const { authenticate, signout } = useAPI();
-  const socket = useRef<WebSocket | null>(null);
-  const user = useSelector((state) => state.user);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const { authenticate, signout } = useGoogle();
+  const { user, error } = useSelector((state) => state);
 
+  // Create a WebSocket reference for the Slack API to stay connected when navigating the website
+  const socket = useRef<WebSocket | null>(null);
+
+  // Sign in the user either based on cookie or query.code provided by the redirect from Google Signin
   useEffect(() => {
     authenticate(query.code || '');
   }, [authenticate]); // eslint-disable-line
+
+  // When the app initialises, check for last page visited
+  useEffect(() => {
+    try {
+      const lastPage = localStorage.getItem('last_page');
+
+      // If last page is found, navigate to it
+      if (lastPage) history.push(lastPage);
+    } catch (e) {}
+  }, []); // eslint-disable-line
+
+  // Store the page visited every time the pathname changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('last_page', history.location.pathname);
+    } catch (e) {}
+  }, [history, history.location.pathname]);
 
   return (
     <div className="App">
@@ -84,6 +108,19 @@ const App: FC = () => {
           <Redirect to="/" />
         </Switch>
       </main>
+      <Modal
+        animation={false}
+        className="modal"
+        show={!!error}
+        onHide={() => {
+          dispatch(actions.set({ error: '' }));
+        }}
+      >
+        <Modal.Header closeButton>An error occured</Modal.Header>
+        <Modal.Body>
+          <pre>{error}</pre>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

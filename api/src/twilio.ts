@@ -9,8 +9,7 @@ export default (
   response: ServerResponse,
   body: { room: string; identity: string }
 ) => {
-  response.writeHead(200);
-
+  // Request to open a WebRTC video sharing room on Twilio
   const videoGrant = new VideoGrant({ room: body.room });
 
   const token = new AccessToken(
@@ -21,8 +20,13 @@ export default (
 
   token.addGrant(videoGrant);
 
+  // This is a unique string used to know what client is currently connecting
+  // This string is generated and saved on the client
   token.identity = body.identity;
 
+  response.writeHead(200);
+
+  // Send the JSON Web Token used by the Twilio client-side library "twilio-video"
   response.end(
     JSON.stringify({
       token: token.toJwt()

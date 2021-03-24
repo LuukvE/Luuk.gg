@@ -28,10 +28,11 @@ body {
   }
 
   header {
-    padding: 0 50px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    padding: 10px 50px;
 
     .logo {
       font-family: 'Sen';
@@ -41,14 +42,14 @@ body {
       width: 150px;
       display: flex;
       margin-right: auto;
-      padding: 0 30px 0 0;
+      padding: 20px 30px 20px 0;
       &.active {
         color: $primary;
       }
     }
 
     a {
-      padding: 35px 15px;
+      padding: 15px 15px;
       white-space: nowrap;
       &.active {
         color: white;

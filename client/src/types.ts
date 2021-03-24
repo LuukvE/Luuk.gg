@@ -1,15 +1,22 @@
+// Career page
 export type Marker = {
   title: string;
   position: { lat: number; lng: number };
   content: string;
 };
 
+export type Contributions = {
+  [date: string]: number;
+};
+
+// Messenger page
 export type Message = {
   date: string;
   sender: string;
   text: string;
 };
 
+// Cooking page
 export type Recipe = {
   name: string;
   duration: string;
@@ -19,6 +26,12 @@ export type Recipe = {
   text: string;
 };
 
+export type AWSUploadResponse = {
+  upload: { fields: { [key: string]: string }; url: string };
+  link: string;
+};
+
+// Store state
 export type State = {
   error: string;
   user: null | {
@@ -34,9 +47,7 @@ export type State = {
     token: string;
   };
   github: {
-    contributions: {
-      [date: string]: number;
-    };
+    contributions: Contributions;
     total: number;
   };
   recipes: Recipe[];

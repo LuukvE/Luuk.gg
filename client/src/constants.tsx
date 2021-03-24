@@ -1,9 +1,11 @@
 import { Marker, Recipe } from './types';
 
+// Messenger page
 export const userArrived = '<@U01RYFCUJ9H>: User arrived on the page';
 
 export const userLeft = '<@U01RYFCUJ9H>: User left the page';
 
+// Career page
 export const markers: Marker[] = [
   {
     title: 'Bayes E-Sport Solutions',
@@ -106,10 +108,11 @@ export const markers: Marker[] = [
   }
 ];
 
+// Cooking page
 export const defaultRecipes: Recipe[] = [
   {
     name: 'Pasta in Tomatosauce',
-    creator: 'l.vanegeraat@gmail.com',
+    creator: '',
     difficulty: 1,
     duration: '10 min',
     image: '/pasta_tomatosauce.jpg',
@@ -132,7 +135,7 @@ export const defaultRecipes: Recipe[] = [
   },
   {
     name: 'Roasted Potatoes',
-    creator: 'l.vanegeraat@gmail.com',
+    creator: '',
     difficulty: 1,
     duration: '70 min',
     image: '/potatoes.jpg',

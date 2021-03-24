@@ -133,7 +133,7 @@ const Cooking: FC = () => {
         ) : (
           <>
             Add your own recipes{' '}
-            <a className="btn btn-primary" href={`${apiURL}/signin`} rel="noreferrer">
+            <a className="btn btn-success" href={`${apiURL}/signin`} rel="noreferrer">
               <i className="fas fa-sign-in-alt" /> Sign in
             </a>
           </>

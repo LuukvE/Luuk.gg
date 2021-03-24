@@ -1,17 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { google } from 'googleapis';
+import querystring from 'querystring';
 import fetch from 'node-fetch';
 import Cookies from 'cookies';
 
 import { Users } from './types';
 
 const protocol = process.env.HTTPS_PORT ? 'https://' : 'http://';
-
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  `${protocol}${process.env.CLIENT_DOMAIN}/signin`
-);
 
 const users: Users = {};
 
@@ -40,7 +34,27 @@ export const googleAuthenticate = async (
     return response.end(JSON.stringify(email ? users[email] || null : null));
   }
 
-  const { tokens } = await oauth2Client.getToken(body.code);
+  const tokenRequest = await fetch(`https://oauth2.googleapis.com/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: querystring.stringify({
+      code: body.code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: `${protocol}${process.env.CLIENT_DOMAIN}/signin`,
+      grant_type: 'authorization_code'
+    })
+  }).catch((error) => console.log(error));
+
+  if (!tokenRequest) {
+    response.writeHead(500);
+
+    return response.end();
+  }
+
+  const tokens = await tokenRequest.json();
 
   const googleRequest = await fetch(
     `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`,
@@ -71,13 +85,17 @@ export const googleAuthenticate = async (
 };
 
 export const googleRedirect = async (request: IncomingMessage, response: ServerResponse) => {
-  const url = oauth2Client.generateAuthUrl({
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?${querystring.stringify({
+    redirect_uri: `${protocol}${process.env.CLIENT_DOMAIN}/signin`,
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    access_type: 'offline',
+    response_type: 'code',
     prompt: 'consent',
     scope: [
       'https://www.googleapis.com/auth/userinfo.profile',
       'https://www.googleapis.com/auth/userinfo.email'
-    ]
-  });
+    ].join(' ')
+  })}`;
 
   response.writeHead(302, {
     Location: url

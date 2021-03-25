@@ -33,7 +33,7 @@ const Recipe: FC<{
             </>
           ) : (
             <>
-              <img src="/luuk.jpg" alt="" /> Luuk van Egeraat
+              <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" /> Luuk van Egeraat
             </>
           )}
           <small>{recipe.created && format(parseJSON(recipe.created), 'dd-MM-yyyy')}</small>

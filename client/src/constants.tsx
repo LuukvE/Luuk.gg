@@ -111,11 +111,38 @@ export const markers: Marker[] = [
 // Cooking page
 export const defaultRecipes: Recipe[] = [
   {
+    name: 'Pasta Gratin',
+    creator: '',
+    difficulty: 1,
+    duration: '20 min',
+    image: 'https://s3.eu-central-1.amazonaws.com/luuk.gg/pasta_gratin.jpg',
+    text: `## Ingredients
+*(2 person)*
+- 140g pasta
+- 1 tablespoon of flour
+- 1 decilitre of water
+- 1/2 cube of bullion
+- 1 decilitre of milk
+- Salt
+- Pepper
+- 1 decilitre of rasped cheese
+
+## Instructions
+- Preheat your oven to 250 degrees
+- Boil then drain the pasta
+- Mix flour, water and spices and boil it on a low temperature until it thickens
+- Pour in the milk and half of the cheese in the water/spice mix and heat until the cheese melts
+- Pour in the pasta, mix it and pour in a oven tray
+- Sprinkle the rest of the cheese on top
+- Bake in the oven 10 minutes`,
+    created: '2021-03-25T08:10:31.377Z'
+  },
+  {
     name: 'Pasta in Tomatosauce',
     creator: '',
     difficulty: 1,
     duration: '10 min',
-    image: '/pasta_tomatosauce.jpg',
+    image: 'https://s3.eu-central-1.amazonaws.com/luuk.gg/pasta_tomatosauce.jpg',
     text: `## Ingredients
 - Pasta
 - Tomato passata *(70%)*
@@ -139,7 +166,7 @@ export const defaultRecipes: Recipe[] = [
     creator: '',
     difficulty: 1,
     duration: '70 min',
-    image: '/potatoes.jpg',
+    image: 'https://s3.eu-central-1.amazonaws.com/luuk.gg/potatoes.jpg',
     text: `## Ingredients
 - Potatoes *(~6 large potatoes per person)*
 - Baking powder

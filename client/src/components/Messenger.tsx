@@ -21,7 +21,7 @@ const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket 
   return (
     <div className="Messenger">
       <div className={`message luuk  ${online ? 'online' : 'offline'}`}>
-        <img src="/luuk.jpg" alt="" />
+        <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />
         <p>
           You can write a message directly to my Slack app from this page. I am currently{' '}
           {online ? 'online' : 'offline'}. If I respond too slowly you can send me your email
@@ -33,7 +33,7 @@ const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket 
           className={`message ${message.sender.toLowerCase()} ${online ? 'online' : 'offline'}`}
           key={index}
         >
-          {message.sender === 'Luuk' && <img src="/luuk.jpg" alt="" />}
+          {message.sender === 'Luuk' && <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />}
           {message.sender === 'You' && <small>{format(parseJSON(message.date), 'HH:mm')}</small>}
           <p>{message.text}</p>
           {message.sender === 'Luuk' && <small>{format(parseJSON(message.date), 'HH:mm')}</small>}

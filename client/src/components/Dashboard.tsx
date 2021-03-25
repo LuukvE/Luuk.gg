@@ -35,7 +35,7 @@ const Dashboard: FC = () => {
           </a>
           .
         </p>
-        <img src="/luuk.jpg" alt="" />
+        <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />
       </div>
 
       <div>

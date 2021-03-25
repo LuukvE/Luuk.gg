@@ -6,36 +6,53 @@ const Dashboard: FC = () => {
   return (
     <div className="Dashboard">
       <div className="intro">
-        <p>
-          This is an example of how to build a complex web application. Feel free to explore each
-          page and download the source code available on{' '}
-          <a target="_blank" rel="noreferrer" href="https://github.com/LuukvE/Luuk.gg">
-            Github
-          </a>
-          . Both the client and server are written in{' '}
-          <a target="_blank" rel="noreferrer" href="https://www.typescriptlang.org">
-            TypeScript
-          </a>
-          , using{' '}
-          <a target="_blank" rel="noreferrer" href="https://reactjs.org">
-            React
-          </a>{' '}
-          and{' '}
-          <a target="_blank" rel="noreferrer" href="https://nodejs.org">
-            NodeJS
-          </a>{' '}
-          respectively. If you need tips on how to develop apps or just want to chat, use the{' '}
-          <NavLink to="/messenger">Messenger</NavLink> page,{' '}
-          <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/luukvanegeraat">
-            LinkedIn
-          </a>{' '}
-          or{' '}
-          <a target="_blank" rel="noreferrer" href="mailto:l.vanegeraat@gmail.com">
-            l.vanegeraat@gmail.com
-          </a>
-          .
-        </p>
-        <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />
+        <div className="text">
+          <p>
+            <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />
+            This is an example of how to build a complex web application. Feel free to explore each
+            page and download the source code available on{' '}
+            <a target="_blank" rel="noreferrer" href="https://github.com/LuukvE/Luuk.gg">
+              Github
+            </a>
+            .<br />
+            <br />
+            Both the client and server are written in{' '}
+            <a target="_blank" rel="noreferrer" href="https://www.typescriptlang.org">
+              TypeScript
+            </a>
+            , using{' '}
+            <a target="_blank" rel="noreferrer" href="https://reactjs.org">
+              React
+            </a>{' '}
+            and{' '}
+            <a target="_blank" rel="noreferrer" href="https://nodejs.org">
+              NodeJS
+            </a>
+            .<br />
+            <br />
+            If you need tips on how to develop apps or just want to chat, use the{' '}
+            <NavLink to="/messenger">Messenger</NavLink> page,{' '}
+            <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/luukvanegeraat">
+              LinkedIn
+            </a>{' '}
+            or{' '}
+            <a target="_blank" rel="noreferrer" href="mailto:l.vanegeraat@gmail.com">
+              l.vanegeraat@gmail.com
+            </a>
+            .
+          </p>
+        </div>
+        <div className="video">
+          <iframe
+            width="1519"
+            height="594"
+            src="https://www.youtube.com/embed/Cis8e-mZBJo"
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
       </div>
 
       <div>

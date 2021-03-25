@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { defaultRecipes } from '../constants';
 
 import { useDispatch, actions } from '../store';
+import useQuery from '../hooks/useQuery';
 
 const apiURL =
   process.env.NODE_ENV === 'development'
@@ -10,6 +11,7 @@ const apiURL =
 
 const useGoogle = () => {
   const dispatch = useDispatch();
+  const { setQuery } = useQuery();
 
   // Request our user object from the API either with a code, or using cookies
   const authenticate = useCallback(
@@ -72,6 +74,7 @@ const useGoogle = () => {
       }
 
       // Store the user data, in this case, response should always be null
+      // Also clear the user recipes from memory
       dispatch(
         actions.set({
           user: response,
@@ -79,11 +82,14 @@ const useGoogle = () => {
         })
       );
 
+      // Clear the "Only show my recipes" filter
+      setQuery({ show: '' });
+
       return { response };
     } catch (error) {
       return { error };
     }
-  }, [dispatch]);
+  }, [setQuery, dispatch]);
 
   return {
     signout,

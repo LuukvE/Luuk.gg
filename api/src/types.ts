@@ -6,6 +6,7 @@ export type Recipe = {
   difficulty: number;
   image: string;
   text: string;
+  created: string;
 };
 
 // Google module

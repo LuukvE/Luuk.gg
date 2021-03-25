@@ -131,7 +131,8 @@ export const defaultRecipes: Recipe[] = [
 1. Boil the pasta, add a large amount of salt
 2. Heat everything except the passata and pasta in a pan
 3. After the cream is boiling, add passata and stir
-4. When the pasta done, drain and add it to the pan`
+4. When the pasta done, drain and add it to the pan`,
+    created: new Date(2021, 2, 24).toJSON()
   },
   {
     name: 'Roasted Potatoes',
@@ -154,6 +155,7 @@ export const defaultRecipes: Recipe[] = [
 5. Drain and rest the potatoes until no longer steaming
 6. Spread your potatoes on a tray and cover them in oil
 7. After roasting 20 minutes, keep roasting but turn the potatoes every 10 minutes for another 20 minutes
-8. Salt your potatoes and serve with sauce`
+8. Salt your potatoes and serve with sauce`,
+    created: new Date(2021, 2, 24).toJSON()
   }
 ];

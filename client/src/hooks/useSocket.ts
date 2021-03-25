@@ -42,7 +42,7 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
 
     // If the socket opens
     socket.current?.addEventListener('open', () => {
-      // If this useSocket instance is no longer on the page, don't respond the socket opening
+      // If this useSocket instance is no longer on the page, don't respond to the socket opening
       if (!mounted.current) return;
 
       setLoading(false);
@@ -52,7 +52,7 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
     });
 
     socket.current?.addEventListener('message', (event) => {
-      // If this useSocket instance is no longer on the page, don't respond the new messages
+      // If this useSocket instance is no longer on the page, don't respond to the new messages
       if (!mounted.current) return;
 
       const message = JSON.parse(event.data);

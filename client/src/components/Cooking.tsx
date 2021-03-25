@@ -1,6 +1,6 @@
 import './Cooking.scss';
-import React, { FC, useCallback, useState, useEffect, useRef, ChangeEvent } from 'react';
-import Markdown from 'react-markdown';
+import React, { FC, useCallback, useState, useEffect, useRef, useMemo } from 'react';
+import { parseJSON } from 'date-fns';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -8,8 +8,12 @@ import Spinner from 'react-bootstrap/Spinner';
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
+import Recipe from './Recipe';
+
 import { useSelector, useDispatch, actions } from '../store';
+import { Recipe as RecipeType } from '../types';
 import useAWS from '../hooks/useAWS';
+import useQuery from '../hooks/useQuery';
 
 const apiURL =
   process.env.NODE_ENV === 'development'
@@ -19,10 +23,15 @@ const apiURL =
 const Cooking: FC = () => {
   const dispatch = useDispatch();
   const saveOnChange = useRef(false);
-  const { loading, upload, saveRecipes, loadRecipes } = useAWS();
+  const { query, setQuery } = useQuery();
   const { recipes, user } = useSelector((state) => state);
+  const { loading, upload, saveRecipes, loadRecipes } = useAWS();
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const sorting = query.sort || 'created';
+  const sortDirection = query.direction || 'desc';
+  const sortedRecipes = useRef<RecipeType[]>([]);
+  const onlyMyRecipes = query.show === 'my-recipes';
 
   // When signed in, load recipes created by the user
   useEffect(() => {
@@ -106,6 +115,30 @@ const Cooking: FC = () => {
     [recipes, dispatch]
   );
 
+  // Sort recipes whenever the list or sorting states update
+  sortedRecipes.current = useMemo(() => {
+    // While editing a recipe, only update the recipe being edited
+    if (editIndex !== null) {
+      sortedRecipes.current[editIndex] = recipes[editIndex];
+
+      return sortedRecipes.current;
+    }
+
+    return recipes.slice().sort((a, b) => {
+      const direction = sortDirection === 'asc' ? 1 : -1;
+
+      if (sorting === 'name') {
+        return a.name.toLowerCase() > b.name.toLowerCase() ? direction : -1 * direction;
+      }
+
+      if (sorting === 'difficulty') {
+        return (a.difficulty - b.difficulty) * direction;
+      }
+
+      return (parseJSON(a.created).valueOf() - parseJSON(b.created).valueOf()) * direction;
+    });
+  }, [recipes, sorting, editIndex, sortDirection, sortedRecipes]);
+
   return (
     <div className="Cooking">
       <div className="sub-menu">
@@ -120,6 +153,7 @@ const Cooking: FC = () => {
             >
               <Button
                 variant="success"
+                disabled={editIndex !== null}
                 onClick={() => {
                   dispatch(actions.addRecipe({}));
 
@@ -139,150 +173,68 @@ const Cooking: FC = () => {
           </>
         )}
       </div>
-      <div className="recipes">
-        {recipes.map((recipe, index) => (
-          <div className="recipe" key={index}>
-            {recipe.creator !== user?.email && !!recipe.image && <img src={recipe.image} alt="" />}
-            {recipe.creator === user?.email && (
-              <div className="image-placeholder">
-                {!!recipe.image && <img src={recipe.image} alt="" />}
-                <Form.Control
-                  className="upload-image"
-                  type="file"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    [].map.call(e.target.files, (file) => uploadFile(file, index));
-                  }}
-                  accept="image/jpeg"
-                />
-              </div>
-            )}
-            {editIndex !== index && (
-              <div className="content">
-                <h1>{recipe.name}</h1>
-                <small>
-                  <b>Difficulty:</b>{' '}
-                  <span className={`difficulty-icon level-${recipe.difficulty}`} />
-                </small>
-                <small>
-                  <b>Duration:</b> {recipe.duration}
-                </small>
-                <div className="text">
-                  <Markdown>{recipe.text}</Markdown>
-                </div>
-                {editIndex === null && recipe.creator === user?.email && (
-                  <Button
-                    onClick={() => {
-                      setEditIndex(index);
-                    }}
-                    variant="success"
-                  >
-                    {loading ? (
-                      <Spinner animation="border" />
-                    ) : (
-                      <span>
-                        <i className="fas fa-pencil-alt" /> Edit
-                      </span>
-                    )}
-                  </Button>
+      <div className="filters">
+        {user && (
+          <Form.Group controlId="my-recipes">
+            <Form.Check
+              disabled={editIndex !== null}
+              checked={onlyMyRecipes}
+              onChange={(e) => {
+                setQuery({ show: e.target.checked ? 'my-recipes' : '' });
+              }}
+              type="checkbox"
+              label={<small>Only show my recipes</small>}
+            />
+          </Form.Group>
+        )}
+        <small>Sorting:</small>
+        {['created', 'difficulty', 'name'].map((prop) => (
+          <Button
+            disabled={editIndex !== null}
+            className={sorting === prop ? 'active' : ''}
+            onClick={() => {
+              if (sorting === prop) {
+                setQuery({ direction: sortDirection === 'asc' ? 'desc' : 'asc' });
+              } else {
+                setQuery({ sort: prop });
+              }
+            }}
+            key={prop}
+            size="sm"
+            variant="outline-primary"
+          >
+            {prop}{' '}
+            {sorting === prop && (
+              <>
+                {sortDirection === 'asc' ? (
+                  <span>
+                    <i className="fas fa-chevron-up" />
+                  </span>
+                ) : (
+                  <b>
+                    <i className="fas fa-chevron-down" />
+                  </b>
                 )}
-              </div>
+              </>
             )}
-            {editIndex === index && (
-              <div className="content">
-                <Form.Control
-                  placeholder="Title"
-                  className="edit-title"
-                  value={recipe.name}
-                  onChange={(e) => {
-                    dispatch(
-                      actions.updateRecipe({
-                        index,
-                        name: e.target.value
-                      })
-                    );
-                  }}
-                />
-                <small>
-                  <b>Difficulty:</b>{' '}
-                  <span className={`difficulty-icon level-${recipe.difficulty}`} />
-                  <Form.Control
-                    type="range"
-                    min={1}
-                    max={3}
-                    value={recipe.difficulty}
-                    className="edit-difficulty"
-                    onChange={(e) => {
-                      dispatch(
-                        actions.updateRecipe({
-                          index,
-                          difficulty: e.target.value
-                        })
-                      );
-                    }}
-                  />
-                </small>
-                <small>
-                  <b>Duration:</b>{' '}
-                  <Form.Control
-                    placeholder="10 min"
-                    className="edit-duration"
-                    value={recipe.duration}
-                    onChange={(e) => {
-                      dispatch(
-                        actions.updateRecipe({
-                          index,
-                          duration: e.target.value
-                        })
-                      );
-                    }}
-                  />
-                </small>
-                <div className="text">
-                  <Form.Control
-                    placeholder="Ingredients & Instructions"
-                    as="textarea"
-                    rows={8}
-                    className="edit-text"
-                    value={recipe.text}
-                    onChange={(e) => {
-                      dispatch(
-                        actions.updateRecipe({
-                          index,
-                          text: e.target.value
-                        })
-                      );
-                    }}
-                  />
-                  <Markdown>{recipe.text}</Markdown>
-                </div>
-                <Button
-                  onClick={async () => {
-                    const body = await saveRecipes();
-
-                    if (body.response) setEditIndex(null);
-                  }}
-                  variant="success"
-                >
-                  {loading ? (
-                    <Spinner animation="border" />
-                  ) : (
-                    <span>
-                      <i className="fas fa-save" /> Save
-                    </span>
-                  )}
-                </Button>
-                <Button
-                  onClick={() => {
-                    setDeleteIndex(index);
-                  }}
-                  variant="outline-danger"
-                >
-                  <i className="fas fa-trash" /> Delete
-                </Button>
-              </div>
-            )}
-          </div>
+          </Button>
         ))}
+      </div>
+      <div className="recipes">
+        {sortedRecipes.current.map(
+          (recipe, index) =>
+            (!onlyMyRecipes || recipe.creator === user?.email) && (
+              <Recipe
+                key={index}
+                index={index}
+                recipe={recipe}
+                editIndex={editIndex}
+                setEditIndex={setEditIndex}
+                setDeleteIndex={setDeleteIndex}
+                uploadFile={uploadFile}
+              />
+            )
+        )}
       </div>
       <Modal
         animation={false}

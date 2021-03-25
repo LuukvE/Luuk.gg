@@ -24,6 +24,7 @@ export type Recipe = {
   difficulty: number;
   image: string;
   text: string;
+  created: string;
 };
 
 export type AWSUploadResponse = {

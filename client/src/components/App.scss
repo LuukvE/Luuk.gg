@@ -27,6 +27,17 @@ body {
     outline: 0;
   }
 
+  .btn {
+    box-shadow: none;
+    &.active,
+    &.active:focus,
+    &.active:active:focus,
+    &:not(:disabled):not(.disabled).active:focus,
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
   header {
     display: flex;
     align-items: center;

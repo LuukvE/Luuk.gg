@@ -10,7 +10,7 @@ This is an example of how to build a complex web application. Both the client an
 ### **Career**
 
 - Implements the [Github GraphQL API](https://docs.github.com/en/graphql) and [Google Maps API](https://developers.google.com/maps)
-- Displays the number of code contributions I made on a calendar
+- Displays the number of code contributions I made
 - Displays a world map with markers of places I worked at
 
 ### **Cooking**

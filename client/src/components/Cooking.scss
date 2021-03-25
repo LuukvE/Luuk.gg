@@ -11,7 +11,7 @@
     border-radius: 8px;
     background: rgba(black, 0.2);
     padding: 0 20px 0 30px;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     align-items: center;
     width: calc(100% - 40px);
     display: flex;
@@ -35,138 +35,40 @@
     }
   }
 
+  .filters {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    margin-bottom: 15px;
+    width: calc(100% - 40px);
+    padding: 0 5px;
+    justify-content: flex-end;
+
+    .form-check-input {
+      margin-top: 6px;
+    }
+
+    label,
+    .form-group {
+      margin: 0;
+    }
+
+    > small {
+      height: 18px;
+      margin: 0 15px 0 30px;
+    }
+
+    .btn {
+      margin-right: 15px;
+      text-transform: capitalize;
+    }
+  }
+
   .recipes {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
     align-items: flex-start;
-  }
-
-  .recipe {
-    max-width: 700px;
-    min-width: 400px;
-    background: rgba(black, 0.2);
-    border-radius: 8px;
-    margin: 0 25px 30px;
-    overflow: hidden;
-    flex-grow: 1;
-    flex-basis: 0;
-
-    .image-placeholder {
-      position: relative;
-      min-height: 200px;
-      background: rgba(black, 0.2);
-      &:hover img {
-        opacity: 0.2;
-        z-index: 0;
-      }
-
-      img {
-        transition: opacity 200ms;
-        position: relative;
-        z-index: 1;
-      }
-
-      .upload-image {
-        position: absolute;
-        width: 240px;
-        left: calc(50% - 120px);
-        top: calc(50% - 15px);
-      }
-    }
-
-    .content {
-      padding: 30px;
-
-      input,
-      textarea {
-        background: transparent;
-        color: $white;
-        border: 0;
-        padding: 0;
-        outline: 0;
-        box-shadow: none;
-        &.edit-title {
-          margin-bottom: 12px;
-          font-weight: 600;
-          font-size: 2.5rem;
-          height: 1em;
-          margin-bottom: 12px;
-        }
-        &.edit-text {
-          background: rgba(black, 0.1);
-          margin: 12px 0 30px;
-          padding: 12px;
-          border-radius: 8px;
-        }
-        &.edit-duration {
-          font-size: 13px;
-        }
-        &.edit-difficulty {
-          width: 50px;
-          margin-left: 12px;
-        }
-      }
-
-      .btn-success, .btn-outline-danger {
-        margin-top: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        box-shadow: none;
-
-        svg {
-          margin-right: 5px;
-        }
-      }
-    }
-
-    img {
-      width: 100%;
-      pointer-events: none;
-    }
-
-    h1,
-    h2 {
-      font-weight: 600;
-    }
-
-    small {
-      padding: 0 12px;
-      display: inline-flex;
-      align-items: center;
-      margin-bottom: 12px;
-      max-width: 50%;
-      &:first-of-type {
-        padding-left: 0;
-      }
-
-      .difficulty-icon {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        &.level-1 {
-          background: lighten($green, 20);
-        }
-        &.level-2 {
-          background: $orange;
-        }
-        &.level-3 {
-          background: $red;
-        }
-      }
-
-      b {
-        opacity: 0.5;
-        margin-right: 5px;
-      }
-    }
-
-    .text {
-      line-height: 1.7;
-    }
   }
 }

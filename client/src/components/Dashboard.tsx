@@ -53,7 +53,7 @@ const Dashboard: FC = () => {
               Google Maps API
             </a>
           </li>
-          <li>Displays the number of code contributions I made on a calendar</li>
+          <li>Displays the number of code contributions I made</li>
           <li>Displays a world map with markers of places I worked at</li>
         </ul>
       </div>

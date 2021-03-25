@@ -98,6 +98,8 @@ const useAWS = () => {
         {
           method: 'GET',
           headers: {
+            Pragma: 'no-cache',
+            'Cache-Control': 'no-cache',
             'Content-Type': 'application/json'
           }
         }

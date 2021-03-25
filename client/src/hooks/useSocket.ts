@@ -8,6 +8,9 @@ const apiURL =
     ? process.env.REACT_APP_API_URL_DEV
     : process.env.REACT_APP_API_URL_PROD;
 
+// Replace the HTTP protocol with the WebSocket protocol
+const socketURL = `${apiURL}`.replace('http://', 'ws://').replace('https://', 'wss://');
+
 const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   const dispatch = useDispatch();
 
@@ -18,9 +21,6 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   const [loading, setLoading] = useState(
     !socket.current || socket.current.readyState !== socket.current.OPEN
   );
-
-  // Replace the HTTP protocol with the WebSocket protocol
-  const socketURL = `${apiURL}`.replace('http://', 'ws://').replace('https://', 'wss://');
 
   // If there was no referenced socket yet, create one
   socket.current = socket.current || new WebSocket(socketURL);

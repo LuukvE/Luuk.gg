@@ -134,7 +134,7 @@ export const defaultRecipes: Recipe[] = [
 - Pour in the milk and half of the cheese in the water/spice mix and heat until the cheese melts
 - Pour in the pasta, mix it and pour in a oven tray
 - Sprinkle the rest of the cheese on top
-- Bake in the oven 10 minutes`,
+- Bake in the oven for 10 minutes`,
     created: '2021-03-25T08:10:31.377Z'
   },
   {

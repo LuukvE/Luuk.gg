@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { defaultRecipes } from '../constants';
 
 import { useDispatch, actions } from '../store';
 
@@ -73,7 +74,8 @@ const useGoogle = () => {
       // Store the user data, in this case, response should always be null
       dispatch(
         actions.set({
-          user: response
+          user: response,
+          recipes: defaultRecipes
         })
       );
 

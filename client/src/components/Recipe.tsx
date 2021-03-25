@@ -13,11 +13,11 @@ import useAWS from '../hooks/useAWS';
 const Recipe: FC<{
   index: number;
   recipe: RecipeType;
-  editIndex: number | null;
-  setEditIndex: Dispatch<SetStateAction<number | null>>;
-  setDeleteIndex: Dispatch<SetStateAction<number | null>>;
-  uploadFile: (file: File, index: number) => void;
-}> = ({ index, recipe, editIndex, setEditIndex, setDeleteIndex, uploadFile }) => {
+  editId: string | null;
+  setEditId: Dispatch<SetStateAction<string | null>>;
+  setDeleteId: Dispatch<SetStateAction<string | null>>;
+  uploadFile: (file: File, id: string) => void;
+}> = ({ index, recipe, editId, setEditId, setDeleteId, uploadFile }) => {
   const dispatch = useDispatch();
   const { loading, saveRecipes } = useAWS();
   const user = useSelector((state) => state.user);
@@ -33,7 +33,8 @@ const Recipe: FC<{
             </>
           ) : (
             <>
-              <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" /> Luuk van Egeraat
+              <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" /> Luuk van
+              Egeraat
             </>
           )}
           <small>{recipe.created && format(parseJSON(recipe.created), 'dd-MM-yyyy')}</small>
@@ -43,13 +44,13 @@ const Recipe: FC<{
             className="upload-image"
             type="file"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              [].map.call(e.target.files, (file: File) => uploadFile(file, index));
+              [].map.call(e.target.files, (file: File) => uploadFile(file, recipe.id));
             }}
             accept="image/jpeg"
           />
         )}
       </div>
-      {editIndex !== index && (
+      {editId !== recipe.id && (
         <div className="content">
           <h1>{recipe.name}</h1>
           <small>
@@ -63,10 +64,10 @@ const Recipe: FC<{
           <div className="text">
             <Markdown>{recipe.text}</Markdown>
           </div>
-          {editIndex === null && recipe.creator === user?.email && (
+          {editId === null && recipe.creator === user?.email && (
             <Button
               onClick={() => {
-                setEditIndex(index);
+                setEditId(recipe.id);
               }}
               variant="success"
             >
@@ -81,7 +82,7 @@ const Recipe: FC<{
           )}
         </div>
       )}
-      {editIndex === index && (
+      {editId === recipe.id && (
         <div className="content">
           <Form.Control
             placeholder="Title"
@@ -152,7 +153,7 @@ const Recipe: FC<{
             onClick={async () => {
               const body = await saveRecipes();
 
-              if (body.response) setEditIndex(null);
+              if (body.response) setEditId(null);
             }}
             variant="success"
           >
@@ -166,7 +167,7 @@ const Recipe: FC<{
           </Button>
           <Button
             onClick={() => {
-              setDeleteIndex(index);
+              setDeleteId(recipe.id);
             }}
             variant="outline-danger"
           >

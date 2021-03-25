@@ -33,7 +33,9 @@ const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket 
           className={`message ${message.sender.toLowerCase()} ${online ? 'online' : 'offline'}`}
           key={index}
         >
-          {message.sender === 'Luuk' && <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />}
+          {message.sender === 'Luuk' && (
+            <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />
+          )}
           {message.sender === 'You' && <small>{format(parseJSON(message.date), 'HH:mm')}</small>}
           <p>{message.text}</p>
           {message.sender === 'Luuk' && <small>{format(parseJSON(message.date), 'HH:mm')}</small>}

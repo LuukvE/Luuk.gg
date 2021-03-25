@@ -1,5 +1,6 @@
 import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
 import { configureStore, getDefaultMiddleware, createSlice } from '@reduxjs/toolkit';
+import { nanoid } from 'nanoid';
 
 import { State } from './types';
 import { defaultRecipes } from './constants';
@@ -36,6 +37,7 @@ export const { actions, reducer } = createSlice({
     },
     addRecipe: (state, action) => {
       state.recipes.unshift({
+        id: nanoid(),
         name: '',
         creator: state.user?.email || '',
         difficulty: 1,
@@ -54,7 +56,10 @@ export const { actions, reducer } = createSlice({
       });
     },
     updateRecipe: (state, action) => {
-      const { index, ...recipe } = action.payload;
+      const { id, ...recipe } = action.payload;
+
+      // Find index of recipe
+      const index = state.recipes.findIndex((recipe) => recipe.id === id);
 
       const prev = state.recipes[index];
 

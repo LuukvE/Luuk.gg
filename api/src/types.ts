@@ -1,5 +1,6 @@
 // AWS module
 export type Recipe = {
+  id: string;
   name: string;
   duration: string;
   creator: string;

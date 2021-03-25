@@ -18,6 +18,7 @@ export type Message = {
 
 // Cooking page
 export type Recipe = {
+  id: string;
   name: string;
   duration: string;
   creator: string;

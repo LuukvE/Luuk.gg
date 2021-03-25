@@ -1,6 +1,7 @@
 import './Cooking.scss';
 import React, { FC, useCallback, useState, useEffect, useRef, useMemo } from 'react';
 import { parseJSON } from 'date-fns';
+import { nanoid } from 'nanoid';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -12,8 +13,8 @@ import Recipe from './Recipe';
 
 import { useSelector, useDispatch, actions } from '../store';
 import { Recipe as RecipeType } from '../types';
-import useAWS from '../hooks/useAWS';
 import useQuery from '../hooks/useQuery';
+import useAWS from '../hooks/useAWS';
 
 const apiURL =
   process.env.NODE_ENV === 'development'
@@ -23,11 +24,12 @@ const apiURL =
 const Cooking: FC = () => {
   const dispatch = useDispatch();
   const saveOnChange = useRef(false);
+  const editIncomingRecipe = useRef('');
   const { query, setQuery } = useQuery();
   const { recipes, user } = useSelector((state) => state);
   const { loading, upload, saveRecipes, loadRecipes } = useAWS();
-  const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const sorting = query.sort || 'created';
   const sortDirection = query.direction || 'desc';
   const sortedRecipes = useRef<RecipeType[]>([]);
@@ -47,9 +49,18 @@ const Cooking: FC = () => {
     saveOnChange.current = false;
   }, [recipes, saveOnChange, saveRecipes]);
 
+  // When editIncomingRecipe is an id and recipes change make it editable
+  useEffect(() => {
+    if (!editIncomingRecipe.current) return;
+
+    setEditId(editIncomingRecipe.current);
+
+    editIncomingRecipe.current = '';
+  }, [recipes, editIncomingRecipe]);
+
   // Upload an image selected by the user and save it
   const uploadFile = useCallback(
-    (file: File, index: number) => {
+    (file: File, id: string) => {
       upload(file.name).then(async ({ error, response }) => {
         if (error || !response) return;
 
@@ -79,7 +90,7 @@ const Cooking: FC = () => {
         dispatch(
           actions.updateRecipe({
             image: response.link,
-            index: index
+            id
           })
         );
       });
@@ -88,9 +99,12 @@ const Cooking: FC = () => {
   );
 
   const deleteRecipe = useCallback(
-    (index) => {
+    (id) => {
       // Make a shallow copy of the recipes
       const newList = recipes.slice();
+
+      // Find index of deleted recipe
+      const index = newList.findIndex((recipe) => recipe.id === id);
 
       // Remove the recipe based on its index
       newList.splice(index, 1);
@@ -107,10 +121,10 @@ const Cooking: FC = () => {
       );
 
       // Hide the delete recipe modal
-      setDeleteIndex(null);
+      setDeleteId(null);
 
       // Turn off recipe Edit mode
-      setEditIndex(null);
+      setEditId(null);
     },
     [recipes, dispatch]
   );
@@ -118,8 +132,14 @@ const Cooking: FC = () => {
   // Sort recipes whenever the list or sorting states update
   sortedRecipes.current = useMemo(() => {
     // While editing a recipe, only update the recipe being edited
-    if (editIndex !== null) {
-      sortedRecipes.current[editIndex] = recipes[editIndex];
+    if (editId !== null) {
+      const index = sortedRecipes.current.findIndex((recipe) => recipe.id === editId);
+
+      const recipe = recipes.find((recipe) => recipe.id === editId);
+
+      if (!recipe) return sortedRecipes.current;
+
+      sortedRecipes.current[index] = recipe;
 
       return sortedRecipes.current;
     }
@@ -137,7 +157,7 @@ const Cooking: FC = () => {
 
       return (parseJSON(a.created).valueOf() - parseJSON(b.created).valueOf()) * direction;
     });
-  }, [recipes, sorting, editIndex, sortDirection, sortedRecipes]);
+  }, [recipes, sorting, editId, sortDirection, sortedRecipes]);
 
   return (
     <div className="Cooking">
@@ -146,6 +166,7 @@ const Cooking: FC = () => {
         {user ? (
           <>
             <OverlayTrigger
+              show={editId ? false : undefined}
               placement="left"
               overlay={
                 <Tooltip id="create-tooltip">Recipes you create are only visible to you</Tooltip>
@@ -153,11 +174,13 @@ const Cooking: FC = () => {
             >
               <Button
                 variant="success"
-                disabled={editIndex !== null}
+                disabled={editId !== null}
                 onClick={() => {
-                  dispatch(actions.addRecipe({}));
+                  const id = nanoid();
 
-                  setEditIndex(0);
+                  dispatch(actions.addRecipe({ id }));
+
+                  editIncomingRecipe.current = id;
                 }}
               >
                 <i className="fas fa-plus" /> Create
@@ -177,7 +200,7 @@ const Cooking: FC = () => {
         {user && (
           <Form.Group controlId="my-recipes">
             <Form.Check
-              disabled={editIndex !== null}
+              disabled={editId !== null}
               checked={onlyMyRecipes}
               onChange={(e) => {
                 setQuery({ show: e.target.checked ? 'my-recipes' : '' });
@@ -190,7 +213,7 @@ const Cooking: FC = () => {
         <small>Sorting:</small>
         {['created', 'difficulty', 'name'].map((prop) => (
           <Button
-            disabled={editIndex !== null}
+            disabled={editId !== null}
             className={sorting === prop ? 'active' : ''}
             onClick={() => {
               if (sorting === prop) {
@@ -228,9 +251,9 @@ const Cooking: FC = () => {
                 key={index}
                 index={index}
                 recipe={recipe}
-                editIndex={editIndex}
-                setEditIndex={setEditIndex}
-                setDeleteIndex={setDeleteIndex}
+                editId={editId}
+                setEditId={setEditId}
+                setDeleteId={setDeleteId}
                 uploadFile={uploadFile}
               />
             )
@@ -239,9 +262,9 @@ const Cooking: FC = () => {
       <Modal
         animation={false}
         className="modal"
-        show={deleteIndex !== null}
+        show={deleteId !== null}
         onHide={() => {
-          setDeleteIndex(null);
+          setDeleteId(null);
         }}
       >
         <Modal.Header closeButton>Are you sure?</Modal.Header>
@@ -249,7 +272,7 @@ const Cooking: FC = () => {
           <Button
             variant="dark"
             onClick={() => {
-              setDeleteIndex(null);
+              setDeleteId(null);
             }}
           >
             Cancel
@@ -257,7 +280,7 @@ const Cooking: FC = () => {
           <Button
             variant="danger"
             onClick={() => {
-              deleteRecipe(deleteIndex);
+              deleteRecipe(deleteId);
             }}
           >
             Delete

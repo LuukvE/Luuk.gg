@@ -176,6 +176,8 @@ const Cooking: FC = () => {
                 variant="success"
                 disabled={editId !== null}
                 onClick={() => {
+                  setQuery({ sort: '', direction: '' });
+
                   const id = nanoid();
 
                   dispatch(actions.addRecipe({ id }));

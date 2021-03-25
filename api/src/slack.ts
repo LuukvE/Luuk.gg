@@ -124,7 +124,7 @@ export const slackWebsocket = (ws: WebSocket) => {
   }, 1000);
 
   // When a message is received from the client
-  ws.on('message', async (body) => {
+  ws.on('message', async (body: string) => {
     const { text } = JSON.parse(body.toString());
 
     // Create a message to send to Slack

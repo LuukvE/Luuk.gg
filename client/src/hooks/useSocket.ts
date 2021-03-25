@@ -36,53 +36,63 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   );
 
   // Initialise the WebSocket
-  useEffect(() => {
-    // If socket was already open, send a user arrived message to Slack
-    if (socket.current?.readyState === socket.current?.OPEN) send(userArrived);
+  useEffect(
+    function init() {
+      // If socket was already open, send a user arrived message to Slack
+      if (socket.current?.readyState === socket.current?.OPEN) send(userArrived);
 
-    // If the socket opens
-    socket.current?.addEventListener('open', () => {
-      // If this useSocket instance is no longer on the page, don't respond to the socket opening
-      if (!mounted.current) return;
+      // If the socket opens
+      socket.current?.addEventListener('open', () => {
+        // If this useSocket instance is no longer on the page, don't respond to the socket opening
+        if (!mounted.current) return;
 
-      setLoading(false);
+        setLoading(false);
 
-      // Send a user arrived message to Slack
-      send(userArrived);
-    });
+        // Send a user arrived message to Slack
+        send(userArrived);
+      });
 
-    socket.current?.addEventListener('message', (event) => {
-      // If this useSocket instance is no longer on the page, don't respond to the new messages
-      if (!mounted.current) return;
+      socket.current?.addEventListener('message', (event) => {
+        // If this useSocket instance is no longer on the page, don't respond to the new messages
+        if (!mounted.current) return;
 
-      const message = JSON.parse(event.data);
+        const message = JSON.parse(event.data);
 
-      // If the message contains a presence indicator update
-      if (typeof message.online === 'boolean') {
-        // Store the new presence indicator status
-        return dispatch(actions.setOnline(message.online));
-      }
+        // If the message contains a presence indicator update
+        if (typeof message.online === 'boolean') {
+          // Store the new presence indicator status
+          return dispatch(actions.setOnline(message.online));
+        }
 
-      // Don't store chat messages that are identical to the "user arrived / left" message
-      if ([userArrived, userLeft].includes(message.text)) return;
+        // Don't store chat messages that are identical to the "user arrived / left" message
+        if ([userArrived, userLeft].includes(message.text)) return;
 
-      // Store the message
-      dispatch(actions.addMessage(message));
-    });
+        // Store the message
+        dispatch(actions.addMessage(message));
+      });
 
-    // Clear the referenced WebSocket on close or error
-    socket.current?.addEventListener('close', () => (socket.current = null));
+      // Create and initialise a new WebSocket on close
+      socket.current?.addEventListener('close', () => {
+        socket.current = new WebSocket(socketURL);
+        init();
+      });
 
-    socket.current?.addEventListener('error', () => (socket.current = null));
+      // Create and initialise a new WebSocket on error
+      socket.current?.addEventListener('error', () => {
+        socket.current = new WebSocket(socketURL);
+        init();
+      });
 
-    return () => {
-      // This useSocket instance is no longer used by a component on the page
-      mounted.current = false;
+      return () => {
+        // This useSocket instance is no longer used by a component on the page
+        mounted.current = false;
 
-      // Send a user left message to Slack
-      send(userLeft);
-    };
-  }, [socket, send, dispatch]);
+        // Send a user left message to Slack
+        send(userLeft);
+      };
+    },
+    [socket, send, dispatch]
+  );
 
   return {
     loading,

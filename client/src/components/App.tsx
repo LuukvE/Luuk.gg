@@ -48,9 +48,9 @@ const App: FC = () => {
   // Store the page visited every time the pathname changes
   useEffect(() => {
     try {
-      localStorage.setItem('last_page', history.location.pathname);
+      localStorage.setItem('last_page', history.location.pathname + history.location.search);
     } catch (e) {}
-  }, [history, history.location.pathname]);
+  }, [history, history.location.pathname, history.location.search]);
 
   return (
     <div className="App">

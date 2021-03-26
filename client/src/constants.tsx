@@ -1,10 +1,5 @@
 import { Marker, Recipe } from './types';
 
-// Messenger page
-export const userArrived = '<@U01RYFCUJ9H>: User arrived on the page';
-
-export const userLeft = '<@U01RYFCUJ9H>: User left the page';
-
 // Career page
 export const markers: Marker[] = [
   {

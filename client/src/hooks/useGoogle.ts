@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { defaultRecipes } from '../constants';
 
-import { useDispatch, actions } from '../store';
+import { useSelector, useDispatch, actions } from '../store';
 import useQuery from '../hooks/useQuery';
 
 const apiURL =
@@ -12,6 +12,7 @@ const apiURL =
 const useGoogle = () => {
   const dispatch = useDispatch();
   const { setQuery } = useQuery();
+  const slack = useSelector((state) => state.slack);
 
   // Request our user object from the API either with a code, or using cookies
   const authenticate = useCallback(
@@ -78,6 +79,10 @@ const useGoogle = () => {
       dispatch(
         actions.set({
           user: response,
+          slack: {
+            ...slack,
+            messages: []
+          },
           cooking: {
             editId: null,
             deleteId: null,
@@ -93,7 +98,7 @@ const useGoogle = () => {
     } catch (error) {
       return { error };
     }
-  }, [setQuery, dispatch]);
+  }, [slack, setQuery, dispatch]);
 
   return {
     signout,

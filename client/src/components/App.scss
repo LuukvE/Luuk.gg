@@ -45,6 +45,11 @@ body {
     flex-wrap: wrap;
     padding: 10px 50px;
 
+    @media screen and (max-width: 1200px) {
+      flex-direction: column;
+      padding: 0;
+    }
+
     .logo {
       font-family: 'Sen';
       font-size: 30px;
@@ -56,6 +61,12 @@ body {
       padding: 20px 30px 20px 0;
       &.active {
         color: $primary;
+      }
+
+      @media screen and (max-width: 1200px) {
+        margin: 0;
+        padding: 20px 0 0;
+        width: auto;
       }
     }
 
@@ -76,6 +87,12 @@ body {
       background: rgba(black, 0.2);
       padding: 15px;
       cursor: default;
+
+      @media screen and (max-width: 1200px) {
+        margin: 0;
+        width: 100%;
+        text-align: center;
+      }
 
       .user-picture {
         width: 40px;
@@ -101,6 +118,10 @@ body {
     padding: 0 50px 50px;
     flex-grow: 1;
     align-items: flex-start;
+
+    @media screen and (max-width: 1200px) {
+      padding: 0 0 20px;
+    }
   }
 }
 

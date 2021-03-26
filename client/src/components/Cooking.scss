@@ -7,6 +7,10 @@
   margin: 0 -20px;
   flex-grow: 1;
 
+  @media screen and (max-width: 1200px) {
+    margin: 0;
+  }
+
   .sub-menu {
     border-radius: 8px;
     background: rgba(black, 0.2);
@@ -16,6 +20,14 @@
     width: calc(100% - 40px);
     display: flex;
 
+    @media screen and (max-width: 1200px) {
+      width: 100%;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-bottom: 20px;
+      justify-content: center;
+    }
+
     h1 {
       font-weight: 600;
       font-size: 20px;
@@ -23,6 +35,11 @@
       height: 67px;
       display: flex;
       align-items: center;
+
+      @media screen and (max-width: 1200px) {
+        width: 100%;
+        justify-content: center;
+      }
 
       .spinner-border {
         margin-left: 20px;
@@ -32,6 +49,10 @@
     .btn {
       margin-left: 12px;
       box-shadow: none;
+
+      @media screen and (max-width: 1200px) {
+        margin: 5px 20px 0;
+      }
     }
   }
 
@@ -43,6 +64,14 @@
     width: calc(100% - 40px);
     padding: 0 5px;
     justify-content: flex-end;
+
+    @media screen and (max-width: 1200px) {
+      padding: 0;
+      flex-direction: column;
+      width: 100%;
+      height: auto;
+      margin: 10px 0;
+    }
 
     .form-check-input {
       margin-top: 6px;
@@ -56,11 +85,20 @@
     > small {
       height: 18px;
       margin: 0 15px 0 30px;
+
+      @media screen and (max-width: 1200px) {
+        display: none;
+      }
     }
 
     .btn {
       margin-right: 15px;
       text-transform: capitalize;
+
+      @media screen and (max-width: 1200px) {
+        margin: 0 0 10px;
+        width: 200px;
+      }
     }
   }
 

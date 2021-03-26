@@ -18,6 +18,10 @@
     background: rgba(black, 0.2);
     border-radius: 4px;
 
+    @media screen and (max-width: 1200px) {
+      flex-direction: column;
+    }
+
     h1 {
       position: absolute;
       left: 30px;
@@ -28,6 +32,13 @@
       display: flex;
       align-items: center;
 
+      @media screen and (max-width: 1200px) {
+        position: relative;
+        justify-content: center;
+        left: 0;
+        padding-top: 20px;
+      }
+
       svg {
         margin-right: 8px;
       }
@@ -36,6 +47,10 @@
       display: flex;
       align-items: center;
       user-select: none;
+
+      @media screen and (max-width: 1200px) {
+        justify-content: center;
+      }
 
       .icon {
         width: 20px;
@@ -65,6 +80,12 @@
       padding-right: 30px;
       font-size: 14px;
       font-weight: 600;
+
+      @media screen and (max-width: 1200px) {
+        position: relative;
+        justify-content: center;
+        padding: 10px 0 20px;
+      }
     }
   }
 
@@ -79,6 +100,11 @@
       display: flex;
       justify-content: center;
       font-size: 11px;
+      overflow: hidden;
+
+      @media screen and (max-width: 1200px) {
+        font-size: 8px;
+      }
     }
   }
 
@@ -113,12 +139,22 @@
         opacity: 0.8;
       }
 
+      @media screen and (max-width: 1200px) {
+        padding-top: calc(60% / 7);
+      }
+
       > span {
         position: absolute;
         right: 8px;
         top: 4px;
         font-size: 12px;
         font-weight: 600;
+
+        @media screen and (max-width: 1200px) {
+          top: 1px;
+          right: 4px;
+          font-size: 9px;
+        }
       }
 
       > div {
@@ -134,8 +170,16 @@
         justify-content: center;
         flex-direction: column;
 
+        @media screen and (max-width: 1200px) {
+          font-size: 12px;
+        }
+
         small {
           font-size: 10px;
+
+          @media screen and (max-width: 1200px) {
+            display: none;
+          }
         }
       }
     }

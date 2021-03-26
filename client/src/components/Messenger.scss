@@ -8,6 +8,10 @@
   max-width: 900px;
   margin: 0 auto;
 
+  @media screen and (max-width: 1200px) {
+    margin-top: 20px;
+  }
+
   .message {
     display: flex;
     align-items: center;

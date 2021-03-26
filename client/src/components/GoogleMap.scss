@@ -30,6 +30,13 @@
     display: none;
   }
 
+
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+    border-radius: 0;
+    margin: -20px 0 0;
+  }
+
   .content {
     color: $dark;
     line-height: 1.5;

@@ -21,6 +21,7 @@ const initialState: State = {
     contributions: {}
   },
   cooking: {
+    openId: null,
     editId: null,
     deleteId: null,
     recipes: defaultRecipes

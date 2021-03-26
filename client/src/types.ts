@@ -53,6 +53,7 @@ export type State = {
     total: number;
   };
   cooking: {
+    openId: null | string;
     editId: null | string;
     deleteId: null | string;
     recipes: Recipe[];

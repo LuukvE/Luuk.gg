@@ -17,7 +17,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
   const dispatch = useDispatch();
   const { loading, saveRecipes } = useAWS();
   const { user, cooking } = useSelector((state) => state);
-  const { editId } = cooking;
+  const { editId, openId } = cooking;
 
   return (
     <div className="Recipe">
@@ -50,16 +50,40 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
       {editId !== recipe.id && (
         <div className="content">
           <h1>{recipe.name}</h1>
-          <small>
-            <b>Difficulty:</b> <span className={`difficulty-icon level-${recipe.difficulty}`} />
-          </small>
-          {recipe.duration && (
+          <div className="meta">
             <small>
-              <b>Duration:</b> {recipe.duration}
+              <b>Difficulty:</b> <span className={`difficulty-icon level-${recipe.difficulty}`} />
             </small>
+            {recipe.duration && (
+              <small>
+                <b>Duration:</b> {recipe.duration}
+              </small>
+            )}
+          </div>
+          {openId === recipe.id && (
+            <div className="text">
+              <Markdown>{recipe.text}</Markdown>
+            </div>
           )}
-          <div className="text">
-            <Markdown>{recipe.text}</Markdown>
+          <div
+            onClick={() => {
+              dispatch(
+                actions.setCooking({
+                  openId: openId === recipe.id ? null : recipe.id
+                })
+              );
+            }}
+            className="toggle"
+          >
+            {openId === recipe.id ? (
+              <span>
+                <i className="fas fa-chevron-up" />
+              </span>
+            ) : (
+              <b>
+                <i className="fas fa-chevron-down" />
+              </b>
+            )}
           </div>
           {editId === null && recipe.creator === user?.email && (
             <Button
@@ -94,40 +118,42 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
               );
             }}
           />
-          <small>
-            <b>Difficulty:</b> <span className={`difficulty-icon level-${recipe.difficulty}`} />
-            <Form.Control
-              type="range"
-              min={1}
-              max={3}
-              value={recipe.difficulty}
-              className="edit-difficulty"
-              onChange={(e) => {
-                dispatch(
-                  actions.updateRecipe({
-                    id: recipe.id,
-                    difficulty: e.target.value
-                  })
-                );
-              }}
-            />
-          </small>
-          <small>
-            <b>Duration:</b>{' '}
-            <Form.Control
-              placeholder="10 min"
-              className="edit-duration"
-              value={recipe.duration}
-              onChange={(e) => {
-                dispatch(
-                  actions.updateRecipe({
-                    id: recipe.id,
-                    duration: e.target.value
-                  })
-                );
-              }}
-            />
-          </small>
+          <div className="meta">
+            <small>
+              <b>Difficulty:</b> <span className={`difficulty-icon level-${recipe.difficulty}`} />
+              <Form.Control
+                type="range"
+                min={1}
+                max={3}
+                value={recipe.difficulty}
+                className="edit-difficulty"
+                onChange={(e) => {
+                  dispatch(
+                    actions.updateRecipe({
+                      id: recipe.id,
+                      difficulty: e.target.value
+                    })
+                  );
+                }}
+              />
+            </small>
+            <small>
+              <b>Duration:</b>{' '}
+              <Form.Control
+                placeholder="10 min"
+                className="edit-duration"
+                value={recipe.duration}
+                onChange={(e) => {
+                  dispatch(
+                    actions.updateRecipe({
+                      id: recipe.id,
+                      duration: e.target.value
+                    })
+                  );
+                }}
+              />
+            </small>
+          </div>
           <div className="text">
             <Form.Control
               placeholder="Ingredients & Instructions"

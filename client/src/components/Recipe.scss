@@ -10,6 +10,8 @@
   flex-grow: 1;
   flex-basis: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
 
   @media screen and (max-width: 1200px) {
     min-width: 100%;
@@ -67,36 +69,42 @@
 
   .content {
     padding: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 
-    > small {
-      padding: 0 12px;
-      display: inline-flex;
-      align-items: center;
-      margin-bottom: 12px;
-      max-width: 50%;
-      &:first-of-type {
-        padding-left: 0;
-      }
+    .meta {
+      display: flex;
+      padding-left: 5px;
+      > small {
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        &:first-of-type {
+          padding-left: 0;
+        }
 
-      .difficulty-icon {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        &.level-1 {
-          background: lighten($green, 20);
+        .difficulty-icon {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          display: inline-block;
+          &.level-1 {
+            background: lighten($green, 20);
+          }
+          &.level-2 {
+            background: $orange;
+          }
+          &.level-3 {
+            background: $red;
+          }
         }
-        &.level-2 {
-          background: $orange;
-        }
-        &.level-3 {
-          background: $red;
-        }
-      }
 
-      b {
-        opacity: 0.5;
-        margin-right: 5px;
+        b {
+          opacity: 0.5;
+          margin-right: 5px;
+        }
       }
     }
 
@@ -141,6 +149,26 @@
 
       svg {
         margin-right: 5px;
+      }
+    }
+
+    .toggle {
+      display: flex;
+      margin-top: auto;
+      padding-top: 20px;
+      width: 100%;
+      > span,
+      > b {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(black, 0.2);
+        height: 50px;
+        cursor: pointer;
+        &:hover {
+          background: rgba(black, 0.4);
+        }
       }
     }
   }

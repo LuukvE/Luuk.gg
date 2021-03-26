@@ -25,7 +25,7 @@ const Cooking: FC = () => {
   const saveOnChange = useRef(false);
   const { query, setQuery } = useQuery();
   const { cooking, user } = useSelector((state) => state);
-  const { editId, deleteId, recipes } = cooking;
+  const { openId, editId, deleteId, recipes } = cooking;
   const { loading, upload, saveRecipes, loadRecipes } = useAWS();
   const sorting = query.sort || 'created';
   const sortDirection = query.direction || 'desc';
@@ -140,6 +140,20 @@ const Cooking: FC = () => {
         return (a.difficulty - b.difficulty) * direction;
       }
 
+      if (sorting === 'duration') {
+        const durations = [a, b].map((r) => {
+          const time = (r.duration || '').toLowerCase().split('hour');
+          const minutes = parseInt(time.pop() || '0', 10);
+          const hours = parseInt(time.pop() || '0', 10);
+
+          return hours * 60 + minutes;
+        });
+
+        console.log(durations);
+
+        return (durations[1] - durations[0]) * direction;
+      }
+
       return (parseJSON(a.created).valueOf() - parseJSON(b.created).valueOf()) * direction;
     });
   }, [recipes, sorting, editId, sortDirection, sortedRecipes]);
@@ -194,7 +208,7 @@ const Cooking: FC = () => {
           </Form.Group>
         )}
         <small>Sorting:</small>
-        {['created', 'difficulty', 'name'].map((prop) => (
+        {['created', 'duration', 'difficulty', 'name'].map((prop) => (
           <Button
             disabled={editId !== null}
             className={sorting === prop ? 'active' : ''}
@@ -226,7 +240,7 @@ const Cooking: FC = () => {
           </Button>
         ))}
       </div>
-      <div className="recipes">
+      <div className={`recipes${openId ? ' opened' : ''}`}>
         {sortedRecipes.current.map(
           (recipe, index) =>
             (!onlyMyRecipes || recipe.creator === user?.email) && (

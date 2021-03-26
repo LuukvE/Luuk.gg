@@ -125,13 +125,13 @@ export const slackWebsocket = (ws: WebSocket) => {
 
   // When a message is received from the client
   ws.on('message', async (body: string) => {
-    const { text } = JSON.parse(body.toString());
+    const { text, name } = JSON.parse(body.toString());
 
     // Create a message to send to Slack
     const message: SlackMessage = {
       channel: process.env.channel,
       mrkdwn: true,
-      text
+      text: `${name}${name ? ': ' : ''}${text}`
     };
 
     // If this web client is already bound to a thread, link the message to it

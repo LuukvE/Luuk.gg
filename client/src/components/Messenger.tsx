@@ -16,7 +16,8 @@ const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket 
 
   // If messageCount is higher than the amount of messages in the store, show a loader
   const [messageCount, setMessageCount] = useState(0);
-  const { messages, online } = useSelector((state) => state.slack);
+  const { slack, user } = useSelector((state) => state);
+  const { messages, online } = slack;
 
   return (
     <div className="Messenger">
@@ -34,15 +35,25 @@ const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket 
           key={index}
         >
           {message.sender === 'Luuk' && (
-            <img src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg" alt="" />
+            <img
+              className="luuk=picture"
+              src="https://s3.eu-central-1.amazonaws.com/luuk.gg/luuk.jpg"
+              alt=""
+            />
           )}
           {message.sender === 'You' && <small>{format(parseJSON(message.date), 'HH:mm')}</small>}
           <p>{message.text}</p>
           {message.sender === 'Luuk' && <small>{format(parseJSON(message.date), 'HH:mm')}</small>}
           {message.sender === 'You' && (
-            <b className="user-icon">
-              <i className="fas fa-user" />
-            </b>
+            <>
+              {user?.picture ? (
+                <img className="user-picture" src={user?.picture} alt="" />
+              ) : (
+                <b className="user-icon">
+                  <i className="fas fa-user" />
+                </b>
+              )}
+            </>
           )}
         </div>
       ))}
@@ -65,7 +76,7 @@ const Messenger: FC<{ socket: MutableRefObject<WebSocket | null> }> = ({ socket 
             setNewMessage(e.target.value);
           }}
         />
-        <Button disabled={loading}>
+        <Button type="submit" disabled={loading}>
           {messageCount > Object.keys(messages).length ? (
             <Spinner animation="border" />
           ) : (

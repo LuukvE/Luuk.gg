@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, MutableRefObject, useRef } from 'react';
 
-import { useDispatch, actions } from '../store';
+import { useDispatch, actions, useSelector } from '../store';
 import { userArrived, userLeft } from '../constants';
 
 const apiURL =
@@ -13,6 +13,7 @@ const socketURL = `${apiURL}`.replace('http://', 'ws://').replace('https://', 'w
 
 const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   // Keep track on whether this current instance of useSocket is still used by components on the page
   const mounted = useRef(true);
@@ -30,9 +31,14 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
     (text: string) => {
       if (socket.current?.readyState !== socket.current?.OPEN) return;
 
-      socket.current?.send(JSON.stringify({ text }));
+      socket.current?.send(
+        JSON.stringify({
+          text,
+          name: user?.name || ''
+        })
+      );
     },
-    [socket]
+    [user, socket]
   );
 
   // Initialise the WebSocket

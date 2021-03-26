@@ -19,8 +19,6 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
   const { user, cooking } = useSelector((state) => state);
   const { editId } = cooking;
 
-  console.log(editId, recipe.id);
-
   return (
     <div className="Recipe">
       <div className={`image-placeholder${recipe.creator === user?.email ? ' my-image' : ''}`}>

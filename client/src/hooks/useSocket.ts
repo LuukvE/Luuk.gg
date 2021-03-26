@@ -52,8 +52,6 @@ const useSocket = () => {
 
         const message = JSON.parse(event.data);
 
-        console.log('received', message);
-
         // If the message contains a presence indicator update
         if (typeof message.online === 'boolean') {
           // Store the new presence indicator status

@@ -1,7 +1,6 @@
 import './Cooking.scss';
-import React, { FC, useCallback, useState, useEffect, useRef, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useMemo } from 'react';
 import { parseJSON } from 'date-fns';
-import { nanoid } from 'nanoid';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -24,12 +23,10 @@ const apiURL =
 const Cooking: FC = () => {
   const dispatch = useDispatch();
   const saveOnChange = useRef(false);
-  const editIncomingRecipe = useRef('');
   const { query, setQuery } = useQuery();
-  const { recipes, user } = useSelector((state) => state);
+  const { cooking, user } = useSelector((state) => state);
+  const { editId, deleteId, recipes } = cooking;
   const { loading, upload, saveRecipes, loadRecipes } = useAWS();
-  const [editId, setEditId] = useState<string | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
   const sorting = query.sort || 'created';
   const sortDirection = query.direction || 'desc';
   const sortedRecipes = useRef<RecipeType[]>([]);
@@ -48,15 +45,6 @@ const Cooking: FC = () => {
 
     saveOnChange.current = false;
   }, [recipes, saveOnChange, saveRecipes]);
-
-  // When editIncomingRecipe is an id and recipes change make it editable
-  useEffect(() => {
-    if (!editIncomingRecipe.current) return;
-
-    setEditId(editIncomingRecipe.current);
-
-    editIncomingRecipe.current = '';
-  }, [recipes, editIncomingRecipe]);
 
   // Upload an image selected by the user and save it
   const uploadFile = useCallback(
@@ -113,18 +101,14 @@ const Cooking: FC = () => {
       // The hook will only trigger after the set action has updated the store
       saveOnChange.current = true;
 
-      // Update the store
+      // Update the store, hide the delete recipe modal and turn off recipe Edit mode
       dispatch(
-        actions.set({
+        actions.setCooking({
+          editId: null,
+          deleteId: null,
           recipes: newList
         })
       );
-
-      // Hide the delete recipe modal
-      setDeleteId(null);
-
-      // Turn off recipe Edit mode
-      setEditId(null);
     },
     [recipes, dispatch]
   );
@@ -132,7 +116,8 @@ const Cooking: FC = () => {
   // Sort recipes whenever the list or sorting states update
   sortedRecipes.current = useMemo(() => {
     // While editing a recipe, only update the recipe being edited
-    if (editId !== null) {
+    // Unless the sortedRecipes.current list is shorter than recipes.length
+    if (editId !== null && sortedRecipes.current.length === recipes.length) {
       const index = sortedRecipes.current.findIndex((recipe) => recipe.id === editId);
 
       const recipe = recipes.find((recipe) => recipe.id === editId);
@@ -178,11 +163,7 @@ const Cooking: FC = () => {
                 onClick={() => {
                   setQuery({ sort: '', direction: '' });
 
-                  const id = nanoid();
-
-                  dispatch(actions.addRecipe({ id }));
-
-                  editIncomingRecipe.current = id;
+                  dispatch(actions.addRecipe());
                 }}
               >
                 <i className="fas fa-plus" /> Create
@@ -249,15 +230,7 @@ const Cooking: FC = () => {
         {sortedRecipes.current.map(
           (recipe, index) =>
             (!onlyMyRecipes || recipe.creator === user?.email) && (
-              <Recipe
-                key={index}
-                index={index}
-                recipe={recipe}
-                editId={editId}
-                setEditId={setEditId}
-                setDeleteId={setDeleteId}
-                uploadFile={uploadFile}
-              />
+              <Recipe key={index} recipe={recipe} uploadFile={uploadFile} />
             )
         )}
       </div>
@@ -266,7 +239,7 @@ const Cooking: FC = () => {
         className="modal"
         show={deleteId !== null}
         onHide={() => {
-          setDeleteId(null);
+          dispatch(actions.setCooking({ deleteId: null }));
         }}
       >
         <Modal.Header closeButton>Are you sure?</Modal.Header>
@@ -274,7 +247,7 @@ const Cooking: FC = () => {
           <Button
             variant="dark"
             onClick={() => {
-              setDeleteId(null);
+              dispatch(actions.setCooking({ deleteId: null }));
             }}
           >
             Cancel

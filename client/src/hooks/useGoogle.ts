@@ -78,7 +78,11 @@ const useGoogle = () => {
       dispatch(
         actions.set({
           user: response,
-          recipes: defaultRecipes
+          cooking: {
+            editId: null,
+            deleteId: null,
+            recipes: defaultRecipes
+          }
         })
       );
 

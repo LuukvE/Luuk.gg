@@ -20,7 +20,11 @@ const initialState: State = {
     total: 0,
     contributions: {}
   },
-  recipes: defaultRecipes
+  cooking: {
+    editId: null,
+    deleteId: null,
+    recipes: defaultRecipes
+  }
 };
 
 // Actions are generated from the methods inside the reducers property
@@ -35,9 +39,32 @@ export const { actions, reducer } = createSlice({
     setOnline: (state, action) => {
       state.slack.online = action.payload;
     },
-    addRecipe: (state, action) => {
-      state.recipes.unshift({
-        id: nanoid(),
+    setCooking: (state, action) => {
+      state.cooking = {
+        ...state.cooking,
+        ...action.payload
+      };
+    },
+    updateRecipe: (state, action) => {
+      const { id, ...recipe } = action.payload;
+
+      // Find index of recipe
+      const index = state.cooking.recipes.findIndex((recipe) => recipe.id === id);
+
+      const prev = state.cooking.recipes[index];
+
+      state.cooking.recipes[index] = {
+        ...prev,
+        ...recipe
+      };
+    },
+    addRecipe: (state) => {
+      const id = nanoid();
+
+      state.cooking.editId = id;
+
+      state.cooking.recipes.unshift({
+        id,
         name: '',
         creator: state.user?.email || '',
         difficulty: 1,
@@ -51,22 +78,8 @@ export const { actions, reducer } = createSlice({
 ## Instructions
 1. Put in hard work
 2. Serve while warm`,
-        created: new Date().toJSON(),
-        ...action.payload
+        created: new Date().toJSON()
       });
-    },
-    updateRecipe: (state, action) => {
-      const { id, ...recipe } = action.payload;
-
-      // Find index of recipe
-      const index = state.recipes.findIndex((recipe) => recipe.id === id);
-
-      const prev = state.recipes[index];
-
-      state.recipes[index] = {
-        ...prev,
-        ...recipe
-      };
     }
   }
 });

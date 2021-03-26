@@ -12,7 +12,8 @@ const apiURL =
 const useAWS = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { user, recipes } = useSelector((state) => state);
+  const { user, cooking } = useSelector((state) => state);
+  const { recipes } = cooking;
 
   // Upload image to AWS S3
   const upload = useCallback(
@@ -117,7 +118,7 @@ const useAWS = () => {
       }
 
       dispatch(
-        actions.set({
+        actions.setCooking({
           recipes: [...response, ...defaultRecipes]
         })
       );

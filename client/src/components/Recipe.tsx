@@ -1,5 +1,5 @@
 import './Recipe.scss';
-import React, { FC, ChangeEvent, SetStateAction, Dispatch } from 'react';
+import React, { FC, ChangeEvent } from 'react';
 import { parseJSON, format } from 'date-fns';
 import Markdown from 'react-markdown';
 import Form from 'react-bootstrap/Form';
@@ -10,17 +10,16 @@ import { useDispatch, useSelector, actions } from '../store';
 import { Recipe as RecipeType } from '../types';
 import useAWS from '../hooks/useAWS';
 
-const Recipe: FC<{
-  index: number;
-  recipe: RecipeType;
-  editId: string | null;
-  setEditId: Dispatch<SetStateAction<string | null>>;
-  setDeleteId: Dispatch<SetStateAction<string | null>>;
-  uploadFile: (file: File, id: string) => void;
-}> = ({ index, recipe, editId, setEditId, setDeleteId, uploadFile }) => {
+const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => void }> = ({
+  recipe,
+  uploadFile
+}) => {
   const dispatch = useDispatch();
   const { loading, saveRecipes } = useAWS();
-  const user = useSelector((state) => state.user);
+  const { user, cooking } = useSelector((state) => state);
+  const { editId } = cooking;
+
+  console.log(editId, recipe.id);
 
   return (
     <div className="Recipe">
@@ -67,7 +66,7 @@ const Recipe: FC<{
           {editId === null && recipe.creator === user?.email && (
             <Button
               onClick={() => {
-                setEditId(recipe.id);
+                dispatch(actions.setCooking({ editId: recipe.id }));
               }}
               variant="success"
             >
@@ -153,7 +152,7 @@ const Recipe: FC<{
             onClick={async () => {
               const body = await saveRecipes();
 
-              if (body.response) setEditId(null);
+              if (body.response) dispatch(actions.setCooking({ editId: null }));
             }}
             variant="success"
           >
@@ -167,7 +166,7 @@ const Recipe: FC<{
           </Button>
           <Button
             onClick={() => {
-              setDeleteId(recipe.id);
+              dispatch(actions.setCooking({ deleteId: recipe.id }));
             }}
             variant="outline-danger"
           >

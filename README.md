@@ -1,6 +1,10 @@
 # Luuk.gg
 
-This is an example of how to build a complex web application. Both the client and server are written in [TypeScript](https://www.typescriptlang.org), using [React](https://reactjs.org) and [NodeJS](https://nodejs.org) respectively. If you need tips on how to develop apps or just want to chat, use the [Messenger](https://luuk.gg/messenger) page, [LinkedIn](https://www.linkedin.com/in/luukvanegeraat) or l.vanegeraat@gmail.com.
+This is an example of how to build a complex web application.
+
+You can watch my in-depth explanation of how this application is written at https://www.youtube.com/watch?v=Cis8e-mZBJo
+
+Both the client and server are written in [TypeScript](https://www.typescriptlang.org), using [React](https://reactjs.org) and [NodeJS](https://nodejs.org) respectively. If you need tips on how to develop apps or just want to chat, use the [Messenger](https://luuk.gg/messenger) page, [LinkedIn](https://www.linkedin.com/in/luukvanegeraat) or l.vanegeraat@gmail.com.
 
 ### **Dashboard**
 

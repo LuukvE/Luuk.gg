@@ -13,7 +13,7 @@ const socketURL = `${apiURL}`.replace('http://', 'ws://').replace('https://', 'w
 const useSocket = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const socket = useRef<WebSocket>(new WebSocket(socketURL));
+  const socket = useRef<WebSocket | null>();
   const [loading, setLoading] = useState(true);
 
   // Sends a JSON message if the socket is open
@@ -34,6 +34,8 @@ const useSocket = () => {
   // Initialise the WebSocket
   useEffect(
     function init() {
+      socket.current = new WebSocket(socketURL);
+
       // If the socket opens
       socket.current?.addEventListener('open', () => {
         setLoading(false);
@@ -56,14 +58,12 @@ const useSocket = () => {
 
       // Create and initialise a new WebSocket on close
       socket.current?.addEventListener('close', () => {
-        socket.current = new WebSocket(socketURL);
-        init();
+        setTimeout(init, 1000);
       });
 
       // Create and initialise a new WebSocket on error
       socket.current?.addEventListener('error', () => {
-        socket.current = new WebSocket(socketURL);
-        init();
+        setTimeout(init, 1000);
       });
     },
     [socket, send, dispatch]

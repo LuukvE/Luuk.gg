@@ -1,10 +1,11 @@
 import './App.scss';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-app-polyfill/ie11';
-import React, { FC, useRef, useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Redirect, Switch, Route, NavLink, useHistory } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 
+import useSocket from '../hooks/useSocket';
 import useGoogle from '../hooks/useGoogle';
 import useQuery from '../hooks/useQuery';
 import { useDispatch, useSelector, actions } from '../store';
@@ -27,8 +28,8 @@ const App: FC = () => {
   const { authenticate, signout } = useGoogle();
   const { user, error } = useSelector((state) => state);
 
-  // Create a WebSocket reference for the Slack API to stay connected when navigating the website
-  const socket = useRef<WebSocket | null>(null);
+  // Create a WebSocket for the Slack API to stay connected when navigating the website
+  const { loading, send } = useSocket();
 
   // Sign in the user either based on cookie or query.code provided by the redirect from Google Signin
   useEffect(() => {
@@ -91,7 +92,7 @@ const App: FC = () => {
       <main>
         <Switch>
           <Route path="/messenger">
-            <Messenger socket={socket} />
+            <Messenger loading={loading} send={send} />
           </Route>
           <Route path="/cooking">
             <Cooking />

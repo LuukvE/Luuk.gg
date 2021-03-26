@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, MutableRefObject, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 import { useDispatch, actions, useSelector } from '../store';
 
@@ -10,20 +10,11 @@ const apiURL =
 // Replace the HTTP protocol with the WebSocket protocol
 const socketURL = `${apiURL}`.replace('http://', 'ws://').replace('https://', 'wss://');
 
-const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
+const useSocket = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-
-  // Keep track on whether this current instance of useSocket is still used by components on the page
-  const mounted = useRef(true);
-
-  // Check if the referenced socket was already connected before or not
-  const [loading, setLoading] = useState(
-    !socket.current || socket.current.readyState !== socket.current.OPEN
-  );
-
-  // If there was no referenced socket yet, create one
-  socket.current = socket.current || new WebSocket(socketURL);
+  const socket = useRef<WebSocket>(new WebSocket(socketURL));
+  const [loading, setLoading] = useState(true);
 
   // Sends a JSON message if the socket is open
   const send = useCallback(
@@ -45,17 +36,13 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
     function init() {
       // If the socket opens
       socket.current?.addEventListener('open', () => {
-        // If this useSocket instance is no longer on the page, don't respond to the socket opening
-        if (!mounted.current) return;
-
         setLoading(false);
       });
 
       socket.current?.addEventListener('message', (event) => {
-        // If this useSocket instance is no longer on the page, don't respond to the new messages
-        if (!mounted.current) return;
-
         const message = JSON.parse(event.data);
+
+        console.log('received', message);
 
         // If the message contains a presence indicator update
         if (typeof message.online === 'boolean') {
@@ -78,11 +65,6 @@ const useSocket = (socket: MutableRefObject<WebSocket | null>) => {
         socket.current = new WebSocket(socketURL);
         init();
       });
-
-      return () => {
-        // This useSocket instance is no longer used by a component on the page
-        mounted.current = false;
-      };
     },
     [socket, send, dispatch]
   );

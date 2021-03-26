@@ -55,9 +55,13 @@
         }
 
         p {
-          padding: 30px 35px;
+          padding: 0 35px 0 0;
           border-radius: 8px;
-          background: rgba(0, 0, 0, 0.2);
+
+          @media screen and (max-width: 1200px) {
+            background: rgba(black, 0.2);
+            padding: 35px;
+          }
 
           img {
             width: 100px;
@@ -65,12 +69,6 @@
             float: right;
             margin-left: 20px;
             margin-top: 5px;
-
-            @media screen and (max-width: 1200px) {
-              margin: 0 auto 20px;
-              display: block;
-              float: none;
-            }
           }
         }
       }

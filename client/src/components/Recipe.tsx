@@ -91,7 +91,7 @@ const Recipe: FC<{
             onChange={(e) => {
               dispatch(
                 actions.updateRecipe({
-                  index,
+                  id: recipe.id,
                   name: e.target.value
                 })
               );
@@ -108,7 +108,7 @@ const Recipe: FC<{
               onChange={(e) => {
                 dispatch(
                   actions.updateRecipe({
-                    index,
+                    id: recipe.id,
                     difficulty: e.target.value
                   })
                 );
@@ -124,7 +124,7 @@ const Recipe: FC<{
               onChange={(e) => {
                 dispatch(
                   actions.updateRecipe({
-                    index,
+                    id: recipe.id,
                     duration: e.target.value
                   })
                 );
@@ -141,7 +141,7 @@ const Recipe: FC<{
               onChange={(e) => {
                 dispatch(
                   actions.updateRecipe({
-                    index,
+                    id: recipe.id,
                     text: e.target.value
                   })
                 );

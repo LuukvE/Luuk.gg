@@ -5,6 +5,7 @@ import React, { FC, useEffect } from 'react';
 import { Redirect, Switch, Route, NavLink, useHistory } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 
+import useGraphQL from '../hooks/useGraphQL';
 import useSocket from '../hooks/useSocket';
 import useGoogle from '../hooks/useGoogle';
 import useQuery from '../hooks/useQuery';
@@ -25,6 +26,7 @@ const App: FC = () => {
   const { query } = useQuery();
   const history = useHistory();
   const dispatch = useDispatch();
+  const { request, demo } = useGraphQL();
   const { authenticate, signout } = useGoogle();
   const { user, error } = useSelector((state) => state);
 
@@ -44,6 +46,10 @@ const App: FC = () => {
       // If last page is found, navigate to it
       if (lastPage) history.push(lastPage);
     } catch (e) {}
+
+    (window as any).graphQLRequest = request;
+
+    demo();
   }, []); // eslint-disable-line
 
   // Store the page visited every time the pathname changes

@@ -3,6 +3,7 @@ import { RequestListener } from 'http';
 import file from './file';
 import github from './github';
 import twilio from './twilio';
+import graphql from './graphql';
 import { awsUpload, awsSave } from './aws';
 import { slackWebsocket, slackEvent } from './slack';
 import { googleRedirect, googleAuthenticate, googleSignout } from './google';
@@ -53,6 +54,8 @@ export const httpHandler: RequestListener = async (request, response) => {
     if (request.url === '/github') return github(request, response);
 
     if (request.url === '/twilio') return twilio(request, response, body);
+
+    if (request.url === '/graphql') return graphql(request, response, body);
 
     if (request.url === '/signin') return googleRedirect(request, response);
 

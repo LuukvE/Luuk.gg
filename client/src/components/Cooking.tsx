@@ -149,8 +149,6 @@ const Cooking: FC = () => {
           return hours * 60 + minutes;
         });
 
-        console.log(durations);
-
         return (durations[1] - durations[0]) * direction;
       }
 
@@ -240,7 +238,7 @@ const Cooking: FC = () => {
           </Button>
         ))}
       </div>
-      <div className={`recipes${openId ? ' opened' : ''}`}>
+      <div className={`recipes${openId || editId ? ' opened' : ''}`}>
         {sortedRecipes.current.map(
           (recipe, index) =>
             (!onlyMyRecipes || recipe.creator === user?.email) && (

@@ -124,11 +124,11 @@ export const userMutations: GraphQLFieldConfig<any, any> = {
         resolve: (_, fields, { cookies }) => {
           fields.email = cookies.get('signed-in-user', { signed: true });
 
-          if (!fields.email) return {};
+          if (!fields.email) throw 'You are not signed in';
 
           const user = User.findOne({ email: fields.email });
 
-          if (!user) return {};
+          if (!user) throw 'Your user account was not found';
 
           return User.findOneAndUpdate(
             { email: fields.email },

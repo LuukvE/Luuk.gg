@@ -150,7 +150,9 @@ export const recipeMutations: GraphQLFieldConfig<any, any> = {
         resolve: async (_, fields, { cookies }) => {
           const email = cookies.get('signed-in-user', { signed: true });
 
-          if (!email || !fields?.recipe?.cid) return {};
+          if (!email) throw 'You are not signed in';
+
+          if (!fields?.recipe?.cid) throw 'Recipe has no CID';
 
           const recipe = {
             ...fields?.recipe,

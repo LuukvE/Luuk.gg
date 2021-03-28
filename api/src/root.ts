@@ -1,12 +1,8 @@
 import { RequestListener } from 'http';
 
 import file from './file';
-import github from './github';
-import twilio from './twilio';
 import graphql from './graphql';
-import { awsUpload, awsSave } from './aws';
 import { slackWebsocket, slackEvent } from './slack';
-import { googleRedirect, googleAuthenticate, googleSignout } from './google';
 
 const protocol = process.env.HTTPS_PORT ? 'https://' : 'http://';
 
@@ -21,9 +17,13 @@ export const httpHandler: RequestListener = async (request, response) => {
 
   // All API responses are always CORS-enabled with JSON content type
   response.setHeader('Content-Type', 'application/json');
-  response.setHeader('Access-Control-Allow-Origin', clientOrigin);
+
   response.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  response.setHeader('Access-Control-Allow-Origin', clientOrigin);
+
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
 
   // Pre-flight requests do not need to be processed any further, they only need the CORS headers
@@ -50,24 +50,11 @@ export const httpHandler: RequestListener = async (request, response) => {
       console.log('JSON parse error of request body', chunks);
     }
 
-    // Route requests to their handlers
-    if (request.url === '/github') return github(request, response);
-
-    if (request.url === '/twilio') return twilio(request, response, body);
-
+    // Web client requests
     if (request.url === '/graphql') return graphql(request, response, body);
 
-    if (request.url === '/signin') return googleRedirect(request, response);
-
-    if (request.url === '/signout') return googleSignout(request, response);
-
+    // Slack event requests
     if (request.url === '/slack') return slackEvent(request, response, body);
-
-    if (request.url === '/upload') return awsUpload(request, response, body);
-
-    if (request.url === '/save-recipes') return awsSave(request, response, body);
-
-    if (request.url === '/authenticate') return googleAuthenticate(request, response, body);
 
     response.writeHead(404);
 

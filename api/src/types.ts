@@ -1,8 +1,8 @@
 import { Document } from 'mongoose';
 
 // AWS module
-export type Recipe = {
-  id: string;
+export interface IRecipe extends Document {
+  cid: string;
   name: string;
   duration: string;
   creator: string;
@@ -10,7 +10,7 @@ export type Recipe = {
   image: string;
   text: string;
   created: string;
-};
+}
 
 // Google module
 export interface IUser extends Document {
@@ -19,15 +19,6 @@ export interface IUser extends Document {
   created: Date;
   picture: string;
 }
-
-export type Users = {
-  [email: string]: {
-    name: string;
-    picture: string;
-    email: string;
-    id: string;
-  };
-};
 
 // Slack module
 export type WebsocketMessage =

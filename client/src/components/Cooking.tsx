@@ -12,7 +12,7 @@ import { useSelector, useDispatch, actions } from '../store';
 import { Recipe as RecipeType } from '../types';
 import useGoogle from '../hooks/useGoogle';
 import useQuery from '../hooks/useQuery';
-import useAWS from '../hooks/useAWS';
+import useRecipes from '../hooks/useRecipes';
 
 import Recipe from './Recipe';
 
@@ -23,7 +23,7 @@ const Cooking: FC = () => {
   const { query, setQuery } = useQuery();
   const { cooking, user } = useSelector((state) => state);
   const { openId, editId, deleteId, recipes } = cooking;
-  const { loading, upload, saveRecipes, loadRecipes } = useAWS();
+  const { loading, upload, saveRecipes, loadRecipes } = useRecipes();
   const sorting = query.sort || 'created';
   const sortDirection = query.direction || 'desc';
   const sortedRecipes = useRef<RecipeType[]>([]);
@@ -45,7 +45,7 @@ const Cooking: FC = () => {
 
   // Upload an image selected by the user and save it
   const uploadFile = useCallback(
-    (file: File, id: string) => {
+    (file: File, cid: string) => {
       upload(file.name).then(async ({ error, response }) => {
         if (error || !response) return;
 
@@ -75,7 +75,7 @@ const Cooking: FC = () => {
         dispatch(
           actions.updateRecipe({
             image: response.link,
-            id
+            cid
           })
         );
       });
@@ -84,15 +84,17 @@ const Cooking: FC = () => {
   );
 
   const deleteRecipe = useCallback(
-    (id) => {
+    (cid) => {
       // Make a shallow copy of the recipes
       const newList = recipes.slice();
 
       // Find index of deleted recipe
-      const index = newList.findIndex((recipe) => recipe.id === id);
+      const index = newList.findIndex((recipe) => recipe.cid === cid);
 
-      // Remove the recipe based on its index
-      newList.splice(index, 1);
+      newList[index] = {
+        ...newList[index],
+        deleted: true
+      };
 
       // This enables the useEffect hook that saves the recipes
       // The hook will only trigger after the set action has updated the store
@@ -115,9 +117,9 @@ const Cooking: FC = () => {
     // While editing a recipe, only update the recipe being edited
     // Unless the sortedRecipes.current list is shorter than recipes.length
     if (editId !== null && sortedRecipes.current.length === recipes.length) {
-      const index = sortedRecipes.current.findIndex((recipe) => recipe.id === editId);
+      const index = sortedRecipes.current.findIndex((recipe) => recipe.cid === editId);
 
-      const recipe = recipes.find((recipe) => recipe.id === editId);
+      const recipe = recipes.find((recipe) => recipe.cid === editId);
 
       if (!recipe) return sortedRecipes.current;
 

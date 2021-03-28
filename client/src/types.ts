@@ -18,7 +18,7 @@ export type Message = {
 
 // Cooking page
 export type Recipe = {
-  id: string;
+  cid: string;
   name: string;
   duration: string;
   creator: string;
@@ -26,6 +26,7 @@ export type Recipe = {
   image: string;
   text: string;
   created: string;
+  deleted?: boolean;
 };
 
 export type AWSUploadResponse = {

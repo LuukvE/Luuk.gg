@@ -106,7 +106,7 @@ export const markers: Marker[] = [
 // Cooking page
 export const defaultRecipes: Recipe[] = [
   {
-    id: 'pasta_gratin',
+    cid: 'pasta_gratin',
     name: 'Pasta Gratin',
     creator: '',
     difficulty: 1,
@@ -134,7 +134,7 @@ export const defaultRecipes: Recipe[] = [
     created: '2021-03-25T08:10:31.377Z'
   },
   {
-    id: 'pasta_in_tomatosauce',
+    cid: 'pasta_in_tomatosauce',
     name: 'Pasta in Tomatosauce',
     creator: '',
     difficulty: 1,
@@ -159,7 +159,7 @@ export const defaultRecipes: Recipe[] = [
     created: new Date(2021, 2, 24).toJSON()
   },
   {
-    id: 'roasted_potatoes',
+    cid: 'roasted_potatoes',
     name: 'Roasted Potatoes',
     creator: '',
     difficulty: 1,

@@ -113,6 +113,7 @@ const App: FC = () => {
       <Modal
         animation={false}
         className="modal"
+        size="lg"
         show={!!error}
         onHide={() => {
           dispatch(actions.set({ error: '' }));

@@ -4,8 +4,7 @@ import querystring from 'querystring';
 import fetch from 'node-fetch';
 
 import GraphQLDate from './scalars/date';
-
-import { IUser } from '../types';
+import { IUser } from './types';
 
 const User = mongoose.model<IUser>(
   'user',
@@ -26,7 +25,7 @@ const userFields = {
 };
 
 const UserSchema = new GraphQLObjectType({
-  name: 'user',
+  name: 'User',
   fields: userFields
 });
 
@@ -35,7 +34,7 @@ const protocol = process.env.HTTPS_PORT ? 'https://' : 'http://';
 export const userQuery: GraphQLFieldConfig<any, any> = {
   resolve: (_, fields) => fields,
   type: new GraphQLObjectType({
-    name: 'userQuery',
+    name: 'UserQuery',
     fields: {
       signIn: {
         type: UserSchema,
@@ -44,7 +43,7 @@ export const userQuery: GraphQLFieldConfig<any, any> = {
           if (!fields.code) {
             const email = cookies.get('signed-in-user', { signed: true });
 
-            if (!email) return {};
+            if (!email) throw 'You are not signed in';
 
             return User.findOne({ email });
           }
@@ -66,7 +65,7 @@ export const userQuery: GraphQLFieldConfig<any, any> = {
           }).catch((error) => console.log(error));
 
           // If the request was not successful
-          if (!tokenRequest) return {};
+          if (!tokenRequest) throw 'Token request failed';
 
           const tokens = await tokenRequest.json();
 
@@ -84,7 +83,7 @@ export const userQuery: GraphQLFieldConfig<any, any> = {
           if (googleRequest.status >= 300) {
             console.log('Google user info error', googleRequest.status, await googleRequest.text());
 
-            return {};
+            throw 'Google user info error';
           }
 
           const user = await googleRequest.json();
@@ -115,7 +114,7 @@ export const userQuery: GraphQLFieldConfig<any, any> = {
 export const userMutations: GraphQLFieldConfig<any, any> = {
   resolve: (_, fields) => fields,
   type: new GraphQLObjectType({
-    name: 'userMutations',
+    name: 'UserMutations',
     fields: {
       update: {
         type: UserSchema,

@@ -47,10 +47,10 @@ export const { actions, reducer } = createSlice({
       };
     },
     updateRecipe: (state, action) => {
-      const { id, ...recipe } = action.payload;
+      const { cid, ...recipe } = action.payload;
 
       // Find index of recipe
-      const index = state.cooking.recipes.findIndex((recipe) => recipe.id === id);
+      const index = state.cooking.recipes.findIndex((recipe) => recipe.cid === cid);
 
       const prev = state.cooking.recipes[index];
 
@@ -60,12 +60,12 @@ export const { actions, reducer } = createSlice({
       };
     },
     addRecipe: (state) => {
-      const id = nanoid();
+      const cid = nanoid();
 
-      state.cooking.editId = id;
+      state.cooking.editId = cid;
 
       state.cooking.recipes.unshift({
-        id,
+        cid,
         name: '',
         creator: state.user?.email || '',
         difficulty: 1,

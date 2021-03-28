@@ -8,14 +8,14 @@ import Spinner from 'react-bootstrap/Spinner';
 
 import { useDispatch, useSelector, actions } from '../store';
 import { Recipe as RecipeType } from '../types';
-import useAWS from '../hooks/useAWS';
+import useRecipes from '../hooks/useRecipes';
 
-const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => void }> = ({
+const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, cid: string) => void }> = ({
   recipe,
   uploadFile
 }) => {
   const dispatch = useDispatch();
-  const { loading, saveRecipes } = useAWS();
+  const { loading, saveRecipes } = useRecipes();
   const { user, cooking } = useSelector((state) => state);
   const { editId, openId } = cooking;
 
@@ -41,13 +41,13 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
             className="upload-image"
             type="file"
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              [].map.call(e.target.files, (file: File) => uploadFile(file, recipe.id));
+              [].map.call(e.target.files, (file: File) => uploadFile(file, recipe.cid));
             }}
             accept="image/jpeg"
           />
         )}
       </div>
-      {editId !== recipe.id && (
+      {editId !== recipe.cid && (
         <div className="content">
           <h1>{recipe.name}</h1>
           <div className="meta">
@@ -60,7 +60,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
               </small>
             )}
           </div>
-          {openId === recipe.id && (
+          {openId === recipe.cid && (
             <div className="text">
               <Markdown>{recipe.text}</Markdown>
             </div>
@@ -69,13 +69,13 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
             onClick={() => {
               dispatch(
                 actions.setCooking({
-                  openId: openId === recipe.id ? null : recipe.id
+                  openId: openId === recipe.cid ? null : recipe.cid
                 })
               );
             }}
             className="toggle"
           >
-            {openId === recipe.id ? (
+            {openId === recipe.cid ? (
               <span>
                 <i className="fas fa-chevron-up" />
               </span>
@@ -88,7 +88,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
           {editId === null && recipe.creator === user?.email && (
             <Button
               onClick={() => {
-                dispatch(actions.setCooking({ editId: recipe.id }));
+                dispatch(actions.setCooking({ editId: recipe.cid }));
               }}
               variant="success"
             >
@@ -103,7 +103,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
           )}
         </div>
       )}
-      {editId === recipe.id && (
+      {editId === recipe.cid && (
         <div className="content">
           <Form.Control
             placeholder="Title"
@@ -112,7 +112,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
             onChange={(e) => {
               dispatch(
                 actions.updateRecipe({
-                  id: recipe.id,
+                  cid: recipe.cid,
                   name: e.target.value
                 })
               );
@@ -130,8 +130,8 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
                 onChange={(e) => {
                   dispatch(
                     actions.updateRecipe({
-                      id: recipe.id,
-                      difficulty: e.target.value
+                      cid: recipe.cid,
+                      difficulty: parseInt(e.target.value, 10)
                     })
                   );
                 }}
@@ -146,7 +146,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
                 onChange={(e) => {
                   dispatch(
                     actions.updateRecipe({
-                      id: recipe.id,
+                      cid: recipe.cid,
                       duration: e.target.value
                     })
                   );
@@ -164,7 +164,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
               onChange={(e) => {
                 dispatch(
                   actions.updateRecipe({
-                    id: recipe.id,
+                    cid: recipe.cid,
                     text: e.target.value
                   })
                 );
@@ -190,7 +190,7 @@ const Recipe: FC<{ recipe: RecipeType; uploadFile: (file: File, id: string) => v
           </Button>
           <Button
             onClick={() => {
-              dispatch(actions.setCooking({ deleteId: recipe.id }));
+              dispatch(actions.setCooking({ deleteId: recipe.cid }));
             }}
             variant="outline-danger"
           >

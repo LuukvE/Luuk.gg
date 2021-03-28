@@ -1,17 +1,79 @@
-import { IncomingMessage, ServerResponse } from 'http';
+import { GraphQLFieldConfig, GraphQLObjectType, GraphQLInt, GraphQLID } from 'graphql';
+import mongoose, { Schema } from 'mongoose';
 import { getYear, format } from 'date-fns';
 import fetch from 'node-fetch';
 
-import { Contributions, GithubContributionsBody } from './types';
+import { IGithub, Contributions, GithubContributionsBody } from './types';
+import Any from './scalars/any';
 
-// Load data from the Github API from the start year till now
 const startYear = parseInt(process.env.GITHUB_START_YEAR, 10);
 
-// The Github API response is saved in here
-const localCache: {
-  contributions: Contributions;
-  total: number;
-} = { contributions: {}, total: 0 };
+const Github = mongoose.model<IGithub>(
+  'github',
+  new Schema({
+    contributions: {},
+    totalContributions: { type: Number, required: true }
+  })
+);
+
+const githubFields = {
+  _id: { type: GraphQLID },
+  contributions: { type: Any },
+  totalContributions: { type: GraphQLInt }
+};
+
+const GithubSchema = new GraphQLObjectType({
+  name: 'Github',
+  fields: githubFields
+});
+
+export const githubQuery: GraphQLFieldConfig<any, any> = {
+  resolve: (_, fields) => fields,
+  type: new GraphQLObjectType({
+    name: 'GithubQuery',
+    fields: {
+      get: {
+        type: GithubSchema,
+        args: {},
+        resolve: async () => {
+          const github = await Github.findOne();
+
+          // Found our saved Github API response
+          if (github && github.contributions[format(new Date(), 'yyyy-MM-dd')]) {
+            return github;
+          }
+
+          // Generate an array of years to load data for
+          const years = new Array(getYear(new Date()) - startYear + 1)
+            .fill(null)
+            .map((_, index) => index + startYear);
+
+          // Request the data from the API in parallel for each year
+          const yearContributions = await Promise.all(years.map((year) => loadYear(year)));
+
+          // Combine the transformed responses and update the local cache
+          return Github.findOneAndUpdate(
+            {},
+            {
+              contributions: yearContributions.reduce(
+                (contributions: Contributions, current) => ({
+                  ...contributions,
+                  ...current.contributions
+                }),
+                {}
+              ),
+              totalContributions: yearContributions.reduce(
+                (total, current) => total + current.total,
+                0
+              )
+            },
+            { upsert: true, new: true }
+          );
+        }
+      }
+    }
+  })
+};
 
 // Github only allows requesting data for a maximum of one year period
 async function loadYear(year: number) {
@@ -71,33 +133,3 @@ async function loadYear(year: number) {
     total: calendar.totalContributions
   };
 }
-
-// Send the contributions per day and total contributions to the client
-export default async (request: IncomingMessage, response: ServerResponse) => {
-  // If the current day is not found in the cache, request all data from the Github GraphQL API
-  if (!localCache.contributions[format(new Date(), 'yyyy-MM-dd')]) {
-    // Generate an array of years to load data for
-    const years = new Array(getYear(new Date()) - startYear + 1)
-      .fill(null)
-      .map((_, index) => index + startYear);
-
-    // Request the data from the API in parallel for each year
-    const yearContributions = await Promise.all(years.map((year) => loadYear(year)));
-
-    // Combine the transformed responses and update the local cache
-    localCache.contributions = yearContributions.reduce(
-      (contributions: Contributions, current) => ({
-        ...contributions,
-        ...current.contributions
-      }),
-      {}
-    );
-
-    // Add up the totals from each year into a single total
-    localCache.total = yearContributions.reduce((total, current) => total + current.total, 0);
-  }
-
-  response.writeHead(200);
-
-  response.end(JSON.stringify(localCache));
-};

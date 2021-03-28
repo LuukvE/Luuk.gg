@@ -131,6 +131,10 @@ body {
     text-shadow: none;
     color: $white;
   }
+  pre {
+    color: white;
+    font-weight: normal;
+  }
   .modal-footer {
     .btn {
       box-shadow: none;

@@ -22,7 +22,7 @@ import GoogleMap from './GoogleMap';
 const Career: FC = () => {
   const { query, setQuery } = useQuery();
   const { getContributions, loading } = useGithub();
-  const { total, contributions } = useSelector((state) => state.github);
+  const { totalContributions, contributions } = useSelector((state) => state.github);
   const view = query.date ? parseISO(`${query.date}-01`) : new Date();
   const start = startOfWeek(startOfMonth(view), { weekStartsOn: 1 });
   const end = endOfWeek(endOfMonth(view), { weekStartsOn: 1 });
@@ -67,7 +67,7 @@ const Career: FC = () => {
           </span>
         </div>
         <span className="total">
-          {new Intl.NumberFormat().format(total)} contributions since 2011
+          {new Intl.NumberFormat().format(totalContributions)} contributions since 2011
         </span>
       </div>
       <div className="weekdays">

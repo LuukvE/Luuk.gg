@@ -35,12 +35,12 @@ if (process.env.HTTPS_PORT) {
     )
     .listen(process.env.HTTPS_PORT);
 
-  console.log(`Hosting API at https://${process.env.API_DOMAIN}:${process.env.HTTPS_PORT}`);
+  console.log(`API: https://${process.env.API_DOMAIN}:${process.env.HTTPS_PORT}`);
 } else {
   // If no HTTPS_PORT is defined, only host a HTTP server
   server = http.createServer(httpHandler).listen(process.env.HTTP_PORT);
 
-  console.log(`Hosting API at http://${process.env.API_DOMAIN}:${process.env.HTTP_PORT}`);
+  console.log(`API: http://${process.env.API_DOMAIN}:${process.env.HTTP_PORT}`);
 }
 
 // Enable WebSockets on this server

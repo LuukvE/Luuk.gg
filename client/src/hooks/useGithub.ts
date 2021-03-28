@@ -24,12 +24,22 @@ const useGithub = () => {
 
     try {
       // Request contribution statistics from the API
-      const res = await fetch(`${apiURL}/github`, {
+      const res = await fetch(`${apiURL}/graphql`, {
         signal,
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          query: `query {
+            github {
+              get {
+                contributions
+                totalContributions
+              }
+            }
+          }`
+        })
       });
 
       if (signal.aborted) return { aborted: true };
@@ -45,10 +55,10 @@ const useGithub = () => {
         return { error: response };
       }
 
-      // Store the Github contributions data
+      // // Store the Github contributions data
       dispatch(
         actions.set({
-          github: response
+          github: response.data.github.get
         })
       );
 

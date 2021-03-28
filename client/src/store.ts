@@ -17,7 +17,7 @@ const initialState: State = {
     token: ''
   },
   github: {
-    total: 0,
+    totalContributions: 0,
     contributions: {}
   },
   cooking: {

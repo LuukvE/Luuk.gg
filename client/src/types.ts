@@ -50,7 +50,7 @@ export type State = {
   };
   github: {
     contributions: Contributions;
-    total: number;
+    totalContributions: number;
   };
   cooking: {
     openId: null | string;

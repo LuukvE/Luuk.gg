@@ -8,19 +8,16 @@ import Spinner from 'react-bootstrap/Spinner';
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
-import Recipe from './Recipe';
-
 import { useSelector, useDispatch, actions } from '../store';
 import { Recipe as RecipeType } from '../types';
+import useGoogle from '../hooks/useGoogle';
 import useQuery from '../hooks/useQuery';
 import useAWS from '../hooks/useAWS';
 
-const apiURL =
-  process.env.NODE_ENV === 'development'
-    ? process.env.REACT_APP_API_URL_DEV
-    : process.env.REACT_APP_API_URL_PROD;
+import Recipe from './Recipe';
 
 const Cooking: FC = () => {
+  const { signin } = useGoogle();
   const dispatch = useDispatch();
   const saveOnChange = useRef(false);
   const { query, setQuery } = useQuery();
@@ -185,9 +182,9 @@ const Cooking: FC = () => {
         ) : (
           <>
             Add your own recipes{' '}
-            <a className="btn btn-success" href={`${apiURL}/signin`} rel="noreferrer">
+            <Button variant="success" onClick={() => signin()}>
               <i className="fas fa-sign-in-alt" /> Sign in
-            </a>
+            </Button>
           </>
         )}
       </div>

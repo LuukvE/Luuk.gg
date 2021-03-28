@@ -1,3 +1,5 @@
+import { Document } from 'mongoose';
+
 // AWS module
 export type Recipe = {
   id: string;
@@ -11,6 +13,13 @@ export type Recipe = {
 };
 
 // Google module
+export interface IUser extends Document {
+  email: string;
+  name: string;
+  created: Date;
+  picture: string;
+}
+
 export type Users = {
   [email: string]: {
     name: string;
@@ -44,6 +53,11 @@ export type SlackEvent = {
 };
 
 // Github module
+export interface IGithub extends Document {
+  contributions: { [key: string]: number };
+  totalContributions: number;
+}
+
 export type Contributions = {
   [date: string]: number;
 };

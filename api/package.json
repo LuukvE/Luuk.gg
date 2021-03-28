@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@types/cookies": "^0.7.6",
+    "@types/mongoose": "^5.10.4",
     "@types/node-fetch": "^2.5.8",
     "aws-sdk": "^2.870.0",
     "cookies": "^0.8.0",

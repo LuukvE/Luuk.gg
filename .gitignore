@@ -9,3 +9,5 @@ yarn-error.log*
 .env
 certbot-instructions.txt
 ssl
+api-luukgg.pem
+api-luukgg.ppk

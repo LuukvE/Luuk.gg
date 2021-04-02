@@ -15,6 +15,7 @@ import Messenger from './Messenger';
 import Cooking from './Cooking';
 import Meeting from './Meeting';
 import Career from './Career';
+import Chess from './Chess';
 
 const App: FC = () => {
   const { query } = useQuery();
@@ -55,9 +56,6 @@ const App: FC = () => {
           Luuk.gg
         </NavLink>
 
-        <NavLink exact to="/">
-          <i className="fas fa-th-large" /> Dashboard
-        </NavLink>
         <NavLink to="/career">
           <i className="fas fa-code" /> Career
         </NavLink>
@@ -69,6 +67,9 @@ const App: FC = () => {
         </NavLink>
         <NavLink to="/meeting">
           <i className="fas fa-video" /> Meeting
+        </NavLink>
+        <NavLink exact to="/chess">
+          <i className="fas fa-chess-king" /> Chess
         </NavLink>
         {user ? (
           <div className="user-account">
@@ -103,6 +104,9 @@ const App: FC = () => {
           </Route>
           <Route path="/meeting">
             <Meeting />
+          </Route>
+          <Route exact path="/chess">
+            <Chess />
           </Route>
           <Route exact path="/">
             <Dashboard />

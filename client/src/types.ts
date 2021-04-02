@@ -34,6 +34,25 @@ export type AWSUploadResponse = {
   link: string;
 };
 
+// Chess page
+export type Piece = {
+  name: string;
+  row: string;
+  column: string;
+  color: string;
+  taken?: boolean;
+};
+
+export type Square = null | {
+  piece: Piece;
+  index: number;
+};
+
+export type searchSquare = {
+  coordinate: string;
+  piece: Piece | null;
+};
+
 // Store state
 export type State = {
   error: string;
@@ -58,5 +77,23 @@ export type State = {
     editId: null | string;
     deleteId: null | string;
     recipes: Recipe[];
+  };
+  chess: {
+    gameNumber: number;
+    turn: 'w' | 'b';
+    userColor: 'w' | 'b' | 'none';
+    latestMove: string;
+    requestPromotion: boolean;
+    availableSquares: string[];
+    fen: string;
+    squares: Square[];
+    dragging: null | Piece;
+    pieces: Piece[];
+    columns: string[];
+    rows: string[];
+    enPassant: string;
+    halfMoveClock: number;
+    fullMoveNumber: number;
+    castling: string;
   };
 };

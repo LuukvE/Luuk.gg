@@ -26,6 +26,7 @@
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
+    "stockfish": "^11.0.0",
     "twilio-video": "^2.13.1",
     "typescript": "~3.9.5",
     "y18n": "^4.0.1"

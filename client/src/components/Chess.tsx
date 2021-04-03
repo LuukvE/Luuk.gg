@@ -134,6 +134,8 @@ const Chess: FC = () => {
   useEffect(() => {
     setLoading(true);
 
+    let timeout: number = 0;
+
     if (engine.current) {
       document.body.removeChild(engine.current);
 
@@ -179,7 +181,9 @@ const Chess: FC = () => {
         if (message.indexOf('bestmove ') === 0) {
           setLoading(false);
 
-          dispatch(actions.chessMove(message.split(' ')[1]));
+          timeout = window.setTimeout(() => {
+            dispatch(actions.chessMove(message.split(' ')[1]));
+          }, 200);
         }
 
         if (message.indexOf('Checkers: ') === 0) {
@@ -202,6 +206,10 @@ const Chess: FC = () => {
 
         cmds.forEach((cmd) => stockfish.postMessage(cmd, engineURL));
       });
+    };
+
+    return () => {
+      if (timeout) window.clearTimeout(timeout);
     };
   }, [dispatch, userColor, gameNumber]);
 

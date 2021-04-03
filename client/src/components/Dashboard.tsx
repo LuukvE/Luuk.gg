@@ -143,6 +143,25 @@ const Dashboard: FC = () => {
           <li>Displays a sharable room link to invite others</li>
         </ul>
       </div>
+      <div>
+        <NavLink className="icon" to="/chess">
+          <i className="fas fa-chess-king" /> Chess
+        </NavLink>
+        <ul>
+          <li>
+            Implements the{' '}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://github.com/official-stockfish/Stockfish"
+            >
+              Stockfish chess engine
+            </a>
+          </li>
+          <li>Users can play alone or versus a powerful computer</li>
+          <li>Displays a rich and intuitive interface</li>
+        </ul>
+      </div>
     </div>
   );
 };

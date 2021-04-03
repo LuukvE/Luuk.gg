@@ -34,3 +34,9 @@ Both the client and server are written in [TypeScript](https://www.typescriptlan
 - Implements the [Twilio API](https://www.twilio.com/docs/usage/api) and [WebRTC API](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
 - Users can have a 1:1 meeting with video/audio
 - Displays a sharable room link to invite others
+
+### **Chess**
+
+- Implements the [Stockfish chess engine](https://github.com/official-stockfish/Stockfish)
+- Users can play alone or versus a powerful computer
+- Displays a rich and intuitive interface

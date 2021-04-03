@@ -75,18 +75,16 @@ export type State = {
   };
   chess: {
     fen: string;
-    draw: boolean;
-    rows: string[];
     pieces: Piece[];
     turn: 'w' | 'b';
     castling: string;
     rotated: boolean;
-    columns: string[];
     squares: Square[];
     enPassant: string;
     latestMove: string;
     gameNumber: number;
     checkers: string[];
+    noMaterial: boolean;
     legalMoves: string[];
     halfMoveClock: number;
     fullMoveNumber: number;

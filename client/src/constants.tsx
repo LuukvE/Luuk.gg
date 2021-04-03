@@ -184,3 +184,8 @@ export const defaultRecipes: Recipe[] = [
     created: new Date(2021, 2, 24).toJSON()
   }
 ];
+
+// Chess page
+export const columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+export const rows = ['8', '7', '6', '5', '4', '3', '2', '1'];

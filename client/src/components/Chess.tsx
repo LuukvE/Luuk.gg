@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { Square } from '../types';
+import { rows, columns } from '../constants';
 import { useSelector, useDispatch, actions } from '../store';
 
 const engineURL = `${process.env.REACT_APP_BUCKET_URL}`;
@@ -16,14 +17,13 @@ const Chess: FC = () => {
   const {
     fen,
     turn,
-    draw,
-    rows,
     pieces,
     rotated,
     squares,
-    columns,
+    checkers,
     dragging,
     userColor,
+    noMaterial,
     latestMove,
     legalMoves,
     gameNumber,
@@ -31,10 +31,8 @@ const Chess: FC = () => {
     availableSquares
   } = useSelector((state) => state.chess);
 
-  const gameOver =
-    draw || // Insufficient material
-    latestMove === '(none)' || // Computer is check-mate
-    (legalMoves.length === 0 && ['both', turn].includes(userColor)); // User is check-mate
+  const draw = noMaterial || (!checkers.length && !legalMoves.length);
+  const lost = !!checkers.length && !legalMoves.length;
 
   const drag = useRef<null | {
     square: Square;
@@ -111,7 +109,7 @@ const Chess: FC = () => {
         })
       );
     }, 100);
-  }, [columns, rows, pieces, availableSquares, dispatch]);
+  }, [pieces, availableSquares, dispatch]);
 
   useEffect(() => {
     document.body.removeEventListener('touchmove', move);
@@ -172,9 +170,14 @@ const Chess: FC = () => {
           cmds.push('ucinewgame');
 
           if (['none', 'b'].includes(userColor)) {
-            cmds.push('position startpos', 'go', 'setoption name Minimum Thinking Time value 2000');
+            cmds.push(
+              'position startpos',
+              'go',
+              'd',
+              'setoption name Minimum Thinking Time value 3000'
+            );
           } else {
-            cmds.push('setoption name Minimum Thinking Time value 2000', 'position startpos', 'd');
+            cmds.push('setoption name Minimum Thinking Time value 3000', 'position startpos', 'd');
           }
         }
 
@@ -189,7 +192,11 @@ const Chess: FC = () => {
         if (message.indexOf('Checkers: ') === 0) {
           dispatch(
             actions.setChess({
-              checkers: message.substring(9).trim().split(' ')
+              checkers: message
+                .substring(9)
+                .trim()
+                .split(' ')
+                .filter((c) => !!c)
             })
           );
         }
@@ -197,7 +204,11 @@ const Chess: FC = () => {
         if (message.indexOf('Legal uci moves:') === 0) {
           dispatch(
             actions.setChess({
-              legalMoves: message.substring(16).trim().split(' ')
+              legalMoves: message
+                .substring(16)
+                .trim()
+                .split(' ')
+                .filter((c) => !!c)
             })
           );
 
@@ -214,7 +225,7 @@ const Chess: FC = () => {
   }, [dispatch, userColor, gameNumber]);
 
   useEffect(() => {
-    if (requestPromotion || !latestMove || latestMove === '(none)') return;
+    if (requestPromotion || !latestMove || draw || lost) return;
 
     const stockfish = engine.current?.contentWindow;
 
@@ -224,8 +235,9 @@ const Chess: FC = () => {
       stockfish?.postMessage('d', engineURL);
     } else {
       stockfish?.postMessage('go', engineURL);
+      stockfish?.postMessage('d', engineURL);
     }
-  }, [fen, latestMove, requestPromotion, turn, userColor]);
+  }, [fen, latestMove, requestPromotion, turn, userColor, draw, lost]);
 
   // Start the game
   useEffect(() => {
@@ -244,7 +256,7 @@ const Chess: FC = () => {
         }, new Array(64).fill(null))
       })
     );
-  }, [squares, rows, columns, pieces, dispatch]);
+  }, [squares, pieces, dispatch]);
 
   const squareNodes = useMemo(
     () =>
@@ -260,7 +272,7 @@ const Chess: FC = () => {
 
           if (square.piece.color !== turn) return e;
 
-          if (gameOver || ![turn, 'both'].includes(userColor)) return e;
+          if (draw || lost || ![turn, 'both'].includes(userColor)) return e;
 
           dispatch(actions.setAvailableSquares(`${square.piece.column}${square.piece.row}`));
 
@@ -300,7 +312,8 @@ const Chess: FC = () => {
             className={`board-square${latestMove.includes(coordinate) ? ' latest-move' : ''}${
               square && square.piece ? ' has-piece' : ''
             }${
-              !gameOver &&
+              !draw &&
+              !lost &&
               square &&
               square.piece.color === turn &&
               [turn, 'both'].includes(userColor)
@@ -315,12 +328,11 @@ const Chess: FC = () => {
       availableSquares,
       latestMove,
       userColor,
-      gameOver,
       squares,
-      columns,
-      rows,
       turn,
       drag,
+      lost,
+      draw,
       move,
       dispatch,
       getOffset
@@ -355,7 +367,7 @@ const Chess: FC = () => {
           </div>
         );
       }),
-    [columns, rows, dragging, pieces, latestMove, requestPromotion]
+    [dragging, pieces, latestMove, requestPromotion]
   );
 
   return (
@@ -430,7 +442,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={!gameOver && userColor === 'none' ? 'active' : ''}
+          className={!draw && !lost && userColor === 'none' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -446,7 +458,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={!gameOver && userColor === 'both' ? 'active' : ''}
+          className={!lost && !draw && userColor === 'both' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -462,7 +474,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={!gameOver && userColor === 'w' ? 'active' : ''}
+          className={!draw && !lost && userColor === 'w' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -478,7 +490,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={!gameOver && userColor === 'b' ? 'active' : ''}
+          className={!draw && !lost && userColor === 'b' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -490,17 +502,20 @@ const Chess: FC = () => {
         >
           <i className="fas fa-laptop-code" /> vs <i className="fas fa-user" />
         </Button>
-        {!loading && gameOver && (
+        {!loading && (draw || lost) && (
           <>
-            {draw ? <h5>Draw</h5> : <h5>Check Mate</h5>}
-            {draw ? (
+            {draw && <h5>Draw</h5>}
+            {lost && <h5>Check Mate</h5>}
+            {lost ? (
+              <h3>{turn === 'w' ? 'Black' : 'White'} won!</h3>
+            ) : noMaterial ? (
               <h3>Insufficient material</h3>
             ) : (
-              <h3>{turn === 'w' ? 'Black' : 'White'} won!</h3>
+              <h3>Stalemate</h3>
             )}
           </>
         )}
-        {!loading && !gameOver && !['both', turn].includes(userColor) && (
+        {!loading && !draw && !lost && !['both', turn].includes(userColor) && (
           <Spinner animation="border" />
         )}
 

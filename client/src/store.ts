@@ -3,7 +3,7 @@ import { configureStore, getDefaultMiddleware, createSlice } from '@reduxjs/tool
 import { nanoid } from 'nanoid';
 
 import { State, Square } from './types';
-import { defaultRecipes } from './constants';
+import { defaultRecipes, rows, columns } from './constants';
 
 // Redux store starting state
 const initialState: State = {
@@ -31,7 +31,6 @@ const initialState: State = {
     turn: 'w',
     pieces: [],
     squares: [],
-    draw: false,
     checkers: [],
     gameNumber: 1,
     legalMoves: [],
@@ -43,10 +42,9 @@ const initialState: State = {
     halfMoveClock: 0,
     fullMoveNumber: 1,
     userColor: 'none',
+    noMaterial: false,
     availableSquares: [],
-    requestPromotion: false,
-    rows: ['8', '7', '6', '5', '4', '3', '2', '1'],
-    columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+    requestPromotion: false
   }
 };
 
@@ -198,8 +196,8 @@ export const { actions, reducer } = createSlice({
       }
 
       // Calculate en passant square
-      const originalRowIndex = c.rows.indexOf(originalPiece.row);
-      const newRowIndex = c.rows.indexOf(newRow);
+      const originalRowIndex = rows.indexOf(originalPiece.row);
+      const newRowIndex = rows.indexOf(newRow);
 
       c.enPassant = '-';
 
@@ -320,14 +318,14 @@ export const { actions, reducer } = createSlice({
 
         remainingPieces[piece.color].push(piece.name);
 
-        const index = c.rows.indexOf(piece.row) * 8 + c.columns.indexOf(piece.column);
+        const index = rows.indexOf(piece.row) * 8 + columns.indexOf(piece.column);
 
         squares[index] = { piece, index };
 
         return squares;
       }, new Array(64).fill(null));
 
-      c.draw =
+      c.noMaterial =
         remainingPieces.w.length <= 2 &&
         !remainingPieces.w.find((p) => !['K', 'N', 'B'].includes(p)) &&
         remainingPieces.b.length <= 2 &&

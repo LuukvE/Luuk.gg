@@ -221,6 +221,11 @@ const Chess: FC = () => {
 
     return () => {
       if (timeout) window.clearTimeout(timeout);
+
+      if (engine.current) {
+        document.body.removeChild(engine.current);
+        engine.current = null;
+      }
     };
   }, [dispatch, userColor, gameNumber]);
 

@@ -1,6 +1,7 @@
 import './Chess.scss';
-import React, { FC, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useRef, useEffect, useMemo, useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 
 import { Square } from '../types';
 import { useSelector, useDispatch, actions } from '../store';
@@ -9,18 +10,21 @@ const engineURL = `${process.env.REACT_APP_BUCKET_URL}`;
 
 const Chess: FC = () => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
   const engine = useRef<HTMLIFrameElement | null>(null);
   const boardElement = useRef<HTMLDivElement | null>(null);
   const {
-    turn,
-    squares,
     fen,
+    turn,
+    rows,
+    pieces,
+    rotated,
+    squares,
+    columns,
+    dragging,
     userColor,
     latestMove,
-    pieces,
-    dragging,
-    rows,
-    columns,
+    legalMoves,
     gameNumber,
     requestPromotion,
     availableSquares
@@ -57,12 +61,12 @@ const Chess: FC = () => {
 
       if (!drag.current?.element) return e;
 
-      drag.current.relativeY = pageY - drag.current.startY;
-      drag.current.relativeX = pageX - drag.current.startX;
+      drag.current.relativeY = (pageY - drag.current.startY) * (rotated ? -1 : 1);
+      drag.current.relativeX = (pageX - drag.current.startX) * (rotated ? -1 : 1);
       drag.current.element.style.top = `${drag.current.relativeY}px`;
       drag.current.element.style.left = `${drag.current.relativeX}px`;
     },
-    [drag]
+    [drag, rotated]
   );
 
   const end = useCallback(async () => {
@@ -122,6 +126,8 @@ const Chess: FC = () => {
   }, [end, move]);
 
   useEffect(() => {
+    setLoading(true);
+
     if (engine.current) {
       document.body.removeChild(engine.current);
 
@@ -130,13 +136,15 @@ const Chess: FC = () => {
 
     let timeout: number = 0;
 
-    engine.current = document.createElement('iframe');
+    const iframe = document.createElement('iframe');
 
-    document.body.appendChild(engine.current);
+    document.body.appendChild(iframe);
 
-    engine.current.src = `${engineURL}/luuk.gg/stockfish.html`;
+    iframe.src = `${engineURL}/luuk.gg/stockfish.html`;
 
-    engine.current.onload = () => {
+    iframe.onload = () => {
+      engine.current = iframe;
+
       const stockfish = engine.current?.contentWindow;
 
       if (!stockfish) return;
@@ -148,7 +156,7 @@ const Chess: FC = () => {
       window.addEventListener('message', (event) => {
         if (event.source !== stockfish || !event.data) return;
 
-        const message = event.data;
+        const message: string = event.data;
 
         const cmds: string[] = [];
 
@@ -158,13 +166,33 @@ const Chess: FC = () => {
           cmds.push('ucinewgame');
 
           if (['none', 'b'].includes(userColor)) cmds.push('position startpos', 'go');
+          else cmds.push('position startpos', 'd');
         }
 
         if (message.indexOf('bestmove ') === 0) {
+          setLoading(false);
+
           timeout = window.setTimeout(() => {
             dispatch(actions.chessMove(message.split(' ')[1]));
           }, 200);
-          // console.log(message);
+        }
+
+        if (message.indexOf('Checkers: ') === 0) {
+          dispatch(
+            actions.setChess({
+              checkers: message.substring(9).trim().split(' ')
+            })
+          );
+        }
+
+        if (message.indexOf('Legal uci moves:') === 0) {
+          dispatch(
+            actions.setChess({
+              legalMoves: message.substring(16).trim().split(' ')
+            })
+          );
+
+          setLoading(false);
         }
 
         cmds.forEach((cmd) => stockfish.postMessage(cmd, engineURL));
@@ -177,21 +205,17 @@ const Chess: FC = () => {
   }, [dispatch, userColor, gameNumber]);
 
   useEffect(() => {
-    if (
-      requestPromotion ||
-      !latestMove ||
-      latestMove === '(none)' ||
-      userColor === 'both' ||
-      turn === userColor
-    ) {
-      return;
-    }
+    if (requestPromotion || !latestMove || latestMove === '(none)') return;
 
     const stockfish = engine.current?.contentWindow;
-
+    console.log('fen', fen);
     stockfish?.postMessage(`position ${fen}`, engineURL);
 
-    stockfish?.postMessage('go', engineURL);
+    if ([turn, 'both'].includes(userColor)) {
+      stockfish?.postMessage('d', engineURL);
+    } else {
+      stockfish?.postMessage('go', engineURL);
+    }
   }, [fen, latestMove, requestPromotion, turn, userColor]);
 
   // Start the game
@@ -226,6 +250,8 @@ const Chess: FC = () => {
           if (!square?.piece) return e;
 
           if (square.piece.color !== turn) return e;
+
+          if (![turn, 'both'].includes(userColor)) return e;
 
           dispatch(actions.setAvailableSquares(`${square.piece.column}${square.piece.row}`));
 
@@ -263,13 +289,15 @@ const Chess: FC = () => {
             onTouchStart={start}
             onMouseDown={start}
             className={`board-square${square && square.piece ? ' has-piece' : ''}${
-              square && square.piece.color === turn ? ' moveable' : ''
+              square && square.piece.color === turn && [turn, 'both'].includes(userColor)
+                ? ' moveable'
+                : ''
             }${availableSquares.includes(coordinate) ? ' available' : ''}`}
             key={index}
           ></div>
         );
       }),
-    [availableSquares, columns, rows, squares, turn, drag, dispatch, getOffset, move]
+    [availableSquares, columns, rows, squares, turn, drag, userColor, dispatch, getOffset, move]
   );
 
   const pieceNodes = useMemo(
@@ -305,55 +333,65 @@ const Chess: FC = () => {
 
   return (
     <div className="Chess">
-      <div ref={boardElement} className={`board${dragging ? ' dragging' : ''}`}>
-        {squareNodes}
-        {pieceNodes}
-        <div className="horizontal-labels">
-          {columns.map((label) => (
-            <span key={label}>{label}</span>
-          ))}
+      {loading && (
+        <div className="board loading">
+          <Spinner animation="border" />
         </div>
-        <div className="vertical-labels">
-          {rows.map((label) => (
-            <span key={label}>{label}</span>
-          ))}
-        </div>
+      )}
+      {!loading && (
+        <div
+          ref={boardElement}
+          className={`board${rotated ? ' rotated' : ''}${dragging ? ' dragging' : ''}`}
+        >
+          {squareNodes}
+          {pieceNodes}
+          <div className="horizontal-labels">
+            {columns.map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
+          <div className="vertical-labels">
+            {rows.map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
 
-        <div className={`request-promotion ${requestPromotion ? ` show ${turn}` : ''}`}>
-          <div
-            className={`piece ${turn === 'b' ? 'q' : 'Q'}`}
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}q`));
-            }}
-          >
-            <span />
-          </div>
-          <div
-            className={`piece ${turn === 'b' ? 'r' : 'R'}`}
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}r`));
-            }}
-          >
-            <span />
-          </div>
-          <div
-            className={`piece ${turn === 'b' ? 'b' : 'B'}`}
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}b`));
-            }}
-          >
-            <span />
-          </div>
-          <div
-            className={`piece ${turn === 'b' ? 'n' : 'N'}`}
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}n`));
-            }}
-          >
-            <span />
+          <div className={`request-promotion ${requestPromotion ? ` show ${turn}` : ''}`}>
+            <div
+              className={`piece ${turn === 'b' ? 'q' : 'Q'}`}
+              onClick={() => {
+                dispatch(actions.chessMove(`${latestMove}q`));
+              }}
+            >
+              <span />
+            </div>
+            <div
+              className={`piece ${turn === 'b' ? 'r' : 'R'}`}
+              onClick={() => {
+                dispatch(actions.chessMove(`${latestMove}r`));
+              }}
+            >
+              <span />
+            </div>
+            <div
+              className={`piece ${turn === 'b' ? 'b' : 'B'}`}
+              onClick={() => {
+                dispatch(actions.chessMove(`${latestMove}b`));
+              }}
+            >
+              <span />
+            </div>
+            <div
+              className={`piece ${turn === 'b' ? 'n' : 'N'}`}
+              onClick={() => {
+                dispatch(actions.chessMove(`${latestMove}n`));
+              }}
+            >
+              <span />
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="chess-controls">
         <Button
           block
@@ -419,12 +457,25 @@ const Chess: FC = () => {
         >
           <i className="fas fa-laptop-code" /> vs <i className="fas fa-user" />
         </Button>
-        {latestMove === '(none)' && (
-          <>
-            <h3>Check Mate</h3>
-            <h3>{turn === 'w' ? 'Black' : 'White'} won!</h3>
-          </>
-        )}
+        {!loading &&
+          (latestMove === '(none)' ||
+            (legalMoves.length === 0 && ['both', turn].includes(userColor))) && (
+            <>
+              <h5>Check Mate</h5>
+              <h3>{turn === 'w' ? 'Black' : 'White'} won!</h3>
+            </>
+          )}
+
+        <Button
+          size="sm"
+          variant="dark"
+          className="rotate-btn"
+          onClick={() => {
+            dispatch(actions.setChess({ rotated: !rotated }));
+          }}
+        >
+          <i className="fas fa-sync" /> Rotate board
+        </Button>
       </div>
     </div>
   );

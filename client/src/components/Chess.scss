@@ -28,8 +28,8 @@ body > iframe {
     justify-self: stretch;
     align-items: center;
     justify-content: flex-start;
-    padding: 50px;
-    margin: 70px 50px;
+    padding: 30px;
+    margin: 55px 50px;
     border-radius: 8px;
     flex-direction: column;
     max-width: 300px;
@@ -46,14 +46,23 @@ body > iframe {
       &.active {
         color: rgba($white, 0.8);
       }
+      &.rotate-btn {
+        margin-top: auto;
+        margin-bottom: 0;
+        height: 40px;
+        padding: 0 12px;
+        svg {
+          margin: 0;
+        }
+      }
 
       svg {
         margin: 0 20px;
       }
     }
 
-    h3:first-of-type {
-      margin-top: 50px;
+    h5 {
+      margin-top: 30px;
     }
   }
 
@@ -62,13 +71,29 @@ body > iframe {
     display: flex;
     flex-wrap: wrap;
     position: relative;
-    width: 70vh;
+    width: 65vh;
     max-width: 80%;
     background: url(https://s3.eu-central-1.amazonaws.com/luuk.gg/board.jpg);
     background-size: contain;
     background-repeat: no-repeat;
     border-radius: 3px;
-    margin: 70px 0;
+    margin: 55px 0;
+    transition: all 800ms ease;
+
+    &.rotated {
+      transform: rotate(180deg);
+      .piece span,
+      .horizontal-labels span,
+      .vertical-labels span {
+        transform: rotate(-180deg);
+      }
+    }
+
+    &.loading {
+      background: transparent;
+      align-items: center;
+      justify-content: center;
+    }
 
     &.dragging {
       cursor: grabbing;
@@ -151,6 +176,7 @@ body > iframe {
       flex-grow: 1;
       align-items: center;
       justify-content: center;
+      transition: all 800ms ease;
     }
   }
 
@@ -167,6 +193,7 @@ body > iframe {
       flex-grow: 1;
       align-items: center;
       justify-content: center;
+      transition: all 800ms ease;
     }
   }
 
@@ -185,6 +212,9 @@ body > iframe {
 
     &.dragging {
       z-index: 3;
+      span {
+        transition: none;
+      }
     }
 
     &.r span {
@@ -243,6 +273,7 @@ body > iframe {
       background-size: contain;
       background-position: center center;
       background-repeat: no-repeat;
+      transition: all 800ms ease;
     }
   }
 
@@ -271,6 +302,10 @@ body > iframe {
     &.show {
       opacity: 1;
       pointer-events: all;
+
+      .piece {
+        pointer-events: all;
+      }
     }
 
     .piece {
@@ -279,7 +314,6 @@ body > iframe {
       position: relative;
       padding: 8px;
       cursor: pointer;
-      pointer-events: all;
       &:hover {
         background: #999;
       }

@@ -2,7 +2,7 @@ import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-red
 import { configureStore, getDefaultMiddleware, createSlice } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
 
-import { State, Square, searchSquare } from './types';
+import { State, Square } from './types';
 import { defaultRecipes } from './constants';
 
 // Redux store starting state
@@ -27,22 +27,25 @@ const initialState: State = {
     recipes: defaultRecipes
   },
   chess: {
-    gameNumber: 1,
-    turn: 'w',
-    userColor: 'both',
-    latestMove: '',
-    requestPromotion: false,
-    availableSquares: [],
     fen: '',
-    squares: [],
-    dragging: null,
+    turn: 'w',
     pieces: [],
-    columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-    rows: ['8', '7', '6', '5', '4', '3', '2', '1'],
+    squares: [],
+    checkers: [],
+    gameNumber: 1,
+    legalMoves: [],
+    rotated: false,
     enPassant: '-',
+    dragging: null,
+    latestMove: '',
+    castling: 'KQkq',
     halfMoveClock: 0,
     fullMoveNumber: 1,
-    castling: 'KQkq'
+    userColor: 'none',
+    availableSquares: [],
+    requestPromotion: false,
+    rows: ['8', '7', '6', '5', '4', '3', '2', '1'],
+    columns: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
   }
 };
 
@@ -148,238 +151,27 @@ export const { actions, reducer } = createSlice({
       };
     },
     setAvailableSquares: (state, action) => {
-      const c = state.chess;
-      const [column, row] = action.payload.split('');
-      const rowIndex = c.rows.indexOf(row);
-      const columnIndex = c.columns.indexOf(column);
-      const pieceSquareIndex = rowIndex * 8 + columnIndex;
-      const piece = c.pieces.find(
-        (piece) => !piece.taken && piece.column === column && piece.row === row
-      );
-
-      if (!piece) return;
-
-      const king = c.pieces.find(
-        (piece) => !piece.taken && piece.color === c.turn && ['k', 'K'].includes(piece.name)
-      );
-
-      if (!king) return;
-
-      // If king is not the piece we are moving we need to check for the pin
-      if (king !== piece) {
-        let pinned = false;
-
-        const kingRowIndex = c.rows.indexOf(king.row);
-        const kingColumnIndex = c.columns.indexOf(king.column);
-
-        // Check if the king and the currently selected piece are in the same direction
-        // Starting at the selected piece, find the first opponent piece in that direction
-        // If that opponent piece can move in the searched direction, you are pinned
-
-        // Horizontal check
-        if (rowIndex === kingRowIndex) {
-          const pinner = search(
-            pieceSquareIndex,
-            `horizontal-${columnIndex > kingColumnIndex ? 'right' : 'left'}`
-          ).pop()?.piece;
-          pinned =
-            !!pinner && pinner.color !== c.turn && ['r', 'R', 'q', 'Q'].includes(pinner.name);
-
-          // Vertical check
-        } else if (columnIndex === kingColumnIndex) {
-          const pinner = search(
-            pieceSquareIndex,
-            `vertical-${rowIndex > kingRowIndex ? 'down' : 'up'}`
-          ).pop()?.piece;
-          pinned =
-            !!pinner && pinner.color !== c.turn && ['r', 'R', 'q', 'Q'].includes(pinner.name);
-
-          // Diagonal check left-down / right-up
-        } else if ((rowIndex - kingRowIndex) / (columnIndex - kingColumnIndex) === -1) {
-          const pinner = search(
-            pieceSquareIndex,
-            `diagonal-${rowIndex > kingRowIndex ? 'right-up' : 'left-down'}`
-          ).pop()?.piece;
-          pinned =
-            !!pinner && pinner.color !== c.turn && ['b', 'B', 'q', 'Q'].includes(pinner.name);
-
-          // Diagonal check left-up / right-down
-        } else if ((rowIndex - kingRowIndex) / (columnIndex - kingColumnIndex) === 1) {
-          const pinner = search(
-            pieceSquareIndex,
-            `diagonal-${rowIndex > kingRowIndex ? 'right-down' : 'left-up'}`
-          ).pop()?.piece;
-          pinned =
-            !!pinner && pinner.color !== c.turn && ['b', 'B', 'q', 'Q'].includes(pinner.name);
-        }
-
-        if (pinned) {
-          c.availableSquares = [];
-          return;
-        }
-      }
-
-      const lines: { [direction: string]: searchSquare[] } = {};
-
-      if (['n', 'N'].includes(piece.name)) {
-        lines.all = [10, 17, 15, 6, -10, -17, -15, -6].reduce(
-          (searchSquares: searchSquare[], delta) => {
-            if ([6, -10].includes(delta) && pieceSquareIndex % 8 < 2) return searchSquares;
-            if ([15, -17].includes(delta) && pieceSquareIndex % 8 === 0) return searchSquares;
-            if ([-6, 10].includes(delta) && pieceSquareIndex % 8 > 5) return searchSquares;
-            if ([-15, 17].includes(delta) && pieceSquareIndex % 8 === 7) return searchSquares;
-
-            const nextIndex = pieceSquareIndex + delta;
-            const square = state.chess.squares[nextIndex];
-            const rowIndex = Math.floor(nextIndex / 8);
-            const columnIndex = nextIndex % 8;
-            const row = c.rows[rowIndex];
-            const column = c.columns[columnIndex];
-
-            if (!row || !column) return searchSquares;
-
-            const coordinate = `${column}${row}`;
-
-            searchSquares.push({
-              coordinate,
-              piece: square?.piece || null
-            });
-
-            return searchSquares;
-          },
-          []
-        );
-      }
-
-      if (['P', 'k', 'K', 'r', 'R', 'q', 'Q'].includes(piece.name)) {
-        lines.vertical_up = search(pieceSquareIndex, 'vertical_up');
-      }
-
-      if (['p', 'k', 'K', 'r', 'R', 'q', 'Q'].includes(piece.name)) {
-        lines.vertical_down = search(pieceSquareIndex, 'vertical_down');
-      }
-
-      if (['k', 'K', 'r', 'R', 'q', 'Q'].includes(piece.name)) {
-        lines.horizontal_left = search(pieceSquareIndex, 'horizontal_left');
-        lines.horizontal_right = search(pieceSquareIndex, 'horizontal_right');
-      }
-
-      if (['P', 'k', 'K', 'b', 'B', 'q', 'Q'].includes(piece.name)) {
-        lines.diagonal_left_up = search(pieceSquareIndex, 'diagonal_left_up');
-        lines.diagonal_right_up = search(pieceSquareIndex, 'diagonal_right_up');
-      }
-
-      if (['p', 'k', 'K', 'b', 'B', 'q', 'Q'].includes(piece.name)) {
-        lines.diagonal_left_down = search(pieceSquareIndex, 'diagonal_left_down');
-        lines.diagonal_right_down = search(pieceSquareIndex, 'diagonal_right_down');
-      }
-
-      c.availableSquares = Object.keys(lines).reduce(
-        (available: string[], direction) =>
-          lines[direction].reduce((available, square, index) => {
-            if (square?.piece?.color === c.turn) return available;
-
-            // Pawns can only move diagonally if there is an opponent piece or en passant
-            if (
-              ['P', 'p'].includes(piece.name) &&
-              direction.includes('diagonal') &&
-              !square.piece &&
-              c.enPassant !== square.coordinate
-            )
-              return available;
-
-            if (piece.name === 'P' && direction === 'vertical_up') {
-              if (!square.piece && index === 1 && rowIndex === 6) available.push(square.coordinate);
-              else if (!square.piece && index === 0) available.push(square.coordinate);
-
-              return available;
-            }
-
-            if (piece.name === 'p' && direction === 'vertical_down') {
-              if (!square.piece && index === 1 && rowIndex === 1) available.push(square.coordinate);
-              else if (!square.piece && index === 0) available.push(square.coordinate);
-
-              return available;
-            }
-
-            if (['p', 'P', 'K', 'k'].includes(piece.name) && index > 0) return available;
-
-            available.push(square.coordinate);
-
-            return available;
-          }, available),
-        []
-      );
-
-      function search(
-        index: number,
-        direction: string,
-        buffer: searchSquare[] = []
-      ): searchSquare[] {
-        let nextIndex: null | number = null;
-
-        if (direction === 'horizontal_right') {
-          nextIndex = index + 1;
-          if (nextIndex % 8 === 0) return buffer;
-        } else if (direction === 'horizontal_left') {
-          if (index % 8 === 0) return buffer;
-          nextIndex = index - 1;
-        } else if (direction === 'vertical_up') {
-          nextIndex = index - 8;
-          if (nextIndex < 0) return buffer;
-        } else if (direction === 'vertical_down') {
-          nextIndex = index + 8;
-          if (nextIndex > 64) return buffer;
-        } else if (direction === 'diagonal_right_down') {
-          nextIndex = index + 9;
-          if (nextIndex > 64 || nextIndex % 8 === 0) return buffer;
-        } else if (direction === 'diagonal_left_down') {
-          nextIndex = index + 7;
-          if (nextIndex > 64 || nextIndex % 8 === 7) return buffer;
-        } else if (direction === 'diagonal_left_up') {
-          if (index % 8 === 0) return buffer;
-          nextIndex = index - 9;
-          if (nextIndex < 0) return buffer;
-        } else if (direction === 'diagonal_right_up') {
-          if (index % 8 === 7) return buffer;
-          nextIndex = index - 7;
-          if (nextIndex < 0) return buffer;
-        }
-
-        if (nextIndex === null) return buffer;
-
-        const square = state.chess.squares[nextIndex];
-        const rowIndex = Math.floor(nextIndex / 8);
-        const columnIndex = nextIndex % 8;
-        const row = c.rows[rowIndex];
-        const column = c.columns[columnIndex];
-        const coordinate = `${column}${row}`;
-
-        buffer.push({
-          coordinate,
-          piece: square?.piece || null
-        });
-
-        if (!square?.piece) return search(nextIndex, direction, buffer);
-
-        return buffer;
-      }
+      state.chess.availableSquares = state.chess.legalMoves.reduce((squares: string[], move) => {
+        if (move.indexOf(action.payload) === 0) squares.push(move.substring(2, 4));
+        return squares;
+      }, []);
     },
     chessMove: (state, action) => {
+      const move = action.payload;
       const c = state.chess;
 
-      c.latestMove = action.payload;
+      c.latestMove = move;
 
       if (c.latestMove === '(none)') return;
 
       // Find moved piece
-      const [originalColumn, originalRow, newColumn, newRow, promotion] = action.payload.slice('');
+      const [originalColumn, originalRow, newColumn, newRow, promotion] = move.slice('');
 
       const originalPiece = c.pieces.find(
         (piece) => !piece.taken && piece.column === originalColumn && piece.row === originalRow
       );
 
-      if (!originalPiece) return console.log('error making move', action.payload);
+      if (!originalPiece) return console.log('error making move', move);
 
       // Clear available square visual indicator
       c.availableSquares = [];

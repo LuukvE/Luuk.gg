@@ -48,11 +48,6 @@ export type Square = null | {
   index: number;
 };
 
-export type searchSquare = {
-  coordinate: string;
-  piece: Piece | null;
-};
-
 // Store state
 export type State = {
   error: string;
@@ -79,21 +74,24 @@ export type State = {
     recipes: Recipe[];
   };
   chess: {
-    gameNumber: number;
-    turn: 'w' | 'b';
-    userColor: 'w' | 'b' | 'none' | 'both';
-    latestMove: string;
-    requestPromotion: boolean;
-    availableSquares: string[];
     fen: string;
-    squares: Square[];
-    dragging: null | Piece;
-    pieces: Piece[];
-    columns: string[];
     rows: string[];
+    pieces: Piece[];
+    turn: 'w' | 'b';
+    castling: string;
+    rotated: boolean;
+    columns: string[];
+    squares: Square[];
     enPassant: string;
+    latestMove: string;
+    gameNumber: number;
+    checkers: string[];
+    legalMoves: string[];
     halfMoveClock: number;
     fullMoveNumber: number;
-    castling: string;
+    dragging: null | Piece;
+    requestPromotion: boolean;
+    availableSquares: string[];
+    userColor: 'w' | 'b' | 'none' | 'both';
   };
 };

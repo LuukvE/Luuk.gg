@@ -75,6 +75,7 @@ export type State = {
   };
   chess: {
     fen: string;
+    draw: boolean;
     rows: string[];
     pieces: Piece[];
     turn: 'w' | 'b';

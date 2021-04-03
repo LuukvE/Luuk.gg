@@ -16,6 +16,7 @@ const Chess: FC = () => {
   const {
     fen,
     turn,
+    draw,
     rows,
     pieces,
     rotated,
@@ -29,6 +30,11 @@ const Chess: FC = () => {
     requestPromotion,
     availableSquares
   } = useSelector((state) => state.chess);
+
+  const gameOver =
+    draw || // Insufficient material
+    latestMove === '(none)' || // Computer is check-mate
+    (legalMoves.length === 0 && ['both', turn].includes(userColor)); // User is check-mate
 
   const drag = useRef<null | {
     square: Square;
@@ -134,8 +140,6 @@ const Chess: FC = () => {
       engine.current = null;
     }
 
-    let timeout: number = 0;
-
     const iframe = document.createElement('iframe');
 
     document.body.appendChild(iframe);
@@ -165,16 +169,17 @@ const Chess: FC = () => {
         if (message === 'readyok') {
           cmds.push('ucinewgame');
 
-          if (['none', 'b'].includes(userColor)) cmds.push('position startpos', 'go');
-          else cmds.push('position startpos', 'd');
+          if (['none', 'b'].includes(userColor)) {
+            cmds.push('position startpos', 'go', 'setoption name Minimum Thinking Time value 2000');
+          } else {
+            cmds.push('setoption name Minimum Thinking Time value 2000', 'position startpos', 'd');
+          }
         }
 
         if (message.indexOf('bestmove ') === 0) {
           setLoading(false);
 
-          timeout = window.setTimeout(() => {
-            dispatch(actions.chessMove(message.split(' ')[1]));
-          }, 200);
+          dispatch(actions.chessMove(message.split(' ')[1]));
         }
 
         if (message.indexOf('Checkers: ') === 0) {
@@ -198,17 +203,13 @@ const Chess: FC = () => {
         cmds.forEach((cmd) => stockfish.postMessage(cmd, engineURL));
       });
     };
-
-    return () => {
-      if (timeout) window.clearTimeout(timeout);
-    };
   }, [dispatch, userColor, gameNumber]);
 
   useEffect(() => {
     if (requestPromotion || !latestMove || latestMove === '(none)') return;
 
     const stockfish = engine.current?.contentWindow;
-    console.log('fen', fen);
+
     stockfish?.postMessage(`position ${fen}`, engineURL);
 
     if ([turn, 'both'].includes(userColor)) {
@@ -251,7 +252,7 @@ const Chess: FC = () => {
 
           if (square.piece.color !== turn) return e;
 
-          if (![turn, 'both'].includes(userColor)) return e;
+          if (gameOver || ![turn, 'both'].includes(userColor)) return e;
 
           dispatch(actions.setAvailableSquares(`${square.piece.column}${square.piece.row}`));
 
@@ -259,7 +260,7 @@ const Chess: FC = () => {
           const mouse = e as MouseEvent;
           const { target } = touch.changedTouches ? touch.changedTouches[0] : mouse;
           const element =
-            boardElement.current?.querySelector(`.square-${square.index} span`) || null;
+            boardElement.current?.querySelector(`.alive.square-${square.index} span`) || null;
 
           if (!element || !target || !boardElement.current) return;
 
@@ -288,8 +289,13 @@ const Chess: FC = () => {
           <div
             onTouchStart={start}
             onMouseDown={start}
-            className={`board-square${square && square.piece ? ' has-piece' : ''}${
-              square && square.piece.color === turn && [turn, 'both'].includes(userColor)
+            className={`board-square${latestMove.includes(coordinate) ? ' latest-move' : ''}${
+              square && square.piece ? ' has-piece' : ''
+            }${
+              !gameOver &&
+              square &&
+              square.piece.color === turn &&
+              [turn, 'both'].includes(userColor)
                 ? ' moveable'
                 : ''
             }${availableSquares.includes(coordinate) ? ' available' : ''}`}
@@ -297,7 +303,20 @@ const Chess: FC = () => {
           ></div>
         );
       }),
-    [availableSquares, columns, rows, squares, turn, drag, userColor, dispatch, getOffset, move]
+    [
+      availableSquares,
+      latestMove,
+      userColor,
+      gameOver,
+      squares,
+      columns,
+      rows,
+      turn,
+      drag,
+      move,
+      dispatch,
+      getOffset
+    ]
   );
 
   const pieceNodes = useMemo(
@@ -318,7 +337,7 @@ const Chess: FC = () => {
               left: `${left}%`,
               top: `${top}%`
             }}
-            className={`piece ${piece.name}${piece.taken ? ' taken' : ''} square-${
+            className={`piece ${piece.name}${piece.taken ? ' taken' : ' alive'} square-${
               rows.indexOf(piece.row) * 8 + columns.indexOf(piece.column)
             } ${
               dragging?.row === piece.row && dragging?.column === piece.column ? ' dragging' : ''
@@ -390,6 +409,12 @@ const Chess: FC = () => {
               <span />
             </div>
           </div>
+          <div className="powered-by-stockfish">
+            <small>Powered by:</small>{' '}
+            <a href="https://github.com/nmrugg/stockfish.js" target="_blank" rel="noreferrer">
+              <i className="fab fa-github" /> Stockfish chess engine
+            </a>
+          </div>
         </div>
       )}
       <div className="chess-controls">
@@ -397,7 +422,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={userColor === 'none' ? 'active' : ''}
+          className={!gameOver && userColor === 'none' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -413,7 +438,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={userColor === 'both' ? 'active' : ''}
+          className={!gameOver && userColor === 'both' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -429,7 +454,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={userColor === 'w' ? 'active' : ''}
+          className={!gameOver && userColor === 'w' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -445,7 +470,7 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
-          className={userColor === 'b' ? 'active' : ''}
+          className={!gameOver && userColor === 'b' ? 'active' : ''}
           onClick={() => {
             dispatch(
               actions.setChess({
@@ -457,14 +482,19 @@ const Chess: FC = () => {
         >
           <i className="fas fa-laptop-code" /> vs <i className="fas fa-user" />
         </Button>
-        {!loading &&
-          (latestMove === '(none)' ||
-            (legalMoves.length === 0 && ['both', turn].includes(userColor))) && (
-            <>
-              <h5>Check Mate</h5>
+        {!loading && gameOver && (
+          <>
+            {draw ? <h5>Draw</h5> : <h5>Check Mate</h5>}
+            {draw ? (
+              <h3>Insufficient material</h3>
+            ) : (
               <h3>{turn === 'w' ? 'Black' : 'White'} won!</h3>
-            </>
-          )}
+            )}
+          </>
+        )}
+        {!loading && !gameOver && !['both', turn].includes(userColor) && (
+          <Spinner animation="border" />
+        )}
 
         <Button
           size="sm"

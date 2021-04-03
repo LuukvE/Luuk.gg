@@ -14,6 +14,7 @@ body > iframe {
   align-items: center;
   justify-content: center;
   padding: 0;
+  position: relative;
 
   @media screen and (max-width: 1200px) {
     flex-direction: column-reverse;
@@ -43,6 +44,7 @@ body > iframe {
     .btn {
       margin-bottom: 12px;
       color: rgba($white, 0.8);
+      max-width: 250px;
       &.active {
         color: rgba($white, 0.8);
       }
@@ -61,8 +63,17 @@ body > iframe {
       }
     }
 
+    .spinner-border {
+      margin-top: auto;
+      margin-bottom: 10px;
+    }
+
     h5 {
       margin-top: 30px;
+    }
+
+    h3 {
+      text-align: center;
     }
   }
 
@@ -84,8 +95,14 @@ body > iframe {
       transform: rotate(180deg);
       .piece span,
       .horizontal-labels span,
-      .vertical-labels span {
+      .vertical-labels span,
+      .powered-by-stockfish {
         transform: rotate(-180deg);
+      }
+
+      .powered-by-stockfish {
+        top: -70px;
+        bottom: initial;
       }
     }
 
@@ -138,6 +155,9 @@ body > iframe {
     padding-top: 12.5%;
     &.moveable {
       cursor: grab;
+    }
+    &.latest-move {
+      background: rgba(#c68f2a, 0.5);
     }
     &:first-of-type:after {
       border-top-left-radius: 3px;
@@ -317,6 +337,21 @@ body > iframe {
       &:hover {
         background: #999;
       }
+    }
+  }
+
+  .powered-by-stockfish {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    height: 30px;
+    bottom: -70px;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    small {
+      margin-right: 8px;
     }
   }
 }

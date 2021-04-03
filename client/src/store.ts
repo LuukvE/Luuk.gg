@@ -31,6 +31,7 @@ const initialState: State = {
     turn: 'w',
     pieces: [],
     squares: [],
+    draw: false,
     checkers: [],
     gameNumber: 1,
     legalMoves: [],
@@ -309,9 +310,15 @@ export const { actions, reducer } = createSlice({
 
       c.halfMoveClock = attackedPiece ? 0 : c.halfMoveClock + 1;
 
+      const remainingPieces: {
+        [color: string]: string[];
+      } = { w: [], b: [] };
+
       // Recalculate squares
       c.squares = c.pieces.reduce((squares: Square[], piece) => {
         if (piece.taken) return squares;
+
+        remainingPieces[piece.color].push(piece.name);
 
         const index = c.rows.indexOf(piece.row) * 8 + c.columns.indexOf(piece.column);
 
@@ -319,6 +326,12 @@ export const { actions, reducer } = createSlice({
 
         return squares;
       }, new Array(64).fill(null));
+
+      c.draw =
+        remainingPieces.w.length <= 2 &&
+        !remainingPieces.w.find((p) => !['K', 'N', 'B'].includes(p)) &&
+        remainingPieces.b.length <= 2 &&
+        !remainingPieces.b.find((p) => !['k', 'n', 'b'].includes(p));
 
       // Generate FEN code
       const { fenPieces } = c.squares.reduce(

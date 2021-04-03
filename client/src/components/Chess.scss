@@ -1,11 +1,24 @@
 @import '../variables';
 
+body > iframe {
+  position: fixed;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .Chess {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
-  padding: 50px 0;
+  padding: 0;
+
+  @media screen and (max-width: 1200px) {
+    flex-direction: column-reverse;
+    padding: 0;
+  }
 
   .chess-controls {
     background: rgba(black, 0.2);
@@ -16,10 +29,16 @@
     align-items: center;
     justify-content: flex-start;
     padding: 50px;
-    margin: 0 50px;
+    margin: 70px 50px;
     border-radius: 8px;
     flex-direction: column;
     max-width: 300px;
+
+    @media screen and (max-width: 1200px) {
+      margin: 0 0 50px;
+      border-radius: 0;
+      max-width: none;
+    }
 
     .btn {
       margin-bottom: 12px;
@@ -32,7 +51,12 @@
         margin: 0 20px;
       }
     }
+
+    h3:first-of-type {
+      margin-top: 50px;
+    }
   }
+
   .board {
     user-select: none;
     display: flex;
@@ -44,6 +68,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     border-radius: 3px;
+    margin: 70px 0;
 
     &.dragging {
       cursor: grabbing;
@@ -159,7 +184,7 @@
     }
 
     &.dragging {
-      z-index: 1;
+      z-index: 3;
     }
 
     &.r span {
@@ -218,6 +243,46 @@
       background-size: contain;
       background-position: center center;
       background-repeat: no-repeat;
+    }
+  }
+
+  .request-promotion {
+    position: absolute;
+    left: 25%;
+    top: 45.75%;
+    transition: all 100ms;
+    pointer-events: none;
+    height: 10.25%;
+    display: flex;
+    width: 43%;
+    z-index: 1;
+    background: rgba(#999, 0.7);
+    border-radius: 4px;
+    opacity: 0;
+
+    &.w {
+      top: -11.25%;
+    }
+
+    &.b {
+      top: 101%;
+    }
+
+    &.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .piece {
+      width: 25%;
+      height: 100%;
+      position: relative;
+      padding: 8px;
+      cursor: pointer;
+      pointer-events: all;
+      &:hover {
+        background: #999;
+      }
     }
   }
 }

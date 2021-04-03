@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Luuk.gg - StockFish</title>
+  </head>
+  <body>
+    <script src="stockfish.js"></script>
+    <script>
+      var stockfish;
+
+      window.addEventListener(
+        'message',
+        function (event) {
+          if (!stockfish) {
+            stockfish = STOCKFISH();
+
+            stockfish.onmessage = function onmessage(message) {
+              event.source.postMessage(message, event.origin);
+            };
+          }
+
+          if (!event.data) return;
+
+          stockfish.postMessage(event.data);
+        },
+        false
+      );
+    </script>
+  </body>
+</html>

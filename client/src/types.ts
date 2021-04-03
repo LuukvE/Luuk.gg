@@ -81,7 +81,7 @@ export type State = {
   chess: {
     gameNumber: number;
     turn: 'w' | 'b';
-    userColor: 'w' | 'b' | 'none';
+    userColor: 'w' | 'b' | 'none' | 'both';
     latestMove: string;
     requestPromotion: boolean;
     availableSquares: string[];

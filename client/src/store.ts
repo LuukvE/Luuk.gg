@@ -29,7 +29,7 @@ const initialState: State = {
   chess: {
     gameNumber: 1,
     turn: 'w',
-    userColor: 'none',
+    userColor: 'both',
     latestMove: '',
     requestPromotion: false,
     availableSquares: [],
@@ -288,24 +288,18 @@ export const { actions, reducer } = createSlice({
             )
               return available;
 
-            if (
-              rowIndex === 6 &&
-              piece.name === 'P' &&
-              direction === 'vertical_up' &&
-              index === 1 &&
-              !square.piece
-            ) {
-              available.push(square.coordinate);
+            if (piece.name === 'P' && direction === 'vertical_up') {
+              if (!square.piece && index === 1 && rowIndex === 6) available.push(square.coordinate);
+              else if (!square.piece && index === 0) available.push(square.coordinate);
+
+              return available;
             }
 
-            if (
-              rowIndex === 1 &&
-              piece.name === 'p' &&
-              direction === 'vertical_down' &&
-              index === 1 &&
-              !square.piece
-            ) {
-              available.push(square.coordinate);
+            if (piece.name === 'p' && direction === 'vertical_down') {
+              if (!square.piece && index === 1 && rowIndex === 1) available.push(square.coordinate);
+              else if (!square.piece && index === 0) available.push(square.coordinate);
+
+              return available;
             }
 
             if (['p', 'P', 'K', 'k'].includes(piece.name) && index > 0) return available;
@@ -387,15 +381,7 @@ export const { actions, reducer } = createSlice({
 
       if (!originalPiece) return console.log('error making move', action.payload);
 
-      // Disallow invalid square
-      if (
-        !promotion &&
-        c.turn === c.userColor &&
-        !c.availableSquares.includes(`${newColumn}${newRow}`)
-      ) {
-        return;
-      }
-
+      // Clear available square visual indicator
       c.availableSquares = [];
 
       // Move and attack
@@ -410,8 +396,9 @@ export const { actions, reducer } = createSlice({
         const removedPawn = c.pieces.find(
           (piece) =>
             !piece.taken &&
+            ['P', 'p'].includes(piece.name) &&
             piece.column === newColumn &&
-            piece.row === `${parseInt(newRow, 10) + (originalPiece.name === 'P' ? 1 : -1)}`
+            piece.row === `${parseInt(newRow, 10) + (originalPiece.name === 'P' ? -1 : 1)}`
         );
 
         if (removedPawn) removedPawn.taken = true;

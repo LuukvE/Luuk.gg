@@ -1,14 +1,15 @@
 import './Chess.scss';
-import React, { FC, useCallback, useRef, useEffect } from 'react';
-import Modal from 'react-bootstrap/Modal';
+import React, { FC, useCallback, useRef, useEffect, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 
 import { Square } from '../types';
 import { useSelector, useDispatch, actions } from '../store';
 
+const engineURL = `${process.env.REACT_APP_BUCKET_URL}`;
+
 const Chess: FC = () => {
   const dispatch = useDispatch();
-  const engine = useRef<Worker | null>(null);
+  const engine = useRef<HTMLIFrameElement | null>(null);
   const boardElement = useRef<HTMLDivElement | null>(null);
   const {
     turn,
@@ -84,7 +85,10 @@ const Chess: FC = () => {
     const row = rows[newRowIndex < 0 ? 0 : newRowIndex > 8 ? 8 : newRowIndex];
     const column = columns[newColumnIndex < 0 ? 0 : newColumnIndex > 8 ? 8 : newColumnIndex];
 
-    dispatch(actions.chessMove(`${piece.column}${piece.row}${column}${row}`));
+    // Only submit valid moves to the reducer
+    if (availableSquares.includes(`${column}${row}`)) {
+      dispatch(actions.chessMove(`${piece.column}${piece.row}${column}${row}`));
+    }
 
     drag.current.element.removeAttribute('style');
 
@@ -97,7 +101,7 @@ const Chess: FC = () => {
         })
       );
     }, 100);
-  }, [columns, rows, pieces, dispatch]);
+  }, [columns, rows, pieces, availableSquares, dispatch]);
 
   useEffect(() => {
     document.body.removeEventListener('touchmove', move);
@@ -118,50 +122,81 @@ const Chess: FC = () => {
   }, [end, move]);
 
   useEffect(() => {
-    if (engine.current) engine.current.terminate();
+    if (engine.current) {
+      document.body.removeChild(engine.current);
 
-    dispatch(actions.startChess());
+      engine.current = null;
+    }
 
-    const stockfish = (engine.current = new Worker('/stockfish.js'));
+    let timeout: number = 0;
 
-    stockfish.postMessage('uci');
+    engine.current = document.createElement('iframe');
 
-    stockfish.onmessage = (event) => {
-      if (!event.data) return;
+    document.body.appendChild(engine.current);
 
-      const message = event.data;
+    engine.current.src = `${engineURL}/luuk.gg/stockfish.html`;
 
-      const cmds: string[] = [];
+    engine.current.onload = () => {
+      const stockfish = engine.current?.contentWindow;
 
-      if (message === 'uciok') cmds.push('isready');
+      if (!stockfish) return;
 
-      if (message === 'readyok') {
-        cmds.push('ucinewgame');
+      dispatch(actions.startChess());
 
-        if (userColor !== 'w') cmds.push('position startpos', 'go');
-      }
+      stockfish.postMessage('uci', engineURL);
 
-      if (message.indexOf('bestmove ') === 0) {
-        // console.log(message);
-        dispatch(actions.chessMove(message.split(' ')[1]));
-      }
+      window.addEventListener('message', (event) => {
+        if (event.source !== stockfish || !event.data) return;
 
-      cmds.forEach((cmd) => stockfish.postMessage(cmd));
+        const message = event.data;
+
+        const cmds: string[] = [];
+
+        if (message === 'uciok') cmds.push('isready');
+
+        if (message === 'readyok') {
+          cmds.push('ucinewgame');
+
+          if (['none', 'b'].includes(userColor)) cmds.push('position startpos', 'go');
+        }
+
+        if (message.indexOf('bestmove ') === 0) {
+          timeout = window.setTimeout(() => {
+            dispatch(actions.chessMove(message.split(' ')[1]));
+          }, 200);
+          // console.log(message);
+        }
+
+        cmds.forEach((cmd) => stockfish.postMessage(cmd, engineURL));
+      });
+    };
+
+    return () => {
+      if (timeout) window.clearTimeout(timeout);
     };
   }, [dispatch, userColor, gameNumber]);
 
   useEffect(() => {
-    if (requestPromotion || !latestMove || latestMove === '(none)' || turn === userColor) return;
+    if (
+      requestPromotion ||
+      !latestMove ||
+      latestMove === '(none)' ||
+      userColor === 'both' ||
+      turn === userColor
+    ) {
+      return;
+    }
 
-    setTimeout(() => {
-      engine.current?.postMessage(`position ${fen}`);
+    const stockfish = engine.current?.contentWindow;
 
-      engine.current?.postMessage('go');
-    }, 200);
+    stockfish?.postMessage(`position ${fen}`, engineURL);
+
+    stockfish?.postMessage('go', engineURL);
   }, [fen, latestMove, requestPromotion, turn, userColor]);
 
+  // Start the game
   useEffect(() => {
-    if (squares.length) return;
+    if (!pieces.length || squares.length) return;
 
     dispatch(
       actions.setChess({
@@ -178,81 +213,101 @@ const Chess: FC = () => {
     );
   }, [squares, rows, columns, pieces, dispatch]);
 
+  const squareNodes = useMemo(
+    () =>
+      squares.map((square, index) => {
+        const squareRowIndex = Math.floor(index / 8);
+        const squareColumnIndex = index % 8;
+        const coordinate = `${columns[squareColumnIndex]}${rows[squareRowIndex]}`;
+
+        const start = (e: any) => {
+          if (drag.current) return e;
+
+          if (!square?.piece) return e;
+
+          if (square.piece.color !== turn) return e;
+
+          dispatch(actions.setAvailableSquares(`${square.piece.column}${square.piece.row}`));
+
+          const touch = e as TouchEvent;
+          const mouse = e as MouseEvent;
+          const { target } = touch.changedTouches ? touch.changedTouches[0] : mouse;
+          const element =
+            boardElement.current?.querySelector(`.square-${square.index} span`) || null;
+
+          if (!element || !target || !boardElement.current) return;
+
+          const edgeToCenter = Math.round(boardElement.current.clientWidth / 16);
+          const { left, top } = getOffset(target as HTMLDivElement);
+
+          drag.current = {
+            square,
+            element,
+            startX: left + edgeToCenter,
+            startY: top + edgeToCenter / 1.2,
+            relativeX: 0,
+            relativeY: 0
+          };
+
+          dispatch(
+            actions.setChess({
+              dragging: square.piece
+            })
+          );
+
+          move(e);
+        };
+
+        return (
+          <div
+            onTouchStart={start}
+            onMouseDown={start}
+            className={`board-square${square && square.piece ? ' has-piece' : ''}${
+              square && square.piece.color === turn ? ' moveable' : ''
+            }${availableSquares.includes(coordinate) ? ' available' : ''}`}
+            key={index}
+          ></div>
+        );
+      }),
+    [availableSquares, columns, rows, squares, turn, drag, dispatch, getOffset, move]
+  );
+
+  const pieceNodes = useMemo(
+    () =>
+      pieces.map((piece, index) => {
+        let left = columns.indexOf(piece.column) * 12.5;
+        let top = rows.indexOf(piece.row) * 12.5;
+
+        if (requestPromotion && latestMove.indexOf(`${piece.column}${piece.row}`) === 0) {
+          left = columns.indexOf(latestMove[2]) * 12.5;
+          top = rows.indexOf(latestMove[3]) * 12.5;
+        }
+
+        return (
+          <div
+            key={index}
+            style={{
+              left: `${left}%`,
+              top: `${top}%`
+            }}
+            className={`piece ${piece.name}${piece.taken ? ' taken' : ''} square-${
+              rows.indexOf(piece.row) * 8 + columns.indexOf(piece.column)
+            } ${
+              dragging?.row === piece.row && dragging?.column === piece.column ? ' dragging' : ''
+            }`}
+          >
+            <span />
+          </div>
+        );
+      }),
+    [columns, rows, dragging, pieces, latestMove, requestPromotion]
+  );
+
   return (
     <div className="Chess">
       <div ref={boardElement} className={`board${dragging ? ' dragging' : ''}`}>
-        {squares.map((square, index) => {
-          const squareRowIndex = Math.floor(index / 8);
-          const squareColumnIndex = index % 8;
-          const coordinate = `${columns[squareColumnIndex]}${rows[squareRowIndex]}`;
-
-          const start = (e: any) => {
-            if (!square?.piece) return e;
-
-            if (square.piece.color !== turn) {
-              return e;
-            }
-
-            dispatch(actions.setAvailableSquares(`${square.piece.column}${square.piece.row}`));
-
-            const touch = e as TouchEvent;
-            const mouse = e as MouseEvent;
-            const { target } = touch.changedTouches ? touch.changedTouches[0] : mouse;
-            const element =
-              boardElement.current?.querySelector(`.square-${square.index} span`) || null;
-
-            if (!element || !target || !boardElement.current) return;
-
-            const edgeToCenter = Math.round(boardElement.current.clientWidth / 16);
-            const { left, top } = getOffset(target as HTMLDivElement);
-
-            drag.current = {
-              square,
-              element,
-              startX: left + edgeToCenter,
-              startY: top + edgeToCenter / 1.2,
-              relativeX: 0,
-              relativeY: 0
-            };
-
-            dispatch(
-              actions.setChess({
-                dragging: square.piece
-              })
-            );
-
-            move(e);
-          };
-
-          return (
-            <div
-              onTouchStart={start}
-              onMouseDown={start}
-              className={`board-square${square && square.piece ? ' has-piece' : ''}${
-                square && square.piece.color === turn ? ' moveable' : ''
-              }${availableSquares.includes(coordinate) ? ' available' : ''}`}
-              key={index}
-            ></div>
-          );
-        })}
-        {pieces.map((piece, index) => {
-          return (
-            <div
-              key={index}
-              style={{
-                left: `${columns.indexOf(piece.column) * 12.5}%`,
-                top: `${rows.indexOf(piece.row) * 12.5}%`
-              }}
-              className={`piece ${piece.name}${piece.taken ? ' taken' : ''} square-${
-                rows.indexOf(piece.row) * 8 + columns.indexOf(piece.column)
-              } ${
-                dragging?.row === piece.row && dragging?.column === piece.column ? ' dragging' : ''
-              }`}
-            >
-              <span />
-            </div>
-          );
-        })}
+        {squareNodes}
+        {pieceNodes}
         <div className="horizontal-labels">
           {columns.map((label) => (
             <span key={label}>{label}</span>
@@ -263,24 +318,43 @@ const Chess: FC = () => {
             <span key={label}>{label}</span>
           ))}
         </div>
+
+        <div className={`request-promotion ${requestPromotion ? ` show ${turn}` : ''}`}>
+          <div
+            className={`piece ${turn === 'b' ? 'q' : 'Q'}`}
+            onClick={() => {
+              dispatch(actions.chessMove(`${latestMove}q`));
+            }}
+          >
+            <span />
+          </div>
+          <div
+            className={`piece ${turn === 'b' ? 'r' : 'R'}`}
+            onClick={() => {
+              dispatch(actions.chessMove(`${latestMove}r`));
+            }}
+          >
+            <span />
+          </div>
+          <div
+            className={`piece ${turn === 'b' ? 'b' : 'B'}`}
+            onClick={() => {
+              dispatch(actions.chessMove(`${latestMove}b`));
+            }}
+          >
+            <span />
+          </div>
+          <div
+            className={`piece ${turn === 'b' ? 'n' : 'N'}`}
+            onClick={() => {
+              dispatch(actions.chessMove(`${latestMove}n`));
+            }}
+          >
+            <span />
+          </div>
+        </div>
       </div>
       <div className="chess-controls">
-        <Button
-          block
-          variant="dark"
-          size="lg"
-          className={userColor === 'b' ? 'active' : ''}
-          onClick={() => {
-            dispatch(
-              actions.setChess({
-                gameNumber: gameNumber + 1,
-                userColor: 'b'
-              })
-            );
-          }}
-        >
-          <i className="fas fa-user" /> vs <i className="fas fa-laptop-code" />
-        </Button>
         <Button
           block
           variant="dark"
@@ -301,6 +375,22 @@ const Chess: FC = () => {
           block
           variant="dark"
           size="lg"
+          className={userColor === 'both' ? 'active' : ''}
+          onClick={() => {
+            dispatch(
+              actions.setChess({
+                gameNumber: gameNumber + 1,
+                userColor: 'both'
+              })
+            );
+          }}
+        >
+          <i className="fas fa-user" /> vs <i className="fas fa-user" />
+        </Button>
+        <Button
+          block
+          variant="dark"
+          size="lg"
           className={userColor === 'w' ? 'active' : ''}
           onClick={() => {
             dispatch(
@@ -311,64 +401,31 @@ const Chess: FC = () => {
             );
           }}
         >
+          <i className="fas fa-user" /> vs <i className="fas fa-laptop-code" />
+        </Button>
+        <Button
+          block
+          variant="dark"
+          size="lg"
+          className={userColor === 'b' ? 'active' : ''}
+          onClick={() => {
+            dispatch(
+              actions.setChess({
+                gameNumber: gameNumber + 1,
+                userColor: 'b'
+              })
+            );
+          }}
+        >
           <i className="fas fa-laptop-code" /> vs <i className="fas fa-user" />
         </Button>
+        {latestMove === '(none)' && (
+          <>
+            <h3>Check Mate</h3>
+            <h3>{turn === 'w' ? 'Black' : 'White'} won!</h3>
+          </>
+        )}
       </div>
-      <Modal
-        animation={false}
-        className="modal"
-        size="sm"
-        show={requestPromotion}
-        onHide={() => {}}
-      >
-        <Modal.Header>Promote to a...</Modal.Header>
-        <Modal.Body>
-          <Button
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}q`));
-            }}
-          >
-            Queen
-          </Button>
-          <Button
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}r`));
-            }}
-          >
-            Rook
-          </Button>
-          <Button
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}b`));
-            }}
-          >
-            Bishop
-          </Button>
-          <Button
-            onClick={() => {
-              dispatch(actions.chessMove(`${latestMove}n`));
-            }}
-          >
-            Knight
-          </Button>
-        </Modal.Body>
-      </Modal>
-      <Modal
-        animation={false}
-        className="modal"
-        size="lg"
-        show={latestMove === '(none)'}
-        onHide={() => {
-          dispatch(
-            actions.setChess({
-              latestMove: ''
-            })
-          );
-        }}
-      >
-        <Modal.Header closeButton>Check Mate</Modal.Header>
-        <Modal.Body>{turn === 'w' ? 'Black' : 'White'} won!</Modal.Body>
-      </Modal>
     </div>
   );
 };

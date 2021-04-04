@@ -46,7 +46,7 @@ const Dashboard: FC = () => {
           <iframe
             width="1519"
             height="594"
-            src="https://www.youtube.com/embed/Cis8e-mZBJo"
+            src="https://www.youtube.com/embed/ywwW2XtWaRc?list=PLp85sC5XVI-SEF0mg_VEVIee69nd0cDwW"
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

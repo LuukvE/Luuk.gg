@@ -356,9 +356,9 @@ export const { actions, reducer } = createSlice({
         { fenPieces: '', emptyCount: 0 }
       );
 
-      c.fen = `fen ${fenPieces} ${c.turn === 'w' ? 'w' : 'b'} ${c.castling || '-'} ${c.enPassant} ${
-        c.halfMoveClock
-      } ${c.fullMoveNumber}`;
+      c.fen = `fen ${fenPieces} ${c.turn} ${c.castling || '-'} ${c.enPassant} ${c.halfMoveClock} ${
+        c.fullMoveNumber
+      }`;
     }
   }
 });

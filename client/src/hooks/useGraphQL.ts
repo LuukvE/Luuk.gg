@@ -12,7 +12,10 @@ const useGraphQL = () => {
   const [loading, setLoading] = useState(false);
 
   const request = useCallback(
-    async ({ query, variables }: { query: any; variables?: any }) => {
+    async (
+      { query, variables }: { query: any; variables?: any },
+      options?: { silent: boolean }
+    ) => {
       setLoading(true);
 
       try {
@@ -34,7 +37,13 @@ const useGraphQL = () => {
 
         // If an error occured, store it
         if (res.status >= 300 || response.errors) {
-          dispatch(actions.set({ error: `${res.url}\n\n${JSON.stringify(response, null, 2)}` }));
+          if (!options?.silent) {
+            dispatch(
+              actions.set({
+                error: `${res.url}\n\n${JSON.stringify(response, null, 2)}`
+              })
+            );
+          }
 
           return { error: response };
         }

@@ -29,7 +29,7 @@ const App: FC = () => {
 
   // Sign in the user either based on cookie or query.code provided by the redirect from Google Signin
   useEffect(() => {
-    authenticate(query.code || '');
+    authenticate(query.code || '', { silent: !query.code });
   }, [authenticate]); // eslint-disable-line
 
   // When the app initialises, check for last page visited

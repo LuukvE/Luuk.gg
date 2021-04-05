@@ -30,9 +30,10 @@ const useGoogle = () => {
 
   // Request our user object from the API either with a code, or using cookies
   const authenticate = useCallback(
-    async (code: string) => {
-      const { response, error } = await request({
-        query: `query {
+    async (code: string, options?: { silent: boolean }) => {
+      const { response, error } = await request(
+        {
+          query: `query {
           user {
             signIn(code: "${code}") {
               email
@@ -41,7 +42,9 @@ const useGoogle = () => {
             }
           }
         }`
-      });
+        },
+        options
+      );
 
       if (error) return { error };
 

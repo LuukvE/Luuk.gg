@@ -56,6 +56,44 @@ const Dashboard: FC = () => {
       </div>
 
       <div>
+        <NavLink className="icon" to="/chess">
+          <i className="fas fa-chess-king" /> Chess
+        </NavLink>
+        <ul>
+          <li>
+            Implements the{' '}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://github.com/official-stockfish/Stockfish"
+            >
+              Stockfish chess engine
+            </a>
+          </li>
+          <li>Users can play alone or versus a powerful computer</li>
+          <li>Displays a rich and intuitive interface</li>
+        </ul>
+      </div>
+      <div>
+        <NavLink className="icon" to="/restaurants">
+          <i className="fas fa-pizza-slice" /> Restaurants
+        </NavLink>
+        <ul>
+          <li>
+            Implements an{' '}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://github.com/LuukvE/Luuk.gg/tree/master/scraper"
+            >
+              advanced web scraper
+            </a>
+          </li>
+          <li>Users can find restaurants and dishes to order</li>
+          <li>Displays a complex search interface</li>
+        </ul>
+      </div>
+      <div>
         <NavLink className="icon" to="/career">
           <i className="fas fa-code" /> Career
         </NavLink>
@@ -93,8 +131,8 @@ const Dashboard: FC = () => {
               AWS S3 API
             </a>
           </li>
-          <li>Displays a list of recipes with filters and sort options</li>
           <li>Users can submit new recipes when signed in</li>
+          <li>Displays a list of recipes with filters and sort options</li>
         </ul>
       </div>
       <div>
@@ -141,25 +179,6 @@ const Dashboard: FC = () => {
           </li>
           <li>Users can have a 1:1 meeting with video/audio</li>
           <li>Displays a sharable room link to invite others</li>
-        </ul>
-      </div>
-      <div>
-        <NavLink className="icon" to="/chess">
-          <i className="fas fa-chess-king" /> Chess
-        </NavLink>
-        <ul>
-          <li>
-            Implements the{' '}
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href="https://github.com/official-stockfish/Stockfish"
-            >
-              Stockfish chess engine
-            </a>
-          </li>
-          <li>Users can play alone or versus a powerful computer</li>
-          <li>Displays a rich and intuitive interface</li>
         </ul>
       </div>
     </div>

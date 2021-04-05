@@ -26,6 +26,9 @@ const initialState: State = {
     deleteId: null,
     recipes: defaultRecipes
   },
+  restaurants: {
+    items: []
+  },
   chess: {
     fen: '',
     turn: 'w',

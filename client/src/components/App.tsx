@@ -11,6 +11,7 @@ import useQuery from '../hooks/useQuery';
 import { useDispatch, useSelector, actions } from '../store';
 
 import Dashboard from './Dashboard';
+import Restaurants from './Restaurants';
 import Messenger from './Messenger';
 import Cooking from './Cooking';
 import Meeting from './Meeting';
@@ -56,20 +57,23 @@ const App: FC = () => {
           Luuk.gg
         </NavLink>
 
-        <NavLink to="/career">
-          <i className="fas fa-code" /> Career
+        <NavLink exact to="/chess">
+          <i className="fas fa-chess-king" /> Chess
         </NavLink>
         <NavLink to="/cooking">
           <i className="fas fa-utensils" /> Cooking
+        </NavLink>
+        <NavLink to="/restaurants">
+          <i className="fas fa-pizza-slice" /> Restaurants
+        </NavLink>
+        <NavLink to="/career">
+          <i className="fas fa-code" /> Career
         </NavLink>
         <NavLink to="/messenger">
           <i className="fab fa-slack" /> Messenger
         </NavLink>
         <NavLink to="/meeting">
           <i className="fas fa-video" /> Meeting
-        </NavLink>
-        <NavLink exact to="/chess">
-          <i className="fas fa-chess-king" /> Chess
         </NavLink>
         {user ? (
           <div className="user-account">
@@ -93,20 +97,23 @@ const App: FC = () => {
       </header>
       <main>
         <Switch>
-          <Route path="/messenger">
-            <Messenger loading={loading} send={send} />
+          <Route exact path="/chess">
+            <Chess />
           </Route>
           <Route path="/cooking">
             <Cooking />
           </Route>
+          <Route path="/restaurants">
+            <Restaurants />
+          </Route>
           <Route path="/career">
             <Career />
           </Route>
+          <Route path="/messenger">
+            <Messenger loading={loading} send={send} />
+          </Route>
           <Route path="/meeting">
             <Meeting />
-          </Route>
-          <Route exact path="/chess">
-            <Chess />
           </Route>
           <Route exact path="/">
             <Dashboard />

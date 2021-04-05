@@ -1,0 +1,33 @@
+{
+  "name": "luukgg-scraper",
+  "version": "0.0.1",
+  "author": {
+    "name": "Luuk van Egeraat"
+  },
+  "license": "UNLICENSED",
+  "scripts": {
+    "docker": "docker container prune --force && docker build -t luukgg-scraper . && docker run luukgg-scraper",
+    "start": "npx ts-node src"
+  },
+  "dependencies": {
+    "@types/jsdom": "^16.2.10",
+    "@types/node": "^14.14.35",
+    "@types/node-fetch": "^2.5.8",
+    "cli-progress": "^3.9.0",
+    "dotenv": "^8.2.0",
+    "jsdom": "^16.5.2",
+    "mongoose": "^5.12.3",
+    "node-fetch": "^2.6.1",
+    "prettier": "^2.0.5",
+    "puppeteer": "^8.0.0",
+    "ts-node": "^9.1.1",
+    "tslint": "^6.1.3",
+    "typescript": "^4.2.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100,
+    "trailingComma": "none",
+    "endOfLine": "auto"
+  }
+}

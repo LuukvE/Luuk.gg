@@ -7,9 +7,20 @@ import {
   GraphQLInt,
   GraphQLID
 } from 'graphql';
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-import { IRecipe, GraphQLDate, GraphQLAny } from '../types';
+import { GraphQLDate, GraphQLAny } from '../types';
+
+interface IRecipe extends Document {
+  cid: string;
+  name: string;
+  duration: string;
+  creator: string;
+  difficulty: number;
+  image: string;
+  text: string;
+  created: string;
+}
 
 export const Recipe = mongoose.model<IRecipe>(
   'recipe',

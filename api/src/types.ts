@@ -21,26 +21,6 @@ export const GraphQLAny = new GraphQLScalarType({
   parseLiteral: (ast) => ast
 });
 
-// AWS module
-export interface IRecipe extends Document {
-  cid: string;
-  name: string;
-  duration: string;
-  creator: string;
-  difficulty: number;
-  image: string;
-  text: string;
-  created: string;
-}
-
-// Google module
-export interface IUser extends Document {
-  email: string;
-  name: string;
-  created: Date;
-  picture: string;
-}
-
 // Slack module
 export type WebsocketMessage =
   | {
@@ -65,11 +45,6 @@ export type SlackEvent = {
 };
 
 // Github module
-export interface IGithub extends Document {
-  contributions: { [key: string]: number };
-  totalContributions: number;
-}
-
 export type Contributions = {
   [date: string]: number;
 };

@@ -5,6 +5,7 @@ import Cookies from 'cookies';
 
 import { recipeQuery, recipeMutations } from './recipe';
 import { userQuery, userMutations } from './user';
+import { restaurantQuery } from './restaurant';
 import { githubQuery } from './github';
 import { roomQuery } from './room';
 
@@ -19,7 +20,8 @@ const schema = new GraphQLSchema({
       user: userQuery,
       room: roomQuery,
       github: githubQuery,
-      recipe: recipeQuery
+      recipe: recipeQuery,
+      restaurant: restaurantQuery
     }
   }),
   mutation: new GraphQLObjectType({

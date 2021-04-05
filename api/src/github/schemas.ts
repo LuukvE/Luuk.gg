@@ -1,7 +1,12 @@
 import { GraphQLObjectType, GraphQLInt, GraphQLID } from 'graphql';
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-import { IGithub, GraphQLAny } from '../types';
+import { GraphQLAny } from '../types';
+
+interface IGithub extends Document {
+  contributions: { [key: string]: number };
+  totalContributions: number;
+}
 
 export const Github = mongoose.model<IGithub>(
   'github',

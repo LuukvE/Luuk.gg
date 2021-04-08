@@ -36,9 +36,15 @@ export type AWSUploadResponse = {
 
 // Restaurant page
 export type Product = {
+  id: string;
   name: string;
   description: string;
   price: number;
+};
+
+export type Category = {
+  id: string;
+  name: string;
 };
 
 export type Restaurant = {
@@ -46,8 +52,8 @@ export type Restaurant = {
   name: string;
   description: string;
   url: string;
-  categories: string[];
-  products: Product[];
+  categories: { [id: string]: Category };
+  products: { [id: string]: Product };
 };
 
 // Chess page

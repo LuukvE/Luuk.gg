@@ -15,15 +15,19 @@ const useRestaurants = () => {
         restaurant {
           getRestaurants {
             id
-            restaurant_info_and_links
+            name
+            url
+            description
           }
           getProducts {
+            id
             restaurant
             name
             description
             price
           }
           getCategories {
+            id
             restaurant
             name
           }
@@ -37,15 +41,15 @@ const useRestaurants = () => {
 
     const items = getRestaurants.reduce(
       (restaurants: { [id: string]: Restaurant }, restaurant: any) => {
-        const { name, url, categories } = restaurant.restaurant_info_and_links;
+        const { id, name, url, description } = restaurant;
 
         restaurants[restaurant.id] = {
-          id: restaurant.id,
+          id,
           name,
-          description: categories,
+          description,
           url,
-          categories: [],
-          products: []
+          categories: {},
+          products: {}
         };
 
         return restaurants;
@@ -56,19 +60,20 @@ const useRestaurants = () => {
     getCategories.forEach((category: any) => {
       if (!items[category.restaurant]) return console.log(category);
 
-      items[category.restaurant].categories.push(category.name);
+      items[category.restaurant].categories[category.id] = category;
     });
 
     getProducts.forEach((product: any) => {
-      const { name, price, description, restaurant } = product;
+      const { id, name, price, description, restaurant } = product;
 
       if (!items[restaurant]) return console.log(product);
 
-      items[restaurant].products.push({
+      items[restaurant].products[id] = {
+        id,
         name,
         price,
         description
-      });
+      };
     });
 
     dispatch(

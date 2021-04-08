@@ -1,10 +1,25 @@
 import puppeteer from 'puppeteer';
 import mongoose from 'mongoose';
 import progress from 'cli-progress';
+import dotenv from 'dotenv';
 
-import { Restaurant, Category, Product } from './db';
+import { Product, Category, Restaurant } from './schemas';
 
-scrape(process.env.DOMAIN, process.env.URL_PATH);
+dotenv.config();
+
+mongoose.set('useNewUrlParser', true);
+
+mongoose.set('useFindAndModify', false);
+
+mongoose.set('useCreateIndex', true);
+
+mongoose.set('useUnifiedTopology', true);
+
+mongoose.connection.on('error', (err) => console.error('MongoDB Error', err));
+
+mongoose.connect(`mongodb://localhost/${process.env.MONGODB}`).then(() => {
+  scrape(process.env.DOMAIN, process.env.URL_PATH);
+});
 
 async function scrape(domain: string, path: string) {
   const browser = await puppeteer.launch({ headless: false });
@@ -13,10 +28,7 @@ async function scrape(domain: string, path: string) {
   await page.setViewport({ width: 1600, height: 800 });
   await page.goto(`${domain}${path}`);
   await page.waitForFunction('window.restaurants !== undefined');
-  await page.click('button[data-value="pickup"]');
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-  await page.click('button[data-value="takeaway"]');
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await new Promise((resolve) => setTimeout(resolve, 20000)); // Set geolocation manually
 
   const restaurants = await page.evaluate(() => {
     const properties = Object.keys(window)
@@ -67,7 +79,19 @@ async function scrape(domain: string, path: string) {
 
     bar.update(total - restaurants.length);
 
-    await page.goto(`${domain}${restaurant.restaurant_info_and_links.url}`);
+    const { url, branch, logo, categories } = restaurant.restaurant_info_and_links;
+
+    delete restaurant.restaurant_info_and_links;
+
+    restaurant.url = `${domain}${url}`;
+
+    restaurant.branch = branch;
+
+    restaurant.logo = logo;
+
+    restaurant.description = categories;
+
+    await page.goto(restaurant.url);
 
     const additionalInfo = JSON.parse(
       await page.evaluate(
@@ -102,7 +126,8 @@ async function scrape(domain: string, path: string) {
         $set: completeRestaurant
       },
       {
-        upsert: true
+        upsert: true,
+        useFindAndModify: false
       },
       async (err) => {
         if (err) throw err;
@@ -141,7 +166,8 @@ async function scrape(domain: string, path: string) {
                   }
                 },
                 {
-                  upsert: true
+                  upsert: true,
+                  useFindAndModify: false
                 },
                 (err) => {
                   if (err) console.log(err);
@@ -167,10 +193,14 @@ async function scrape(domain: string, path: string) {
             const description =
               document.querySelector(`[id="${productId}"] .meal__description-additional-info`)
                 ?.textContent || '';
+            const options =
+              document.querySelector(`[id="${productId}"] .meal__description-choose-from`)
+                ?.textContent || '';
 
             return {
               id: productId,
               description,
+              options,
               name,
               categoryId,
               deliverymethod,
@@ -196,7 +226,8 @@ async function scrape(domain: string, path: string) {
                   }
                 },
                 {
-                  upsert: true
+                  upsert: true,
+                  useFindAndModify: false
                 },
                 (err) => {
                   resolve(null);

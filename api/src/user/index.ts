@@ -1,7 +1,21 @@
-import { GraphQLString, GraphQLObjectType, GraphQLFieldConfig } from 'graphql';
+import { GraphQLFieldConfig, GraphQLObjectType, GraphQLString, GraphQLID } from 'graphql';
 
-import { GraphQLUser } from './schemas';
+import { GraphQLDate } from '../types';
+
 import { resolveSignIn, resolveSignOut, resolveUpdate } from './resolvers';
+
+export const userFields = {
+  _id: { type: GraphQLID },
+  name: { type: GraphQLString },
+  email: { type: GraphQLString },
+  picture: { type: GraphQLString },
+  created: { type: GraphQLDate }
+};
+
+export const GraphQLUser = new GraphQLObjectType({
+  name: 'User',
+  fields: userFields
+});
 
 export const userQuery: GraphQLFieldConfig<any, any> = {
   resolve: (_, fields) => fields,

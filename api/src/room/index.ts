@@ -1,7 +1,13 @@
 import { GraphQLObjectType, GraphQLString, GraphQLNonNull, GraphQLFieldConfig } from 'graphql';
 
-import { GraphQLRoom } from './schemas';
 import { resolveGet } from './resolvers';
+
+export const GraphQLRoom = new GraphQLObjectType({
+  name: 'Room',
+  fields: {
+    token: { type: GraphQLString }
+  }
+});
 
 export const roomQuery: GraphQLFieldConfig<any, any> = {
   resolve: (_, fields) => fields,

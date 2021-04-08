@@ -1,15 +1,4 @@
-import {
-  GraphQLInputObjectType,
-  GraphQLObjectType,
-  GraphQLNonNull,
-  GraphQLBoolean,
-  GraphQLString,
-  GraphQLInt,
-  GraphQLID
-} from 'graphql';
 import mongoose, { Schema, Document } from 'mongoose';
-
-import { GraphQLDate, GraphQLAny } from '../types';
 
 interface IRecipe extends Document {
   cid: string;
@@ -35,37 +24,3 @@ export const Recipe = mongoose.model<IRecipe>(
     created: { type: Date, required: true }
   })
 );
-
-export const recipeFields = {
-  _id: { type: GraphQLID },
-  cid: { type: GraphQLID },
-  name: { type: GraphQLString },
-  duration: { type: GraphQLString },
-  creator: { type: GraphQLString },
-  difficulty: { type: GraphQLInt },
-  image: { type: GraphQLString },
-  text: { type: GraphQLString },
-  created: { type: GraphQLDate },
-  deleted: { type: GraphQLBoolean }
-};
-
-export const GraphQLRecipe = new GraphQLObjectType({
-  name: 'Recipe',
-  fields: {
-    ...recipeFields,
-    cid: { type: GraphQLNonNull(GraphQLID) }
-  }
-});
-
-export const GraphQLRecipePayload = new GraphQLInputObjectType({
-  name: 'RecipePayload',
-  fields: recipeFields
-});
-
-export const GraphQLAWSUpload = new GraphQLObjectType({
-  name: 'AWSUpload',
-  fields: {
-    link: { type: GraphQLString },
-    upload: { type: GraphQLAny }
-  }
-});

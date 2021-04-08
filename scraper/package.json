@@ -10,6 +10,7 @@
     "start": "npx ts-node src"
   },
   "dependencies": {
+    "@types/cli-progress": "^3.9.1",
     "@types/jsdom": "^16.2.10",
     "@types/node": "^14.14.35",
     "@types/node-fetch": "^2.5.8",

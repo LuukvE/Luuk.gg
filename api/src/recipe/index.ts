@@ -1,13 +1,52 @@
 import {
+  GraphQLInputObjectType,
+  GraphQLFieldConfig,
   GraphQLObjectType,
+  GraphQLNonNull,
+  GraphQLBoolean,
   GraphQLString,
   GraphQLList,
-  GraphQLNonNull,
-  GraphQLFieldConfig
+  GraphQLInt,
+  GraphQLID
 } from 'graphql';
 
-import { Recipe, GraphQLRecipe, GraphQLAWSUpload, GraphQLRecipePayload } from './schemas';
+import { GraphQLDate, GraphQLAny } from '../types';
+
 import { resolveGetAll, resolveUploadImage, resolveSave } from './resolvers';
+
+export const recipeFields = {
+  _id: { type: GraphQLID },
+  cid: { type: GraphQLID },
+  name: { type: GraphQLString },
+  duration: { type: GraphQLString },
+  creator: { type: GraphQLString },
+  difficulty: { type: GraphQLInt },
+  image: { type: GraphQLString },
+  text: { type: GraphQLString },
+  created: { type: GraphQLDate },
+  deleted: { type: GraphQLBoolean }
+};
+
+export const GraphQLRecipe = new GraphQLObjectType({
+  name: 'Recipe',
+  fields: {
+    ...recipeFields,
+    cid: { type: GraphQLNonNull(GraphQLID) }
+  }
+});
+
+export const GraphQLRecipePayload = new GraphQLInputObjectType({
+  name: 'RecipePayload',
+  fields: recipeFields
+});
+
+export const GraphQLAWSUpload = new GraphQLObjectType({
+  name: 'AWSUpload',
+  fields: {
+    link: { type: GraphQLString },
+    upload: { type: GraphQLAny }
+  }
+});
 
 export const recipeQuery: GraphQLFieldConfig<any, any> = {
   resolve: (_, fields) => fields,

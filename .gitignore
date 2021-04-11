@@ -8,6 +8,8 @@ yarn-debug.log*
 yarn-error.log*
 .vscode/launch.json
 .env
+.env.production
+.env.development
 certbot-instructions.txt
 ssl
 api-luukgg.pem

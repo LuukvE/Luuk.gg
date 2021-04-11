@@ -14,9 +14,7 @@ const Dashboard: FC = () => {
             <a target="_blank" rel="noreferrer" href="https://github.com/LuukvE/Luuk.gg">
               Github
             </a>
-            .<br />
-            <br />
-            Both the client and server are written in{' '}
+            . Both the client and server are written in{' '}
             <a target="_blank" rel="noreferrer" href="https://www.typescriptlang.org">
               TypeScript
             </a>
@@ -28,9 +26,7 @@ const Dashboard: FC = () => {
             <a target="_blank" rel="noreferrer" href="https://nodejs.org">
               NodeJS
             </a>
-            .<br />
-            <br />
-            If you need tips on how to develop apps or just want to chat, use the{' '}
+            . If you need tips on how to develop apps or just want to chat, use the{' '}
             <NavLink to="/messenger">Messenger</NavLink> page,{' '}
             <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/in/luukvanegeraat">
               LinkedIn

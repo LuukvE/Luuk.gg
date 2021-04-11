@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: luukgg-api
+  name: luukgg-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: luukgg-api
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: luukgg-api
+    spec:
+      containers:
+      - image: 542497389172.dkr.ecr.eu-central-1.amazonaws.com/luukgg-api
+        name: luukgg-api
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 8080
+          - containerPort: 8443
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: luukgg-api
+  labels:
+    run: luukgg-api
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+  - port: 8443
+    protocol: TCP
+  selector:
+    app: luukgg-api
+  type: NodePort

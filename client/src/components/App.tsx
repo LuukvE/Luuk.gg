@@ -2,6 +2,7 @@ import './App.scss';
 import '@fortawesome/fontawesome-free/js/all';
 import 'react-app-polyfill/ie11';
 import React, { FC, useEffect } from 'react';
+import { ReactSVG } from 'react-svg';
 import { Redirect, Switch, Route, NavLink, useHistory } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 
@@ -91,7 +92,7 @@ const App: FC = () => {
               signin();
             }}
           >
-            <i className="fas fa-sign-in-alt" /> Sign in
+            <ReactSVG className="google" src="/google.svg" /> Sign in
           </a>
         )}
       </header>

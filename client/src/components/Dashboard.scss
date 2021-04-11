@@ -18,7 +18,9 @@
     &.intro {
       margin-top: 0;
       width: 100%;
-      align-items: stretch;
+      padding: 0 30px;
+      align-items: center;
+      flex-direction: column;
 
       @media screen and (max-width: 1200px) {
         flex-direction: column;
@@ -28,6 +30,7 @@
         width: 50%;
         padding-top: 28.2%;
         align-self: center;
+        margin: 30px;
 
         @media screen and (max-width: 1200px) {
           width: 100%;
@@ -45,8 +48,8 @@
       }
 
       .text {
-        width: 50%;
-        padding-right: 30px;
+        max-width: 1200px;
+        padding: 30px;
         align-items: center;
 
         @media screen and (max-width: 1200px) {
@@ -92,6 +95,7 @@
 
   ul {
     list-style: square;
+    padding-right: 30px;
   }
 
   .icon {

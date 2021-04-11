@@ -86,11 +86,17 @@ body {
     a {
       padding: 15px 15px;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
       &.active {
         color: white;
       }
       &:last-of-type {
         padding-right: 0;
+      }
+
+      svg {
+        margin-right: 5px;
       }
     }
 

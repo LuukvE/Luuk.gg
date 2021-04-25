@@ -1,19 +1,15 @@
-import { GraphQLID, GraphQLString, GraphQLObjectType, GraphQLFieldConfig } from 'graphql';
-import mongoose, { Schema } from 'mongoose';
 import querystring from 'querystring';
 import fetch from 'node-fetch';
 
-import { User } from './schemas';
-
-const protocol = process.env.HTTPS_PORT ? 'https://' : 'http://';
+import { getUser, setUser } from '../database';
 
 export const resolveSignIn = async (_, fields, { cookies }) => {
   if (!fields.code) {
-    const email = cookies.get('signed-in-user', { signed: true });
+    const email: string = cookies.get('signed-in-user', { signed: true, secure: true });
 
     if (!email) throw 'You are not signed in';
 
-    return User.findOne({ email });
+    return getUser(email);
   }
 
   // Client has just signed into Google and was redirected with a code
@@ -27,7 +23,7 @@ export const resolveSignIn = async (_, fields, { cookies }) => {
       code: fields.code,
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${protocol}${process.env.CLIENT_DOMAIN}/signin`,
+      redirect_uri: `${process.env.CLIENT_URL}/signin`,
       grant_type: 'authorization_code'
     })
   }).catch((error) => console.log(error));
@@ -63,7 +59,12 @@ export const resolveSignIn = async (_, fields, { cookies }) => {
     expires: new Date(2050, 1, 1)
   });
 
-  return User.findOneAndUpdate({ email: user.email }, user, { upsert: true, new: true });
+  return setUser({
+    created: new Date(),
+    groups: [],
+    password: null,
+    ...user
+  });
 };
 
 export const resolveSignOut = (_, fields, { cookies }) => {
@@ -72,23 +73,17 @@ export const resolveSignOut = (_, fields, { cookies }) => {
   return 'OK';
 };
 
-export const resolveUpdate = (_, fields, { cookies }) => {
-  fields.email = cookies.get('signed-in-user', { signed: true });
+export const resolveUpdate = async (_, fields, { cookies }) => {
+  fields.email = cookies.get('signed-in-user', { signed: true, secure: true });
 
   if (!fields.email) throw 'You are not signed in';
 
-  const user = User.findOne({ email: fields.email });
+  const user = await getUser(fields.email.toLowerCase());
 
   if (!user) throw 'Your user account was not found';
 
-  return User.findOneAndUpdate(
-    { email: fields.email },
-    {
-      ...user,
-      name: fields.name
-    },
-    {
-      new: true
-    }
-  );
+  return setUser({
+    ...user,
+    name: fields.name
+  });
 };

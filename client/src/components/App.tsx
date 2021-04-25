@@ -64,9 +64,9 @@ const App: FC = () => {
         <NavLink to="/cooking">
           <i className="fas fa-utensils" /> Cooking
         </NavLink>
-        <NavLink to="/restaurants">
+        {/* <NavLink to="/restaurants">
           <i className="fas fa-pizza-slice" /> Restaurants
-        </NavLink>
+        </NavLink> */}
         <NavLink to="/career">
           <i className="fas fa-code" /> Career
         </NavLink>

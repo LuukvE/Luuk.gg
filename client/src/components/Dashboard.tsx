@@ -42,8 +42,8 @@ const Dashboard: FC = () => {
           <iframe
             width="1519"
             height="594"
-            src="https://www.youtube.com/embed/ywwW2XtWaRc?list=PLp85sC5XVI-SEF0mg_VEVIee69nd0cDwW"
-            title="YouTube video player"
+            src="https://www.youtube.com/embed/-va7Lpnu4EM?list=PLp85sC5XVI-SEF0mg_VEVIee69nd0cDwW"
+            title="YouTube"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -68,25 +68,6 @@ const Dashboard: FC = () => {
           </li>
           <li>Users can play alone or versus a powerful computer</li>
           <li>Displays a rich and intuitive interface</li>
-        </ul>
-      </div>
-      <div>
-        <NavLink className="icon" to="/restaurants">
-          <i className="fas fa-pizza-slice" /> Restaurants
-        </NavLink>
-        <ul>
-          <li>
-            Implements an{' '}
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href="https://github.com/LuukvE/Luuk.gg/tree/master/scraper"
-            >
-              advanced web scraper
-            </a>
-          </li>
-          <li>Users can find restaurants and dishes to order</li>
-          <li>Displays a complex search interface</li>
         </ul>
       </div>
       <div>
@@ -175,6 +156,24 @@ const Dashboard: FC = () => {
           </li>
           <li>Users can have a 1:1 meeting with video/audio</li>
           <li>Displays a sharable room link to invite others</li>
+        </ul>
+      </div>
+      <div>
+        <NavLink className="icon" to="/restaurants">
+          <i className="fas fa-pizza-slice" /> Restaurants
+        </NavLink>
+        <ul>
+          <li>
+            I am working on an{' '}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://github.com/LuukvE/Luuk.gg/tree/master/scraper"
+            >
+              advanced web scraper
+            </a>
+          </li>
+          <li>This page is still work in progress</li>
         </ul>
       </div>
     </div>

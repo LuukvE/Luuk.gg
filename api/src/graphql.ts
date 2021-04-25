@@ -1,11 +1,10 @@
 import { graphql, GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { IncomingMessage, ServerResponse } from 'http';
-import mongoose from 'mongoose';
 import Cookies from 'cookies';
 
-import { recipeQuery, recipeMutations } from './recipe';
+// import { recipeQuery, recipeMutations } from './recipe';
 import { userQuery, userMutations } from './user';
-import { restaurantQuery } from './restaurant';
+// import { restaurantQuery } from './restaurant';
 import { githubQuery } from './github';
 import { roomQuery } from './room';
 
@@ -20,30 +19,18 @@ const schema = new GraphQLSchema({
       user: userQuery,
       room: roomQuery,
       github: githubQuery,
-      recipe: recipeQuery,
-      restaurant: restaurantQuery
+      // recipe: recipeQuery
+      // restaurant: restaurantQuery
     }
   }),
   mutation: new GraphQLObjectType({
     name: 'Mutation',
     fields: {
       user: userMutations,
-      recipe: recipeMutations
+      // recipe: recipeMutations
     }
   })
 });
-
-mongoose.set('useNewUrlParser', true);
-
-mongoose.set('useFindAndModify', false);
-
-mongoose.set('useCreateIndex', true);
-
-mongoose.set('useUnifiedTopology', true);
-
-mongoose.connect(`mongodb://127.0.0.1/${process.env.MONGODB}`);
-
-mongoose.connection.on('error', (err) => console.error('MongoDB Error', err));
 
 export default async (
   request: IncomingMessage,

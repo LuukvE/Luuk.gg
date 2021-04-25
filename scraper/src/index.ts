@@ -1,25 +1,8 @@
 import puppeteer from 'puppeteer';
-import mongoose from 'mongoose';
 import progress from 'cli-progress';
 import dotenv from 'dotenv';
 
-import { Product, Category, Restaurant } from './schemas';
-
 dotenv.config();
-
-mongoose.set('useNewUrlParser', true);
-
-mongoose.set('useFindAndModify', false);
-
-mongoose.set('useCreateIndex', true);
-
-mongoose.set('useUnifiedTopology', true);
-
-mongoose.connection.on('error', (err) => console.error('MongoDB Error', err));
-
-mongoose.connect(`mongodb://localhost/${process.env.MONGODB}`).then(() => {
-  scrape(process.env.DOMAIN, process.env.URL_PATH);
-});
 
 async function scrape(domain: string, path: string) {
   const browser = await puppeteer.launch({ headless: false });
@@ -70,8 +53,6 @@ async function scrape(domain: string, path: string) {
 
       browser.close();
 
-      mongoose.connection.close();
-
       return;
     }
 
@@ -118,129 +99,129 @@ async function scrape(domain: string, path: string) {
       image: additionalInfo.image
     };
 
-    Restaurant.findOneAndUpdate(
-      {
-        id: completeRestaurant.id
-      },
-      {
-        $set: completeRestaurant
-      },
-      {
-        upsert: true,
-        useFindAndModify: false
-      },
-      async (err) => {
-        if (err) throw err;
+    // Restaurant.findOneAndUpdate(
+    //   {
+    //     id: completeRestaurant.id
+    //   },
+    //   {
+    //     $set: completeRestaurant
+    //   },
+    //   {
+    //     upsert: true,
+    //     useFindAndModify: false
+    //   },
+    //   async (err) => {
+    //     if (err) throw err;
 
-        const categories = await page.evaluate(() =>
-          [].reduce.call(
-            document.querySelectorAll('[data-category]'),
-            (categories, domNode) => {
-              const id = domNode.getAttribute('data-category');
-              const name = domNode.textContent;
+    //     const categories = await page.evaluate(() =>
+    //       [].reduce.call(
+    //         document.querySelectorAll('[data-category]'),
+    //         (categories, domNode) => {
+    //           const id = domNode.getAttribute('data-category');
+    //           const name = domNode.textContent;
 
-              if (id && name && id !== '0') {
-                categories.push({
-                  id,
-                  name
-                });
-              }
+    //           if (id && name && id !== '0') {
+    //             categories.push({
+    //               id,
+    //               name
+    //             });
+    //           }
 
-              return categories;
-            },
-            []
-          )
-        );
+    //           return categories;
+    //         },
+    //         []
+    //       )
+    //     );
 
-        const promises = categories.map(
-          (category) =>
-            new Promise((resolve) =>
-              Category.findOneAndUpdate(
-                {
-                  id: category.id
-                },
-                {
-                  $set: {
-                    ...category,
-                    restaurant: completeRestaurant.id
-                  }
-                },
-                {
-                  upsert: true,
-                  useFindAndModify: false
-                },
-                (err) => {
-                  if (err) console.log(err);
+    //     const promises = categories.map(
+    //       (category) =>
+    //         new Promise((resolve) =>
+    //           Category.findOneAndUpdate(
+    //             {
+    //               id: category.id
+    //             },
+    //             {
+    //               $set: {
+    //                 ...category,
+    //                 restaurant: completeRestaurant.id
+    //               }
+    //             },
+    //             {
+    //               upsert: true,
+    //               useFindAndModify: false
+    //             },
+    //             (err) => {
+    //               if (err) console.log(err);
 
-                  resolve(null);
-                }
-              )
-            )
-        );
+    //               resolve(null);
+    //             }
+    //           )
+    //         )
+    //     );
 
-        const products = await page.evaluate(() =>
-          window['MenucardProducts'].map((p) => {
-            const {
-              productId,
-              name,
-              categoryId,
-              deliverymethod,
-              hasSizes,
-              is_meal,
-              price,
-              price_pickup
-            } = p;
-            const description =
-              document.querySelector(`[id="${productId}"] .meal__description-additional-info`)
-                ?.textContent || '';
-            const options =
-              document.querySelector(`[id="${productId}"] .meal__description-choose-from`)
-                ?.textContent || '';
+    //     const products = await page.evaluate(() =>
+    //       window['MenucardProducts'].map((p) => {
+    //         const {
+    //           productId,
+    //           name,
+    //           categoryId,
+    //           deliverymethod,
+    //           hasSizes,
+    //           is_meal,
+    //           price,
+    //           price_pickup
+    //         } = p;
+    //         const description =
+    //           document.querySelector(`[id="${productId}"] .meal__description-additional-info`)
+    //             ?.textContent || '';
+    //         const options =
+    //           document.querySelector(`[id="${productId}"] .meal__description-choose-from`)
+    //             ?.textContent || '';
 
-            return {
-              id: productId,
-              description,
-              options,
-              name,
-              categoryId,
-              deliverymethod,
-              hasSizes,
-              is_meal,
-              price,
-              price_pickup
-            };
-          }, [])
-        );
+    //         return {
+    //           id: productId,
+    //           description,
+    //           options,
+    //           name,
+    //           categoryId,
+    //           deliverymethod,
+    //           hasSizes,
+    //           is_meal,
+    //           price,
+    //           price_pickup
+    //         };
+    //       }, [])
+    //     );
 
-        products.forEach((product) => {
-          promises.push(
-            new Promise((resolve) =>
-              Product.findOneAndUpdate(
-                {
-                  id: product.id
-                },
-                {
-                  $set: {
-                    ...product,
-                    restaurant: completeRestaurant.id
-                  }
-                },
-                {
-                  upsert: true,
-                  useFindAndModify: false
-                },
-                (err) => {
-                  resolve(null);
-                }
-              )
-            )
-          );
-        });
+    //     products.forEach((product) => {
+    //       promises.push(
+    //         new Promise((resolve) =>
+    //           Product.findOneAndUpdate(
+    //             {
+    //               id: product.id
+    //             },
+    //             {
+    //               $set: {
+    //                 ...product,
+    //                 restaurant: completeRestaurant.id
+    //               }
+    //             },
+    //             {
+    //               upsert: true,
+    //               useFindAndModify: false
+    //             },
+    //             (err) => {
+    //               resolve(null);
+    //             }
+    //           )
+    //         )
+    //       );
+    //     });
 
-        await Promise.all(promises);
+    //     await Promise.all(promises);
 
-        loop();
-      }
-    );
+    //     loop();
+    //   }
+    // );
   })();
 }

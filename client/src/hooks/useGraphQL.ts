@@ -2,10 +2,7 @@ import { useState, useCallback } from 'react';
 
 import { useDispatch, actions } from '../store';
 
-const apiURL =
-  process.env.NODE_ENV === 'development'
-    ? process.env.REACT_APP_API_URL_DEV
-    : process.env.REACT_APP_API_URL_PROD;
+const apiURL = process.env.REACT_APP_API_URL;
 
 const useGraphQL = () => {
   const dispatch = useDispatch();

@@ -1,8 +1,9 @@
+import parseJSON from 'date-fns/parseJSON';
 import { nanoid } from 'nanoid';
 import AWS from 'aws-sdk';
 import mime from 'mime';
 
-import { Recipe } from './schemas';
+import { findRecipes, deleteRecipe, setRecipe } from '../database';
 
 AWS.config.update({
   accessKeyId: process.env.AWS_KEY,
@@ -16,15 +17,15 @@ const s3 = new AWS.S3({
 });
 
 export const resolveGetAll = (_, fields, { cookies }) => {
-  const email = cookies.get('signed-in-user', { signed: true });
+  const email = cookies.get('signed-in-user', { signed: true, secure: true });
 
   if (!email) return [];
 
-  return Recipe.find({ creator: email });
+  return findRecipes({ creator: email });
 };
 
 export const resolveUploadImage = (_, fields, { cookies }) => {
-  const email = cookies.get('signed-in-user', { signed: true });
+  const email = cookies.get('signed-in-user', { signed: true, secure: true });
 
   if (!email) throw 'You are not signed in';
 
@@ -59,22 +60,20 @@ export const resolveUploadImage = (_, fields, { cookies }) => {
 };
 
 export const resolveSave = async (_, fields, { cookies }) => {
-  const email = cookies.get('signed-in-user', { signed: true });
+  const email = cookies.get('signed-in-user', { signed: true, secure: true });
 
   if (!email) throw 'You are not signed in';
 
   if (!fields?.recipe?.cid) throw 'Recipe has no CID';
 
   const recipe = {
+    id: nanoid(),
     ...fields?.recipe,
     creator: email
   };
 
   if (recipe.deleted) {
-    await Recipe.findOneAndDelete({
-      creator: email,
-      cid: fields.recipe.cid
-    });
+    await deleteRecipe(recipe);
 
     return {
       ...fields.recipe,
@@ -82,8 +81,7 @@ export const resolveSave = async (_, fields, { cookies }) => {
     };
   }
 
-  return Recipe.findOneAndUpdate({ creator: email, cid: fields.recipe.cid }, recipe, {
-    upsert: true,
-    new: true
-  });
+  if (recipe.created) recipe.created = parseJSON(recipe.created);
+
+  return setRecipe(recipe);
 };

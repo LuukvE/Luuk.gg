@@ -4,27 +4,23 @@ import file from './file';
 import graphql from './graphql';
 import { slackWebsocket, slackEvent } from './slack';
 
-const protocol = process.env.HTTPS_PORT ? 'https://' : 'http://';
-
-const clientOrigin = `${protocol}${process.env.CLIENT_DOMAIN}`;
-
 // Handle all HTTP requests for both client and API
 export const httpHandler: RequestListener = async (request, response) => {
-  // If the request is not made to the API domain, handle it like a static request for a client file
-  if (!request.headers.host || request.headers.host.indexOf(process.env.API_DOMAIN) !== 0) {
-    return file(request, response);
-  }
+  // If the request is not made to one of the two endpoints, handle it like a static request for a client file
+  if (!['/graphql', '/slack'].includes(request.url)) return file(request, response);
 
   // All API responses are always CORS-enabled with JSON content type
   response.setHeader('Content-Type', 'application/json');
 
-  response.setHeader('Access-Control-Allow-Credentials', 'true');
+  if (request.headers.origin) {
+    response.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  response.setHeader('Access-Control-Allow-Origin', clientOrigin);
+    response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
 
-  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+    response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  }
 
   // Pre-flight requests do not need to be processed any further, they only need the CORS headers
   if (request.method === 'OPTIONS') {

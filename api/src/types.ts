@@ -1,25 +1,33 @@
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 import { parseJSON } from 'date-fns';
-import { Document } from 'mongoose';
 
-export const GraphQLDate = new GraphQLScalarType({
-  name: 'Date',
-  serialize: (value: Date) => value.toJSON(),
-  parseValue: (value: string) => parseJSON(value),
-  parseLiteral: (ast) => {
-    if (ast.kind !== Kind.STRING) return null;
+export type User = {
+  email: string;
+  name: string;
+  groups: string[];
+  password: string | null;
+  google: string | null;
+  picture: string | null;
+  created: Date;
+};
 
-    return parseJSON(`${ast}`);
-  }
-});
+export type Github = {
+  contributions: { [key: string]: number };
+  totalContributions: number;
+};
 
-export const GraphQLAny = new GraphQLScalarType({
-  name: 'Any',
-  serialize: (value) => value,
-  parseValue: (value) => value,
-  parseLiteral: (ast) => ast
-});
+export type Recipe = {
+  id: string;
+  cid: string;
+  name: string;
+  duration: string;
+  creator: string;
+  difficulty: number;
+  image: string;
+  text: string;
+  created: string;
+};
 
 // Slack module
 export type WebsocketMessage =
@@ -66,3 +74,21 @@ export type GithubContributionsBody = {
     };
   };
 };
+
+export const GraphQLDate = new GraphQLScalarType({
+  name: 'Date',
+  serialize: (value: Date) => value.toJSON(),
+  parseValue: (value: string) => parseJSON(value),
+  parseLiteral: (ast) => {
+    if (ast.kind !== Kind.STRING) return null;
+
+    return parseJSON(`${ast}`);
+  }
+});
+
+export const GraphQLAny = new GraphQLScalarType({
+  name: 'Any',
+  serialize: (value) => value,
+  parseValue: (value) => value,
+  parseLiteral: (ast) => ast
+});

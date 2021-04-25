@@ -77,7 +77,7 @@ export type GithubContributionsBody = {
 
 export const GraphQLDate = new GraphQLScalarType({
   name: 'Date',
-  serialize: (value: Date) => value.toJSON(),
+  serialize: (value: Date) => (value ? value.toJSON() : null),
   parseValue: (value: string) => parseJSON(value),
   parseLiteral: (ast) => {
     if (ast.kind !== Kind.STRING) return null;

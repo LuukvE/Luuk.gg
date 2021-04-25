@@ -23,8 +23,6 @@ try {
   console.log(e);
 }
 
-console.log(`s3: ${!!s3}`);
-
 export const resolveGetAll = (_, fields, { cookies }) => {
   const email = cookies.get('signed-in-user', { signed: true, secure: true });
 

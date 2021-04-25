@@ -1,20 +1,29 @@
 import parseJSON from 'date-fns/parseJSON';
 import { nanoid } from 'nanoid';
-import AWS from 'aws-sdk';
 import mime from 'mime';
 
 import { findRecipes, deleteRecipe, setRecipe } from '../database';
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_KEY,
-  secretAccessKey: process.env.AWS_SECRET,
-  region: process.env.AWS_REGION,
-  signatureVersion: 'v4'
-});
+let s3: any = undefined;
 
-const s3 = new AWS.S3({
-  signatureVersion: 'v4'
-});
+try {
+  const AWS = require('aws-sdk');
+
+  AWS.config.update({
+    accessKeyId: process.env.AWS_KEY,
+    secretAccessKey: process.env.AWS_SECRET,
+    region: process.env.AWS_REGION,
+    signatureVersion: 'v4'
+  });
+
+  s3 = new AWS.S3({
+    signatureVersion: 'v4'
+  });
+} catch (e) {
+  console.log(e);
+}
+
+console.log(`s3: ${!!s3}`);
 
 export const resolveGetAll = (_, fields, { cookies }) => {
   const email = cookies.get('signed-in-user', { signed: true, secure: true });
@@ -42,14 +51,16 @@ export const resolveUploadImage = (_, fields, { cookies }) => {
   const key = `${email}/${nanoid()}.${ext}`;
 
   // Generate the URL and meta-data required for the client to POST its image directly to S3
-  const upload = s3.createPresignedPost({
-    Bucket: process.env.AWS_BUCKET,
-    Fields: {
-      acl: 'public-read',
-      contentType,
-      key
-    }
-  });
+  const upload =
+    s3 &&
+    s3.createPresignedPost({
+      Bucket: process.env.AWS_BUCKET,
+      Fields: {
+        acl: 'public-read',
+        contentType,
+        key
+      }
+    });
 
   // Send the URL and meta-data for uploading to the client
   // Also send the link the image can be loaded from after uploading

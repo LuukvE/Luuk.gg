@@ -30,9 +30,60 @@
         width: 800px;
         opacity: 0.7;
       }
+      &.client-server {
+        display: flex;
+        font-size: 40px;
+        align-items: center;
+        color: white;
+        p {
+          display: flex;
+          flex-grow: 1;
+          flex-basis: 0;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin: 20px 0;
+          small {
+            font-size: 14px;
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+          }
+          svg {
+            margin: 0 8px;
+            opacity: 0.9;
+          }
+        }
+        > small svg {
+          margin-bottom: 25px;
+          font-size: 25px;
+          color: white;
+          opacity: 0.7;
+        }
+      }
+      &.typescript {
+        background: #0066b8;
+        text-align: center;
+        border-radius: 4px;
+        font-size: 30px;
+        font-weight: 300;
+        margin: 12px 0;
+      }
     }
     code {
       color: $yellow;
+    }
+    img {
+      width: 100%;
+      margin: 12px 0;
+      &.react,
+      &.nodejs {
+        max-width: 400px;
+        display: block;
+        margin: 12px auto;
+      }
     }
     a {
       color: $orange;

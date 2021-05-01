@@ -33,7 +33,7 @@ const Learn: FC = () => {
         <li className={active(5)}>Using colours</li>
         <li className={active(6)}>Nesting HTML</li>
         <li className={active(7)}>Embedding Youtube</li>
-        <li className={active(8)}>Hosting a basic API</li>
+        <li className={active(8)}>Creating a basic server</li>
         <li className={active(9)}>Making an XHR request</li>
         <li className={active(10)}>Sending JSON</li>
         <li className={active(11)}>Using flexbox</li>
@@ -68,6 +68,8 @@ const Learn: FC = () => {
         <li className={active(40)}>Keeping secrets in ENV files</li>
         <li className={active(41)}>Implementing Redux</li>
         <li className={active(42)}>Using React props</li>
+        <li className={active(43)}>Caching HTTP requests</li>
+        <li className={active(44)}>Storing data client-side</li>
       </ul>
       <div className="content">
         <Switch>
@@ -77,14 +79,32 @@ const Learn: FC = () => {
               specific way in order to shorten your learning journey. Once you master each chapter
               on this page, you will be able to work professionally as a web developer.
             </div>
+            <div className="client-server">
+              <p>
+                <i className="fab fa-chrome" />
+                <i className="fab fa-firefox-browser" />
+                <i className="fab fa-safari" />
+                <small>client / user interface / front-end</small>
+              </p>
+              <small>
+                <i className="fas fa-exchange-alt" />
+              </small>
+              <p>
+                <i className="fas fa-server" />
+                <small>server / API / back-end</small>
+              </p>
+            </div>
             <div>
-              There are multiple names for developing both sides of a complete website. On one side,
-              there is the client / front-end / user interface. On the other, there is the server /
-              back-end / API. The client will be downloaded and opened in browsers like Chrome,
-              Firefox, Safari and Opera. It will need to adapt to multiple screen sizes and input
-              devices like mice and mousepads. You cannot store data in your front-end, since a
-              browser will have to download it each time they open your website. Storing data is the
-              responsibility of the API. Clients will connect to your API to load data.
+              There are multiple names for both sides of a complete website. On one side, there is
+              the client. On the other, there is the server. The client will be downloaded and
+              opened in browsers like Chrome, Firefox, Safari and Opera. It will need to adapt to
+              multiple screen sizes and input devices like mice and mousepads. You cannot store data
+              in your front-end, since a browser will have to download it each time they open your
+              website. Storing data is the responsibility of the server. Clients will connect to
+              your server to load data.
+            </div>
+            <div className="typescript">
+              <b>Type</b>Script
             </div>
             <div>
               In my approach, both sides will be written in TypeScript. This language is identical
@@ -106,6 +126,11 @@ const Learn: FC = () => {
               and libraries for you. But once you are on your own, you will need to be careful when
               deciding what software you want your software to depend on.
             </div>
+            <img
+              className="react"
+              alt="React"
+              src="https://s3.eu-central-1.amazonaws.com/luuk.gg/react.png"
+            />
             <div>
               In these lessons the user interface will make use of the React framework. This is
               software written by Facebook and is considered the industry-standard way to build
@@ -117,15 +142,17 @@ const Learn: FC = () => {
               use similair techniques, so the knowledge you will gain will aid you, no matter what
               framework you will want to use in the future.
             </div>
+            <img
+              className="nodejs"
+              alt="NodeJS"
+              src="https://s3.eu-central-1.amazonaws.com/luuk.gg/nodejs.png"
+            />
             <div>
-              The API will be written with pure NodeJS, without the use of any framework. I have
-              purposefully ignored frameworks like ExpressJS, because I believe these tools provide
-              us with more problems than solutions. It is our job to fully understand how our
-              software works. Therefor, needlessly using software written by others is a mistake.
-              Whenever I will use a library, I will explain why I felt forced to use it. There will
-              already be a lot of complexity to go through in these lessons. I have tried to keep it
-              to the absolute minimum, while still giving you the advantage of not having to write
-              everything from scratch.
+              The server will be written for NodeJS, without the use of any framework. I have
+              purposefully ignored frameworks like ExpressJS, because I believe they do not provide
+              enough functionality. There will already be a lot of complexity to go through in these
+              lessons. I have tried to keep it to the absolute minimum, while still giving you the
+              advantage of not having to write everything from scratch.
             </div>
             <div>
               But for now, we can forget about all the complexity, and start at the beginning.
@@ -150,7 +177,7 @@ const Learn: FC = () => {
               The first thing we might want to do, is change the title of your website. The title is
               displayed in the tab of the browser, and currently it will simply say{' '}
               <code>website.html</code>. In order to customise this, we need to write some HTML:{' '}
-              <Gist url="LuukvE/b0e2947739351727a90d743ea9c27bd1/website.html" />
+              {index === '1' && <Gist url="LuukvE/b0e2947739351727a90d743ea9c27bd1/website.html" />}
             </div>
             <div>
               As you can see, in HTML you can write elements. Elements start with{' '}
@@ -187,7 +214,39 @@ const Learn: FC = () => {
               <NavLink to="/learn/2/styling-your-website">Styling your website</NavLink>
             </div>
           </Route>
-          {/* <Route path="/learn/2/styling-your-website"></Route> */}
+          <Route path="/learn/2/styling-your-website">
+            <div>
+              To make a website look good, you need to write CSS. This is a language that tells your
+              browser what colours, sizes and positions each of your elements should have. By simply
+              putting a <code>&lt;style&gt;</code> element inside our body, we can start writing
+              CSS.
+            </div>
+
+            {index === '2' && <Gist url="LuukvE/6a57a60b7ded6cf8c0ea3c1ccd5a8d55/styling.html" />}
+
+            <div>
+              Inside of this source code, there is a single CSS selector <code>body</code>,
+              containing four CSS rules. You can add multiple selectors, containing multiple rules.
+              There are a lot of possible rules you could write. If you want to experiment with all
+              the possibilities, I recommend you use your browser. Simply right-click the element
+              you want to style and select "inspect".
+            </div>
+            <img
+              alt="inspector"
+              src="https://s3.eu-central-1.amazonaws.com/luuk.gg/inspector.png"
+            />
+            <div>
+              When the inspector is opened, it pops up below the website. On the left, you can see
+              the element you are currently selecting. And on the right, you can see the CSS rules.
+              Now you can add, remove or change the rules.
+            </div>
+            <div>
+              Throughout the upcoming lessons, I will introduce you to more and more selectors and
+              rules. For now, this concludes our quick introduction to CSS. Now that you are aware
+              of both HTML and CSS, we can move on to the most difficult language within web
+              development: <NavLink to="/learn/3/logging-to-console">JavaScript</NavLink>
+            </div>
+          </Route>
           <Route path="/learn/:index/:chapter">
             <div className="chapter-not-found">This chapter is still being written</div>
           </Route>

@@ -18,6 +18,7 @@ import Cooking from './Cooking';
 import Meeting from './Meeting';
 import Career from './Career';
 import Chess from './Chess';
+import Learn from './Learn';
 
 const App: FC = () => {
   const { query } = useQuery();
@@ -58,6 +59,9 @@ const App: FC = () => {
           Luuk.gg
         </NavLink>
 
+        <NavLink to="/learn">
+          <i className="fas fa-graduation-cap" /> Learn
+        </NavLink>
         <NavLink exact to="/chess">
           <i className="fas fa-chess-king" /> Chess
         </NavLink>
@@ -106,6 +110,9 @@ const App: FC = () => {
           </Route>
           <Route path="/restaurants">
             <Restaurants />
+          </Route>
+          <Route path={['/learn/:index/:chapter', '/learn']}>
+            <Learn />
           </Route>
           <Route path="/career">
             <Career />

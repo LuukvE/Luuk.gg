@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { useDispatch, actions, useSelector } from '../store';
 
 const apiURL = process.env.REACT_APP_API_URL;
-console.log(apiURL);
+
 // Replace the HTTP protocol with the WebSocket protocol
 const socketURL = `${apiURL}`.replace('http://', 'ws://').replace('https://', 'wss://');
 
@@ -35,7 +35,6 @@ const useSocket = () => {
   // Initialise the WebSocket
   useEffect(
     function init() {
-      console.log(socketURL);
       const thisSocket = (socket.current = new WebSocket(socketURL));
 
       // If the socket opens

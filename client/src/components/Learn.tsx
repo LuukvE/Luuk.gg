@@ -1,12 +1,25 @@
 import './Learn.scss';
-import React, { FC, useCallback } from 'react';
-import { Redirect, Route, Switch, useHistory, useParams, NavLink } from 'react-router-dom';
+import React, { FC, useCallback, useEffect } from 'react';
+import {
+  Redirect,
+  Route,
+  Switch,
+  NavLink,
+  useHistory,
+  useParams,
+  useLocation
+} from 'react-router-dom';
 
 import Gist from './Gist';
 
 const Learn: FC = () => {
   const history = useHistory();
+  const { pathname } = useLocation();
   const { index } = useParams<{ index: string }>();
+
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, [pathname]);
 
   const active = useCallback((i: number) => (parseInt(index, 10) === i ? 'active' : ''), [index]);
 
@@ -245,6 +258,42 @@ const Learn: FC = () => {
               rules. For now, this concludes our quick introduction to CSS. Now that you are aware
               of both HTML and CSS, we can move on to the most difficult language within web
               development: <NavLink to="/learn/3/logging-to-console">JavaScript</NavLink>
+            </div>
+          </Route>
+          <Route path="/learn/3/logging-to-console">
+            <div>
+              Before we use JavaScript to make changes to the page, or talk to a server, we will
+              start by simply writing messages to the console. First we need to open up the
+              developer tools, and navigate to Console <i>(shortcut: Ctrl-Shift-J)</i>.
+            </div>
+            <img alt="console" src="https://s3.eu-central-1.amazonaws.com/luuk.gg/console.png" />
+            <div>
+              Start by typing <code>1 + 1</code> into the console and hit enter. You should now see
+              that the console calculated this expression to <code>2</code>. The next step is to
+              make our web page create a console message. Put the following code into a file, and
+              save it as <code>console.html</code>:
+            </div>
+            <Gist url="LuukvE/414997b752d41b465f149afd6d30b121/console.html" />
+            <div>
+              You can see that we wrote our JavaScript inside of a <code>&lt;script&gt;</code>{' '}
+              element. Once we open this page in our browser, you will not see anything in the
+              screen itself. But once you open the Console, you will see the number <code>2</code>.
+              You have now written your first line of JavaScript. Well done!
+            </div>
+
+            <div>Now we can step it up a bit:</div>
+            <Gist url="LuukvE/e1a50787a030e9f96762026d508d9f79/console.html" />
+            <div>
+              Logging can be useful when trying to figure out what your software is doing. This can
+              be especially helpful when your script is executing new lines of code continuously.
+              For example, we can use the <code>setTimeout()</code> function, to execute JavaScript
+              with a delay.
+            </div>
+            <Gist url="LuukvE/390d942ef889f38b009a54375408b4ec/console.html" />
+            <div>
+              Now that you have seen some simple lines of JavaScript, we can start using it to make
+              changes to your website in the next lesson:{' '}
+              <NavLink to="/learn/4/selecting-elements">Selecting elements</NavLink>
             </div>
           </Route>
           <Route path="/learn/:index/:chapter">

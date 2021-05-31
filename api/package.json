@@ -27,7 +27,7 @@
     "tslint": "^6.1.3",
     "twilio": "^3.58.0",
     "typescript": "^4.2.3",
-    "ws": "^7.4.4"
+    "ws": "^7.4.6"
   },
   "scripts": {
     "start": "nodemon"

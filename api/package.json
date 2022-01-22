@@ -18,7 +18,7 @@
     "firebase-admin": "^9.6.0",
     "graphql": "^15.5.0",
     "mime": "*",
-    "nanoid": "^3.1.22",
+    "nanoid": "^3.1.31",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7",
     "prettier": "^2.0.5",
